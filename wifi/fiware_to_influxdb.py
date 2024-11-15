@@ -2,6 +2,10 @@ import time
 import requests
 from influxdb_client import InfluxDBClient, Point, WritePrecision
 
+#ενδεχομενως προβλημα με το json format και το location 
+
+
+
 # InfluxDB connection details
 influxdb_url = "http://150.140.186.118:8086"
 bucket = "AutoSenseAnalytics"
