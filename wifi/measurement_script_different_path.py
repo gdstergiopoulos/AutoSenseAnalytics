@@ -107,8 +107,11 @@ def wifi_measurement_loop(interval=10):
                 "type": "Text"
             },
             "location": {
-                "value": location,
-                    "type": "Text",
+            "value": {
+                "type": "Point",
+                "coordinates": location
+            },
+            "type": "geo:json"
                 },
             "timestamp": {
                 "value": timestamp,
