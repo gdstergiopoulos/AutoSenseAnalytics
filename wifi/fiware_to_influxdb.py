@@ -14,12 +14,12 @@ token = "oOsRHLaYY8_Wp_89wMVENUlChhoGpJ4x9VwjXDQK69Pb3IYTs0Mw9XsfXl5aOWd7MuX82Dt
 measurement = "elenishome_wifi"
 
 # FIWARE Context Broker details
-fiware_url = "http://150.140.186.118:1026/v2/entities"  
-entity_id = "elenishome"  # Replace with your entity ID
+fiware_url = "http://150.140.186.118:1026/v2/entities/elenishome"  
+#entity_id = "elenishome"  # Replace with your entity ID
 fiware_headers = {
-    #"Fiware-Service": "<fiware_service>",  # Replace with your FIWARE service
-    "Fiware-ServicePath": "/AutoSenseAnalytics/Wifi",             
-    "Content-Type": "application/json"
+    "Accept": "application/json",
+    "Fiware-ServicePath": "/AutoSenseAnalytics/Wifi"       
+    
 }
 
 # Initialize InfluxDB client
@@ -29,7 +29,7 @@ write_api = client.write_api()
 def fetch_data_from_fiware():
     #Fetch sensor data from FIWARE Context Broker
     try:
-        response = requests.get(f"{fiware_url}/{entity_id}", headers=fiware_headers)
+        response = requests.get(fiware_url, headers=fiware_headers)
         response.raise_for_status()
         data = response.json()
         return data
@@ -38,33 +38,38 @@ def fetch_data_from_fiware():
         return None
 
 def process_data(data):
-    #Extract and process relevant data from the FIWARE response for RSSI, MAC address, location, and timestamp
     try:
-        # Extract the RSSI value (signal strength)
-        rssi = data["rssi"]["value"]  # The actual signal strength value
+        # Ensure rssi is always a float
+        rssi = float(data["rssi"]["value"])
 
-        # Extract the MAC address
-        mac_address = data["macAddress"]["value"]  # The MAC address value
+        # Ensure mac_address is a string
+        mac_address = str(data["macAddress"]["value"])
 
-        # Extract the location (coordinates)
-        location = data["location"]["value"]["coordinates"]  # Coordinates from the location data
-        latitude = location[1]  # The first value in the list is latitude
-        longitude = location[0]  # The second value is longitude
+        # Extract latitude and longitude (or set them to None if missing)
+        if (
+            "location" in data
+            and "value" in data["location"]
+            and "coordinates" in data["location"]["value"]
+        ):
+            location = data["location"]["value"]["coordinates"]
+            longitude = float(location[0]) if len(location) > 0 else None
+            latitude = float(location[1]) if len(location) > 1 else None
+        else:
+            latitude, longitude = None, None
 
-        # Extract the timestamp
-        timestamp = data["timestamp"]["value"]  # The timestamp as an ISO format string
+        # Ensure timestamp is properly formatted
+        timestamp = data["timestamp"]["value"]
 
-        # Return a dictionary with processed data
         return {
-            "rssi": float(rssi),
+            "rssi": rssi,
             "mac_address": mac_address,
             "latitude": latitude,
             "longitude": longitude,
-            "timestamp": timestamp
+            "timestamp": timestamp,
         }
-    
-    except KeyError as e:
-        print(f"Error processing data: Missing key {e}")
+
+    except (KeyError, ValueError, TypeError) as e:
+        print(f"Error processing data: {e}")
         return None
     
 
