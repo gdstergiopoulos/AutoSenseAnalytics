@@ -83,7 +83,7 @@ def write_to_influxdb(processed_data):
             .field("rssi", processed_data["rssi"]) \
             .field("latitude", processed_data["latitude"]) \
             .field("longitude", processed_data["longitude"]) \
-            .time(processed_data["timestamp"], WritePrecision.NS)
+            .field("timestamp", processed_data["timestamp"])
 
         # Write the data to InfluxDB
         write_api.write(bucket=bucket, org=org, record=point)
