@@ -1,5 +1,7 @@
 import mysql.connector
-
+import json
+from influxdb_client import InfluxDBClient, Point
+from influxdb_client.client.write_api import ASYNCHRONOUS
 # Database connection details
 db_config = {
     'host': '150.140.186.118',
@@ -8,6 +10,15 @@ db_config = {
     'password': 'iot_password',
     'database': 'default'
 }
+
+influxdb_url = "http://150.140.186.118:8086"
+bucket = "AutoSenseAnalytics"
+org = "students"
+token = "oOsRHLaYY8_Wp_89wMVENUlChhoGpJ4x9VwjXDQK69Pb3IYTs0Mw9XsfXl5aOWd7MuX82DtAxiChfajweZIWFA=="
+measurement = "test1"
+
+client = InfluxDBClient(url=influxdb_url, token=token, org=org)
+write_api = client.write_api()
 
 def fetch_data(table_name, attr_name, start_datetime=None, end_datetime=None):
     """
@@ -29,14 +40,33 @@ def fetch_data(table_name, attr_name, start_datetime=None, end_datetime=None):
         cursor = connection.cursor()
 
         # Define the base query
+        # query = f"""
+        #     SELECT recvTime, attrValue
+        #     FROM {table_name}
+        #     WHERE attrName = %s
+        # """
         query = f"""
-            SELECT recvTime, attrValue
-            FROM {table_name}
-            WHERE attrName = %s
+            SELECT R1.recvTimeTs, R1.recvTime, R1.attrName, R1.attrValue, 
+               R2.attrName, R2.attrValue, R3.attrName, R3.attrValue, 
+               R4.attrName, R4.attrValue
+            FROM {table_name} as R1 
+            JOIN {table_name} as R2 
+            JOIN {table_name} as R3 
+            JOIN {table_name} as R4
+            WHERE R1.attrName = %s 
+              AND R2.attrName = %s
+              AND R3.attrName = %s
+              AND R4.attrName = %s
+              AND R1.recvTimeTs = R2.recvTimeTs 
+              AND R1.recvTimeTs = R3.recvTimeTs 
+              AND R1.recvTimeTs = R4.recvTimeTs 
+              AND R2.recvTimeTs = R3.recvTimeTs 
+              AND R2.recvTimeTs = R4.recvTimeTs 
+              AND R3.recvTimeTs = R4.recvTimeTs;
         """
-
+        
         # Define parameters for the query
-        params = [attr_name]
+        params = attr_name
 
         # Add datetime filtering if start and end datetimes are provided
         if start_datetime:
@@ -51,8 +81,14 @@ def fetch_data(table_name, attr_name, start_datetime=None, end_datetime=None):
 
         # Fetch and return the results
         results = cursor.fetchall()
-        for recvTime, attrValue in results:
-            print(f"DateTime: {recvTime}, AttrValue: {attrValue}")
+        # for row in results:
+        #     recvTimeTs, recvTime, attrName1, attrValue1, attrName2, attrValue2, attrName3, attrValue3, attrName4, attrValue4 = row
+            # print(f"DateTime: {recvTime}, AttrName1: {attrName1}, AttrValue1: {attrValue1}, AttrName2: {attrName2}, AttrValue2: {attrValue2}, AttrName3: {attrName3}, AttrValue3: {attrValue3}, AttrName4: {attrName4}, AttrValue4: {attrValue4}")
+        json_results = []
+        for row in results:
+            json_result = process_data(row)
+            json_results.append(json_result)
+        return json_results
 
     except mysql.connector.Error as err:
         print(f"Error: {err}")
@@ -64,11 +100,55 @@ def fetch_data(table_name, attr_name, start_datetime=None, end_datetime=None):
         if connection:
             connection.close()
 
+def process_data(data):
+    
+    try:
+        return {
+            "id": int(data[0]),
+            "rssi": float(data[3]),
+            "mac_address": str(data[5]),
+            "latitude": json.loads(data[7])["coordinates"][1],
+            "longitude": json.loads(data[7])["coordinates"][0],
+            "timestamp": data[9]
+        }
+
+       
+
+    except (KeyError, ValueError, TypeError) as e:
+        print(f"Error processing data: {e}")
+        return None
+    
+async def write_to_influxdb(processed_data):
+    #Write the processed data to InfluxDB
+    try:
+        # Create a point in InfluxDB with the processed data
+        point = Point("rssi_bssid") \
+            .tag("area", "elenhome") \
+            .field("id", processed_data["id"]) \
+            .field("mac_address", processed_data["mac_address"]) \
+            .field("rssi", processed_data["rssi"]) \
+            .field("latitude", processed_data["latitude"]) \
+            .field("longitude", processed_data["longitude"]) \
+            .time(processed_data["timestamp"])
+        
+        await write_api.write(bucket, org, record=point)
+    except Exception as e:
+        print(f"Error writing to InfluxDB: {e}")
+
+
+
 # Example usage
-# Fetch all noise data from the table for a specific time range
-fetch_data(
+# Fetch and process data from MySQL to influxDB wanted format
+data=fetch_data(
     table_name="AutoSenseAnalytics_Wifi_elenishome_rssi_bssid",
-    attr_name="rssi",
+    attr_name=['rssi', 'macAddress', 'location', 'timestamp'],
     start_datetime="2024-10-15 00:00:00",
     end_datetime="2024-11-17 23:59:59"
 )
+print(data)
+
+
+
+for row in data:
+    write_to_influxdb(row)
+    print(f"Data written to InfluxDB: {row}")
