@@ -12,9 +12,9 @@ db_config = {
 }
 
 influxdb_url = "http://150.140.186.118:8086"
-bucket = "AutoSenseAnalytics"
+bucket = "autotest"
 org = "students"
-token = "oOsRHLaYY8_Wp_89wMVENUlChhoGpJ4x9VwjXDQK69Pb3IYTs0Mw9XsfXl5aOWd7MuX82DtAxiChfajweZIWFA=="
+token = "BzMBOHbeKyDlixt0TZ8LI6N7TZf5QuV4IeOSGtDehsSbCAZ4Rum7kRF8OQbFtoeBT6L8DlYo7kKRUVHbX1gqPg=="
 measurement = "test1"
 
 client = InfluxDBClient(url=influxdb_url, token=token, org=org)
@@ -69,12 +69,12 @@ def fetch_data(table_name, attr_name, start_datetime=None, end_datetime=None):
         params = attr_name
 
         # Add datetime filtering if start and end datetimes are provided
-        if start_datetime:
-            query += " AND recvTime >= %s"
-            params.append(start_datetime)
-        if end_datetime:
-            query += " AND recvTime <= %s"
-            params.append(end_datetime)
+        # if start_datetime:
+        #     query += " AND recvTime >= %s"
+        #     params.append(start_datetime)
+        # if end_datetime:
+        #     query += " AND recvTime <= %s"
+        #     params.append(end_datetime)
 
         # Execute the query with the parameters
         cursor.execute(query, params)
@@ -118,11 +118,11 @@ def process_data(data):
         print(f"Error processing data: {e}")
         return None
     
-async def write_to_influxdb(processed_data):
+def write_to_influxdb(processed_data):
     #Write the processed data to InfluxDB
     try:
         # Create a point in InfluxDB with the processed data
-        point = Point("rssi_bssid") \
+        point = Point("test") \
             .tag("area", "elenhome") \
             .field("id", processed_data["id"]) \
             .field("mac_address", processed_data["mac_address"]) \
@@ -131,7 +131,7 @@ async def write_to_influxdb(processed_data):
             .field("longitude", processed_data["longitude"]) \
             .time(processed_data["timestamp"])
         
-        await write_api.write(bucket, org, record=point)
+        write_api.write(bucket, org, record=point)
     except Exception as e:
         print(f"Error writing to InfluxDB: {e}")
 
@@ -152,3 +152,6 @@ print(data)
 for row in data:
     write_to_influxdb(row)
     print(f"Data written to InfluxDB: {row}")
+
+# Close the write API
+write_api.__del__()
