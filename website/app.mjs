@@ -62,6 +62,16 @@ router.route('/login').post(async (req, res) => {
     }
 });
 
+router.route('/register').post(async (req, res) => {
+    if(await model.registerUser(req.body.username,req.body.email, req.body.password)){
+        req.session.username = req.body.username;
+        res.render('myprofile', {username: req.session.username});
+    }
+    else{
+        res.render('register');
+    }
+});
+
 router.route('/register').get((req, res) => {
     res.render('register');
 });
@@ -73,6 +83,27 @@ router.route('/home').get((req, res) => {
 router.route('/logout').get((req, res) => {
     req.session.destroy();
     res.redirect('/');
+});
+
+router.route('/about').get((req, res) => {
+    res.render('about', {username: req.session.username});
+});
+
+router.route('/projects').get((req, res) => {
+    res.render('projects', {username: req.session.username});
+});
+
+router.route('/contact').get((req, res) => {
+    res.render('contact', {username: req.session.username});
+});
+
+router.route('/myprofile').get((req, res) => {
+    if(req.session.username){
+        res.render('myprofile', {username: req.session.username});
+    }
+    else{
+        res.redirect('/login');
+    }
 });
 
 router.use((req, res) => {

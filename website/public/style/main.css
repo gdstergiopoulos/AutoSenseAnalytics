@@ -3,7 +3,8 @@
 }
 
 #pagebody{
-  background-color: #151d24;
+  background-color: #161b22;
+  margin-top: 3%;
 }
 #loginbtn{
   background-color: #12ffd0;
@@ -18,8 +19,18 @@
 }
 
 .navbar-brand{
-    font-size:xx-large; 
-    padding-left: 1%;
+    display: block; 
+    height: auto; 
+    
+}
+
+.navbar-brand>img{
+    max-width: 100%;
+    height: auto;
+}
+
+.navbar-brand>img:hover{
+    opacity: 0.4;
 }
 
 .nav{
@@ -34,34 +45,6 @@
     color: #12ffd0;
 }
 
-.year{
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-}
-
-.semester{
-    border: 1px solid rgb(169, 203, 255);
-    border-radius: 10px;
-    margin-bottom: 2%;
-}
-
-.course{
-    display: flex;
-    font-weight: normal;
-    text-align: left;
-}
-
-.course label{
-    flex:  1;
-    font-weight: normal;
-    text-align: left;
-}
-
-.course input[type="number"]{
-    flex: 0 0 80px;
-    text-align: center;
-}
 
 
 .loginpage, .registerpage{
@@ -104,13 +87,34 @@
 
 #linktoreg{
     text-decoration: none;
-    color: rgb(24, 145, 243);
+    color: #12ffd0;
     align-self: center;
 }
 
 #linktoreg:hover{
     text-decoration: underline;
 }
+
+.registerpage>form>h1{
+    color:#16e4bc;
+}
+
+.registerpage>form>label{
+    color: #16e4bc;
+}
+
+.registerpage>form>button{
+    background-color: #16e4bc;
+    border-color: #16e4bc;
+    color:#000000;
+}
+
+.registerpage>form>button:hover{
+    background-color: #12ffd0;
+    border-color: #12ffd0;
+}
+
+
 
 #contactpage{
     display: flex;
@@ -134,81 +138,195 @@
     text-decoration: underline;
 }
 
-.semester>legend{
-    font-weight: bold;
+
+#home {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #161b22;
+    color: #ffffff;
+    text-align: center;
 }
 
+.overlay>h1, .info>h2, .info>p {
+    margin: 0 0 1rem;
+}
 
-/* The switch - the box around the slider */
-.switch {
+.overlay>h1 {
+    font-size: 2.5rem;
+}
+/* Hero Section */
+div.hero {
     position: relative;
-    display: inline-block;
-    width: 50px;
-    height: 24px;
-  }
-  
-  /* Hide default HTML checkbox */
-  .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-  
-  /* The slider */
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    -webkit-transition: .4s;
-    transition: .4s;
-  }
-  
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 16px;
-    width: 16px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
-  }
-  
-  input:checked + .slider {
-    background-color: #2196F3;
-  }
-  
-  input:focus + .slider {
-    box-shadow: 0 0 1px #2196F3;
-  }
-  
-  input:checked + .slider:before {
-    -webkit-transform: translateX(26px);
-    -ms-transform: translateX(26px);
-    transform: translateX(26px);
-  }
-  
-  /* Rounded sliders */
-  .slider.round {
-    border-radius: 34px;
-  }
-  
-  .slider.round:before {
-    border-radius: 50%;
-  }
-
-  #submitcont{
+    background: url('/media/homepgmap.webp') no-repeat center center/cover; 
+    /* margin-top: 3%; */
+    height: 370px;
     display: flex;
     justify-content: center;
-    margin-top: 2%;
-  }
+    align-items: center;
+    color: #ffffff;
+    text-align: center;
+    /* margin-top: 4%;
+    background-image: url("/media/homepgmap.webp");
+    background-size: cover; /* Adjusts the background image to cover the entire area of the div */
+    /* background-position: center; /* Centers the background image within the div */
+    /* height: 350px; /* Adjust the height of the div as needed */
+    /* width : 100%;  */ 
+}
 
-  #logo:hover{
-    color: #2196F3;
-  }
+.overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 2rem;
+    padding-top: 150px;
+    border-radius: 10px;
+    height: 100%;
+    width: 100%;
+}
 
+.about-btn {
+    background-color: #00ff84;
+    color: #0d1117;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+}
+
+.about-btn:hover {
+    background-color: #00d672b1;
+}
+
+/* Info Section */
+.info {
+    padding: 4rem 2rem;
+    background-color: #161b22;
+    text-align: center;
+}
+
+.icon img {
+    width: 80px;
+    margin-bottom: 1rem;
+}
+
+.info>h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.info>p {
+    font-size: 1rem;
+    color: #b3b3b3;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Footer */
+footer {
+    padding: 2rem;
+    background-color: #0d1117;
+    color: #b3b3b3;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+footer .social-icons a {
+    color: #00ff84;
+    margin: 0 0.5rem;
+    text-decoration: none;
+}
+
+footer .social-icons a:hover {
+    text-decoration: underline;
+}
+
+/* Scoped CSS for About Us page */
+#about-us {
+    background-color: #161b22;
+    padding: 40px 20px;
+    font-family: Arial, sans-serif;
+    color: #f5f5f5;
+  }
+  
+  .about-us-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .about-us-heading {
+    font-size: 2.5rem;
+    color: #16e4bc;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .about-us-description {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    text-align: justify;
+  }
+  
+  .about-us-subheading {
+    font-size: 1.75rem;
+    color: #16e4bc;
+    margin-top: 30px;
+    margin-bottom: 10px;
+  }
+  
+  .about-us-list {
+    margin-left: 20px;
+    list-style-type: disc;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  
+  .team-member {
+    margin-bottom: 20px;
+  }
+  
+  .team-member a {
+    color: #007777;
+    text-decoration: none;
+  }
+  
+  .team-member a:hover {
+    text-decoration: underline;
+  }
+  
+  .about-us-contact {
+    margin-top: 40px;
+    text-align: center;
+  }
+  
+  .about-us-contact h2 {
+    font-size: 1.5rem;
+    color: #16e4bc;
+    margin-bottom: 10px;
+  }
+  
+  .about-us-contact a {
+    color: #007777;
+    text-decoration: none;
+  }
+  
+  .about-us-contact a:hover {
+    text-decoration: underline;
+  }
+  
+#projects{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5%;
+}   
+#projects>h1{
+    color:#16e4bc;
+}
+
+.project>h2{
+    color:#16e4bc;
+}
