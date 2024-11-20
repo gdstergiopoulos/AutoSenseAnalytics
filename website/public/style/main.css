@@ -4,7 +4,7 @@
 
 #pagebody{
   background-color: #161b22;
-  margin-top: 3%;
+  margin-top: 6%;
 }
 #loginbtn{
   background-color: #12ffd0;
@@ -53,6 +53,30 @@
     justify-content: center;
     align-items: center;
     margin-top: 12%;
+    margin-bottom: 15%;
+}
+
+.registerpage{
+    margin-top: 8%;
+}
+
+@media screen and (max-width: 600px) {
+    .loginpage, .registerpage{
+        margin-top: 25%;
+        margin-bottom: 15%;
+    }
+    .registerpage{
+        margin-top: 15%;
+    }   
+
+    #about-us{
+        margin-top: 25%;
+    }
+
+    #projects{   
+        margin-top: 35%;
+    }
+    
 }
 
 .loginpage>form, .registerpage>form{
@@ -329,4 +353,116 @@ footer .social-icons a:hover {
 
 .project>h2{
     color:#16e4bc;
+}
+
+#mapcont{
+    display: flex; 
+    height: 450px;
+    width: 45%;
+}
+
+#map {
+    height: 100%;
+    width:100%;
+    padding-top: 5rem;
+}
+
+#contact{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin-top: 5%;
+    justify-content: space-around;
+    margin-bottom: 5%;
+}
+
+#contactmap{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+}
+
+
+
+
+@media screen and (max-width: 600px) {
+    #projects{
+        margin-top: 10%;
+    }
+    #mapcont{
+        display: flex;
+        flex-direction: column;
+        height: 450px;
+        width: 100%;
+    }
+    #map {
+        height: 100%;
+        width:100%;
+        padding-top: 5rem;
+    }
+    #contact{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin-top: 5%;
+        justify-content: space-around;
+        margin-bottom: 5%;
+    }
+    #contactmap{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        width: 100%;
+    }
+
+    #contactpage{
+        margin-top: 25%;
+       
+    }
+    
+}
+
+#contactpage>h1{
+    color:#16e4bc;
+}
+
+#contactperson>h3 {
+    color:#16e4bc;
+}
+
+#contactperson>h6{
+    color:#16e4bbbe;
+}
+
+#contactperson a{
+    color:#cef8f0;
+    text-decoration: none;
+}
+
+#contactform>form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 10%
+}
+
+#contactform>form>h3{
+  color:#16e4bc;
+}
+
+#contactform>form>div>label{
+    color: #16e4bc;
+}
+
+#contactform>form>div>button{
+    background-color: #16e4bc;
+    border-color: #16e4bc;
+    color:#000000;
+}
+
+#contactform>form>div>button:hover{
+    background-color: #12ffd0;
+    border-color: #12ffd0;
+   
 }
