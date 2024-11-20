@@ -1,0 +1,24 @@
+{{>navbar username=username}}
+{{#if error}}
+<div class="alert alert-danger" role="alert">
+    <p>Something Went Wrong, <a href="contact">Contact Us</a></p>
+</div>
+{{/if}}
+{{#if projects}}
+<h2 id="welcomecomp">Welcome, {{username}}</h2>
+<div id="projpage">
+    <div id="projlist">
+        <h3 hidden>Projects</h3>
+        {{#each projects}}
+            <a id="projbtn" class="btn btn-primary" href="/mycompany/project/{{this.id}}">{{this.projName}}</a>
+        {{/each}}
+    </div>
+    <img id="projimg" src="/media/network.png" alt="projects">
+</div>
+{{>footer}}
+{{else}}
+    <div id="projlist">
+        <h3>You are enrolled in 0 projects</h3>
+    </div>
+{{/if}}
+

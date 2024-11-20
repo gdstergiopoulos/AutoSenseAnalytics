@@ -45,7 +45,7 @@ router.route('/').get(async (req, res) => {
 
 router.route('/login').get((req, res) => {
     if(req.session.username){
-        res.render('myprofile', {username: req.session.username});
+        res.redirect('/mycompany');
     }
     else{
         res.render('login');
@@ -53,23 +53,47 @@ router.route('/login').get((req, res) => {
 });
 
 router.route('/login').post(async (req, res) => {
-    if(await model.checkLogin(req.body.username, req.body.password)){
-        req.session.username = req.body.username;
-        res.render('myprofile', {username: req.session.username});
+    let login;
+    try{
+        login=await model.checkLogin(req.body.username, req.body.password);
+        if(login){
+            req.session.username = login.username;
+            res.redirect('/mycompany');
+        }
     }
-    else{
-        res.render('login', {error: 'Λάθος στοιχεία'});
+    catch(err){
+        res.render('login', {error: err.message});
     }
 });
 
+// router.route('/mycompany').get((req, res) => {
+//     if(req.session.username){
+//         res.render('companyhome', {username: req.session.username});
+//     }
+//     else{
+//         res.redirect('/login');
+//     }
+// });
+
 router.route('/register').post(async (req, res) => {
-    if(await model.registerUser(req.body.username,req.body.email, req.body.password)){
-        req.session.username = req.body.username;
-        res.render('myprofile', {username: req.session.username});
+    try{
+        if(req.body.username === '' || req.body.email === '' || req.body.password === '' || req.body.confirmpassword === '') {
+            res.render('register', {error: 'All fields are required'});
+        }
+        if(req.body.password !== req.body.confirmpassword){
+            res.render('register', {error: 'Passwords do not match'});
+        }
+        else{
+            if(await model.registerUser(req.body.username,req.body.email, req.body.password)){
+                req.session.username = req.body.username;
+                res.redirect('/mycompany');
+            }
+        }
     }
-    else{
-        res.render('register');
+    catch(err){
+        res.render('register', {error: err.message});
     }
+    
 });
 
 router.route('/register').get((req, res) => {
@@ -97,12 +121,33 @@ router.route('/contact').get((req, res) => {
     res.render('contact', {username: req.session.username});
 });
 
-router.route('/myprofile').get((req, res) => {
+router.route('/mycompany').get(async (req, res) => {
     if(req.session.username){
-        res.render('myprofile', {username: req.session.username});
+        try{
+            try {
+                let projects = await model.getCompanyProjects(req.session.username);
+                res.render('companyhome', {username: req.session.username, projects: projects});
+            }
+            catch(err){
+                res.render('companyhome', {username: req.session.username, error: err.message});
+            }
+        }
+        catch(err){
+            res.render('companyhome', {username: req.session.username, error: err.message});
+        }
     }
     else{
         res.redirect('/login');
+    }
+});
+
+router.route('/mycompany/project/:id').get(async (req, res) => {
+    try{
+        let project= await model.getProjectData(req.params.id);
+        res.render('projectpg', {username: req.session.username, project: project});
+    }
+    catch(err){
+        res.redirect('/mycompany', {error: err.message});
     }
 });
 

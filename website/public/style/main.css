@@ -466,3 +466,66 @@ footer .social-icons a:hover {
     border-color: #12ffd0;
    
 }
+
+
+#welcomecomp{
+    color:#16e4bc
+}
+
+#projlist>h1{
+    color:#16e4bc;
+}
+
+#projlist>h3{
+    color:#16e4bc;
+    margin-bottom: 5%;
+}
+
+#projlist{
+   display: flex;
+    flex-direction: column;
+    justify-content:flex-start;
+    margin-left: 15%;
+    height: 100%;
+}
+
+#projpage{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 5%;
+    margin-bottom: 10%;
+}
+
+@media screen and (max-width: 700px) {
+    #projlist{
+        margin-left: 0%;
+    }
+
+    #projpage{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-top: 35%;
+        margin-bottom: 10%;
+
+    }   
+    
+}
+
+#projpage>img{
+    width: 50%;
+    height: 50%;
+}
+#projbtn{
+    background-color: #16e4bc;
+    border-color: #16e4bc;
+    color:#000000;
+    margin-bottom: 6%;
+}
+
+#projbtn:hover{
+    opacity: 0.6;
+}

@@ -42,3 +42,24 @@ export let checkLogin = async (username, password) => {
     }
 }   
 
+export let getCompanyProjects = async (username) => {
+    let stmt = await sql.prepare('SELECT projName,id FROM Project,HasAccess WHERE username = ? AND projID=id');
+    try{
+        let projects = stmt.all(username);
+        return projects;
+    }
+    catch(err){
+        throw err;
+    }
+}
+
+export let getProjectData = async (projID) => {
+    let stmt = await sql.prepare('SELECT * FROM Project WHERE id = ?');
+    try{
+        let project = stmt.get(projID);
+        return project;
+    }
+    catch(err){
+        throw err;
+    }
+}

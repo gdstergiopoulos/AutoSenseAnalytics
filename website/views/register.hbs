@@ -12,6 +12,11 @@
             <label for="confirmpassword" class="form-label">Επιβεβαίωση Κωδικού</label>
             <input type="password" class="form-control" id="confirmpassword" name="confirmpassword" required>
             <br>
+            {{#if error}}
+            <div class="alert alert-danger" role="alert">
+                {{error}}
+            </div>
+            {{/if}}
             <button type="submit" class="btn btn-primary">Δημιουργία</button>
             <br>
             <a id="linktoreg" href="/login">Έχω λογαριασμό</a>
