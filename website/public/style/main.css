@@ -349,6 +349,20 @@ footer .social-icons a:hover {
     align-items: center;
     margin-top: 5%;
 }   
+
+#projgroup{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 5%;
+}
+
+#projgroup>section{
+    margin: 5%;
+}
+
+
 #projects>h1{
     color:#16e4bc;
 }
@@ -356,6 +370,26 @@ footer .social-icons a:hover {
 .project>h2{
     color:#16e4bc;
 }
+
+@media screen and (max-width: 900px) {
+    #projgroup{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-top: 35%;
+    }   
+
+    #projgroup>section>img{
+        width:80%;
+        height: 80%;
+    }
+
+    #projpath{
+        margin-top: 35%;
+    }
+}
+
 
 #mapcont{
     display: flex; 
@@ -524,6 +558,7 @@ footer .social-icons a:hover {
     color: #16e4bc;
     text-decoration: underline;
 }
+
 
 @media screen and (max-width: 700px) {
     #projlist{
