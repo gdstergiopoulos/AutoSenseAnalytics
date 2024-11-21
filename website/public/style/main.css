@@ -13,8 +13,8 @@
 }
 
 #loginbtn:hover{
-  background-color: #32fb8d;
-  border-color: #32fb8d;
+  background-color: #12ffd08e;
+  border-color: #12ffd08e;
   color: #000000;
 }
 
@@ -253,16 +253,18 @@ footer {
     color: #b3b3b3;
     font-size: 0.9rem;
     text-align: center;
+    width: 100%;
 }
 
 footer .social-icons a {
     color: #00ff84;
     margin: 0 0.5rem;
     text-decoration: none;
+    
 }
 
 footer .social-icons a:hover {
-    text-decoration: underline;
+   color:#00ff8474;
 }
 
 /* Scoped CSS for About Us page */
@@ -518,6 +520,7 @@ footer .social-icons a:hover {
 #projpage>img{
     width: 50%;
     height: 50%;
+    margin-right: 2%;
 }
 #projbtn{
     background-color: #16e4bc;
@@ -529,3 +532,4 @@ footer .social-icons a:hover {
 #projbtn:hover{
     opacity: 0.6;
 }
+

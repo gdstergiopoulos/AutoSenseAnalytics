@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "undefined/subscriptions/e0fc6990-83b5-4af7-9929-e23e4cc534dc/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/AutoSenseAnalytics",
+    "appService.deploySubpath": "website"
+}
