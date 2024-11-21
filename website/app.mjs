@@ -4,7 +4,7 @@ import express from 'express'
 import { engine } from 'express-handlebars'
 import session from 'express-session';
 import * as model from './model/model.mjs'
-
+import Handlebars from './helpers.js'
 //TODO not logged in or declared Μάθημα 1 .. κλπ με toggle συντελεστή
 
 const app = express()
@@ -66,15 +66,6 @@ router.route('/login').post(async (req, res) => {
     }
 });
 
-// router.route('/mycompany').get((req, res) => {
-//     if(req.session.username){
-//         res.render('companyhome', {username: req.session.username});
-//     }
-//     else{
-//         res.redirect('/login');
-//     }
-// });
-
 router.route('/register').post(async (req, res) => {
     try{
         if(req.body.username === '' || req.body.email === '' || req.body.password === '' || req.body.confirmpassword === '') {
@@ -110,15 +101,15 @@ router.route('/logout').get((req, res) => {
 });
 
 router.route('/about').get((req, res) => {
-    res.render('about', {username: req.session.username});
+    res.render('about', {username: req.session.username , page:"about"});
 });
 
 router.route('/projects').get((req, res) => {
-    res.render('projects', {username: req.session.username});
+    res.render('projects', {username: req.session.username, page:"projects"});
 });
 
 router.route('/contact').get((req, res) => {
-    res.render('contact', {username: req.session.username});
+    res.render('contact', {username: req.session.username, page:"contact"});
 });
 
 router.route('/mycompany').get(async (req, res) => {

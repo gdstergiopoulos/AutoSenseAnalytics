@@ -5,16 +5,16 @@
         </a>
         <ul class="nav">
             <li class="nav-item">
-                <a class="nav-link" href="/home">Home</a>
+                <a class="nav-link" href="/home" {{#if (eq page 'home')}} style="color: #12ffd0" {{/if}}>Home</a>
             </li>
             <li>
-                <a class="nav-link" href="/projects">Projects</a>
+                <a class="nav-link" href="/projects" {{#if (eq page 'projects')}} style="color: #12ffd0" {{/if}} >Projects</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/about">About Us</a>
+                <a class="nav-link" href="/about" {{#if (eq page 'about')}} style="color: #12ffd0" {{/if}}>About Us</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/contact">Contact</a>
+                <a class="nav-link" href="/contact" {{#if (eq page 'contact')}} style="color: #12ffd0" {{/if}}>Contact</a>
             </li>
             {{#unless username}}
                 <a class="btn btn-primary" id="loginbtn" href="/login">Login</a>

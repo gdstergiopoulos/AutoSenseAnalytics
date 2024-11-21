@@ -373,9 +373,9 @@ footer .social-icons a:hover {
     display: flex;
     flex-direction: row;
     width: 100%;
-    margin-top: 5%;
+    margin-top: 2%;
     justify-content: space-around;
-    margin-bottom: 5%;
+    margin-bottom: 3%;
 }
 
 #contactmap{
@@ -383,9 +383,12 @@ footer .social-icons a:hover {
     flex-direction: row;
     justify-content: space-around;
     width: 100%;
+    margin-bottom: 5%;
 }
 
-
+#contact>#contactperson{
+    margin-right:9%;
+}
 
 
 @media screen and (max-width: 600px) {
@@ -457,10 +460,17 @@ footer .social-icons a:hover {
     color: #16e4bc;
 }
 
+#contactform>form>div:last-child{
+    display:flex;
+    justify-content: center;
+}
+
 #contactform>form>div>button{
     background-color: #16e4bc;
     border-color: #16e4bc;
     color:#000000;
+    margin-top: 3%;
+    
 }
 
 #contactform>form>div>button:hover{
@@ -498,6 +508,21 @@ footer .social-icons a:hover {
     align-items: flex-start;
     margin-top: 5%;
     margin-bottom: 10%;
+}
+
+#projpath{
+    display: inline;
+    margin-left: 1%;
+}
+
+#projpath>a{
+    color: aliceblue;
+    text-decoration: none;
+}
+
+#projpath>a:hover{
+    color: #16e4bc;
+    text-decoration: underline;
 }
 
 @media screen and (max-width: 700px) {
