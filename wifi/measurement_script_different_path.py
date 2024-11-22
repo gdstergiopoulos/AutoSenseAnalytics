@@ -3,6 +3,7 @@ import time
 from datetime import datetime
 from SCRIPT_rssi_bssd_single import get_wifi_measurement
 import sqlite3
+import ast
 
 # FIWARE Orion Context Broker URL
 fiware_url = "http://150.140.186.118:1026/v2/entities"
@@ -68,21 +69,22 @@ def wifi_measurement_loop(interval=10):
         bssid, rssi,timestamp,location = get_wifi_measurement()
         print(f"BSSID: {bssid}, RSSI: {rssi} dBm, Timestamp: {timestamp}")
         currmeasure = create_json(bssid, rssi, timestamp, location)
+        print(currmeasure)
         if currmeasure:
             try:
                 if failed:
                     cursor = connect.cursor()
-                    cursor.execute("SELECT FROM wifi (bssid, rssi, timestamp, location) VALUES (?, ?, ?, ?)", 
-                           (bssid, rssi, timestamp, str(location)))
-                    cursor.fetchall()
-                    cursor.close()
+                    cursor.execute("SELECT bssid, rssi, timestamp, location FROM wifi")
                     cached_measurements = cursor.fetchall()
+                    print(cached_measurements)
                     for cached_measurement in cached_measurements:
                         cached_bssid, cached_rssi, cached_timestamp, cached_location = cached_measurement
-                        cached_json = create_json(cached_bssid, cached_rssi, cached_timestamp,cached_location)
+                        cached_json = create_json(cached_bssid, cached_rssi, cached_timestamp,ast.literal_eval(cached_location))
+                        print(cached_json)
                         try:
                             patch_measument(cached_json, fiware_url + "/elenishome/attrs", headers)
                             cursor.execute("DELETE FROM wifi WHERE bssid = ? AND timestamp = ?", (cached_bssid, cached_timestamp))
+                            print("Cached deleted "+cached_timestamp)
                             connect.commit()
                         except requests.exceptions.HTTPError as err:
                             print(f"Failed to patch cached measurement: {err}")
@@ -104,4 +106,4 @@ def wifi_measurement_loop(interval=10):
     
 
 
-wifi_measurement_loop(10)
+wifi_measurement_loop(5)
