@@ -72,17 +72,19 @@ def wifi_measurement_loop(interval=10):
             try:
                 if failed:
                     cursor = connect.cursor()
-                    cursor.execute("SELECT FROM wifi (bssid, rssi, timestamp, location) VALUES (?, ?, ?, ?)", 
-                           (bssid, rssi, timestamp, str(location)))
+                    cursor.execute("SELECT (bssid, rssi, timestamp, location) FROM wifi")
                     cursor.fetchall()
-                    cursor.close()
+                    
                     cached_measurements = cursor.fetchall()
+                    print(cached_measurements)
                     for cached_measurement in cached_measurements:
                         cached_bssid, cached_rssi, cached_timestamp, cached_location = cached_measurement
                         cached_json = create_json(cached_bssid, cached_rssi, cached_timestamp,cached_location)
+                        print(cached_json)
                         try:
                             patch_measument(cached_json, fiware_url + "/elenishome/attrs", headers)
                             cursor.execute("DELETE FROM wifi WHERE bssid = ? AND timestamp = ?", (cached_bssid, cached_timestamp))
+                            print("Cached deleted "+cached_timestamp)
                             connect.commit()
                         except requests.exceptions.HTTPError as err:
                             print(f"Failed to patch cached measurement: {err}")
@@ -104,4 +106,4 @@ def wifi_measurement_loop(interval=10):
     
 
 
-wifi_measurement_loop(10)
+wifi_measurement_loop(5)
