@@ -2,9 +2,11 @@ import requests
 import time
 from datetime import datetime
 from SCRIPT_rssi_bssd_single import get_wifi_measurement
+import sqlite3
+
 # FIWARE Orion Context Broker URL
 fiware_url = "http://150.140.186.118:1026/v2/entities"
-
+connect=sqlite3.connect('cache_measurements.sqlite')
 
 # Headers for the request
 headers = {
@@ -67,10 +69,18 @@ def wifi_measurement_loop(interval=10):
         print(f"BSSID: {bssid}, RSSI: {rssi} dBm, Timestamp: {timestamp}")
         currmeasure = create_json(bssid, rssi, timestamp, location)
         if currmeasure:
-            patch_measument(currmeasure,fiware_url+"/elenishome/attrs", headers)
+            try:
+                patch_measument(currmeasure,fiware_url+"/elenishome/attrs", headers)
+            except:
+                print("Failed to patch measurement")
+                cursor = connect.cursor()
+                cursor.execute("INSERT INTO wifi (bssid, rssi, timestamp, location,area) VALUES (?, ?, ?, ?,?)", 
+                           (bssid, rssi, timestamp, str(location),"kypestest"))
+                connect.commit()
+                cursor.close()
         else:
             print("No WiFi connection detected.")
-
+            
         time.sleep(interval)
     
 
