@@ -6,7 +6,7 @@ import sqlite3
 
 # FIWARE Orion Context Broker URL
 fiware_url = "http://150.140.186.118:1026/v2/entities"
-connect=sqlite3.connect('cache_measurements.sqlite')
+connect=sqlite3.connect('./wifi/cache_measurements.sqlite')
 
 # Headers for the request
 headers = {
