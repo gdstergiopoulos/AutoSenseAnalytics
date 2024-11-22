@@ -15,16 +15,23 @@ def get_wifi_measurement():
     # Find the BSSID and RSSI in the output
     bssid_match = re.search(bssid_regex, output)
     rssi_match = re.search(rssi_regex, output)
-
+    timestamp=datetime.now().isoformat()
     if bssid_match and rssi_match:
-        bssid = bssid_match.group(1)  # Extract the MAC (BSSID)
-        rssi = int(rssi_match.group(1))  # Extract the signal strength (RSSI)
+        if(bssid_match.group(1)):
+            bssid = bssid_match.group(1)
+        else:
+            bssid="0" # Extract the MAC (BSSID)
+
+        if(rssi_match.group(1)):
+            rssi = int(rssi_match.group(1))
+        else:
+            rssi="-100"  # Extract the signal strength (RSSI)
         #timestamp = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())  # Get the current timestamp
-        timestamp = datetime.now().isoformat()
+        #timestamp = datetime.now().isoformat()
         # return {"BSSID": bssid, "RSSI (dBm)": rssi, "Timestamp": timestamp}
         return bssid, rssi, timestamp, [21.753150, 38.230462]
     else:
-        return None
+        return "0",-100,timestamp, [21.753150, 38.230462]
 
 # Infinite loop to repeatedly measure every 10 seconds
 def get_wifi_print_loop():
