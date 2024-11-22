@@ -63,16 +63,35 @@ def patch_measument( measurement,fiware_url=fiware_url, headers=headers): #for u
 def wifi_measurement_loop(interval=10):
     #post_to_fiware(testmeasurement,fiware_url=fiware_url, headers=headers) 
     #change if you want to change the service path
+    failed=False
     while True:
         bssid, rssi,timestamp,location = get_wifi_measurement()
-
         print(f"BSSID: {bssid}, RSSI: {rssi} dBm, Timestamp: {timestamp}")
         currmeasure = create_json(bssid, rssi, timestamp, location)
         if currmeasure:
             try:
-                patch_measument(currmeasure,fiware_url+"/elenishome/attrs", headers)
+                if failed:
+                    cursor = connect.cursor()
+                    cursor.execute("SELECT FROM wifi (bssid, rssi, timestamp, location) VALUES (?, ?, ?, ?)", 
+                           (bssid, rssi, timestamp, str(location)))
+                    cursor.fetchall()
+                    cursor.close()
+                    cached_measurements = cursor.fetchall()
+                    for cached_measurement in cached_measurements:
+                        cached_bssid, cached_rssi, cached_timestamp, cached_location = cached_measurement
+                        cached_json = create_json(cached_bssid, cached_rssi, cached_timestamp,cached_location)
+                        try:
+                            patch_measument(cached_json, fiware_url + "/elenishome/attrs", headers)
+                            cursor.execute("DELETE FROM wifi WHERE bssid = ? AND timestamp = ?", (cached_bssid, cached_timestamp))
+                            connect.commit()
+                        except requests.exceptions.HTTPError as err:
+                            print(f"Failed to patch cached measurement: {err}")
+                    cursor.close()
+                    failed=False
+                patch_measument(currmeasure, fiware_url + "/elenishome/attrs", headers)
             except:
                 print("Failed to patch measurement")
+                failed=True
                 cursor = connect.cursor()
                 cursor.execute("INSERT INTO wifi (bssid, rssi, timestamp, location,area) VALUES (?, ?, ?, ?,?)", 
                            (bssid, rssi, timestamp, str(location),"kypestest"))
