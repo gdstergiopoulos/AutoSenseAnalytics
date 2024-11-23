@@ -35,11 +35,11 @@ router.route('/').get(async (req, res) => {
     
     if(req.session.username){
         
-        res.render('main', {username: req.session.username});
+        res.render('main', {username: req.session.username, page:"home"});
     }
     else
     {   
-        res.render('main');
+        res.render('main',{page:"home"});
     }
 });
 
@@ -139,6 +139,21 @@ router.route('/mycompany/project/:id').get(async (req, res) => {
     }
     catch(err){
         res.redirect('/mycompany', {error: err.message});
+    }
+});
+
+router.route('/contact').post(async (req, res) => {
+    try{
+        if(req.body.name === '' || req.body.email === '' || req.body.message === ''){
+            res.render('contact', {error: 'All fields are required'});
+        }
+        else{
+            await model.addMessage(req.body.name, req.body.email, req.body.message);
+            res.render('contact', {success: 'Message sent successfully'});
+        }
+    }
+    catch(err){
+        res.render('contact', {error: err.message});
     }
 });
 
