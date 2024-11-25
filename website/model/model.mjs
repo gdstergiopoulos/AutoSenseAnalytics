@@ -63,3 +63,14 @@ export let getProjectData = async (projID) => {
         throw err;
     }
 }
+
+export let addMessage = async (name,email,msg) => {
+    let stmt= await sql.prepare('INSERT INTO Messages VALUES (?,?,?)')
+    try{
+        let insertmsg= stmt.run(name,email,msg);
+        return insertmsg;
+    }
+    catch(err){
+        throw err;
+    }
+}
