@@ -1,6 +1,10 @@
 import time
 import requests
 from influxdb_client import InfluxDBClient, Point, WritePrecision
+from datetime import datetime
+import pytz
+
+#ενδεχομενως προβλημα με το json format και το location 
 
 
 
@@ -9,6 +13,7 @@ influxdb_url = "http://150.140.186.118:8086"
 bucket = "AutoSenseAnalyticsWifi"
 org = "students"
 token = "jkI_Bn1t6eUWgXg2Q5xxoS5k9HiKUpgTs_Ru0yetoz5NEjSYS-QA0ahjkhR5fwRO2gjR4KhnocOSlIMSDI-x6Q=="
+
 
 # FIWARE Context Broker details
 fiware_url = "http://150.140.186.118:1026/v2/entities/elenishome"  
@@ -69,6 +74,26 @@ def process_data(data):
         print(f"Error processing data: {e}")
         return None
     
+def convert_to_utc(timestamp):
+        try:
+            # Define the Athens timezone
+            athens_tz = pytz.timezone('Europe/Athens')
+            
+            # Parse the timestamp string into a datetime object
+            local_time = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%fZ")
+            
+            # Localize the datetime object to Athens timezone
+            local_time = athens_tz.localize(local_time)
+            
+            # Convert the localized time to UTC
+            utc_time = local_time.astimezone(pytz.utc)
+            
+            # Return the UTC time in the same format
+            return utc_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        
+        except Exception as e:
+            print(f"Error converting timestamp to UTC: {e}")
+            return None    
 
 def write_to_influxdb(processed_data):
     #Write the processed data to InfluxDB
@@ -80,7 +105,7 @@ def write_to_influxdb(processed_data):
             .field("rssi", processed_data["rssi"]) \
             .field("latitude", processed_data["latitude"]) \
             .field("longitude", processed_data["longitude"]) \
-            .time( processed_data["timestamp"])
+            .time(convert_to_utc(processed_data["timestamp"]))
 
         # Write the data to InfluxDB
         write_api.write(bucket=bucket, org=org, record=point)
