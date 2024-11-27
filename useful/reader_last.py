@@ -2,7 +2,8 @@ import mysql.connector
 import json
 from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import ASYNCHRONOUS
-# Database connection details
+import pytz
+
 db_config = {
     'host': '150.140.186.118',
     'port': 3306,
@@ -12,9 +13,10 @@ db_config = {
 }
 
 influxdb_url = "http://150.140.186.118:8086"
-bucket = "AutoSenseAnalyticsWifi"
+bucket = "AutoSenseAnalytics"
 org = "students"
-token = "jkI_Bn1t6eUWgXg2Q5xxoS5k9HiKUpgTs_Ru0yetoz5NEjSYS-QA0ahjkhR5fwRO2gjR4KhnocOSlIMSDI-x6Q=="
+token = "oOsRHLaYY8_Wp_89wMVENUlChhoGpJ4x9VwjXDQK69Pb3IYTs0Mw9XsfXl5aOWd7MuX82DtAxiChfajweZIWFA=="
+
 measurement = "rssi_bssid"
 
 client = InfluxDBClient(url=influxdb_url, token=token, org=org)
@@ -23,19 +25,22 @@ write_api = client.write_api()
 
 def get_last_field_value():
     try:
-        query=' from(bucket: "AutoSenseAnalyticsWifi")\
-                |> range(start: 0)\
-                 |> filter(fn: (r) => r["_measurement"] == "rssi_bssid")\
+        query=' from(bucket: "AutoSenseAnalytics")\
+                |> range(start: -1d)\
+                |> filter(fn: (r) => r["_measurement"] == "rssi_bssid")\
                 |> filter(fn: (r) => r["_field"] == "rssi")\
-                |> sort(columns: ["_time"], desc: true)\
-                |> limit(n: 1)'
+                |> last()'
         tables = client.query_api().query(query, org=org)
         if tables:
             for table in tables:
                 for record in table.records:
-                    print(f"Last field value: {record.get_time()}")
-                    timestamp = record.get_time().strftime('%Y-%m-%d %H:%M:%S')
-                    print(f"Last field value timestamp: {timestamp}")
+                     # Convert UTC time to Athens time
+                    utc_time = record.get_time()
+                    athens_tz = pytz.timezone('Europe/Athens')
+                    local_time = utc_time.astimezone(athens_tz)
+                    timestamp = local_time.strftime('%Y-%m-%d %H:%M:%S')
+                    
+                    print(f"Last field value timestamp (Athens time): {timestamp}")
                     return record.get_value()
 
         return None
@@ -43,8 +48,7 @@ def get_last_field_value():
         print(f"Error retrieving last field value: {e}")
     return None
 
-
-
+                    
 
 def fetch_data(table_name, attr_name, start_datetime=None, end_datetime=None):
     """
