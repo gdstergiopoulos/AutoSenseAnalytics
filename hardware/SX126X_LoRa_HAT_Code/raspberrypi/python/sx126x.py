@@ -259,6 +259,29 @@ class sx126x:
             print("receive message from node address with frequence\033[1;32m %d,%d.125MHz\033[0m"%((r_buff[0]<<8)+r_buff[1],r_buff[2]+self.start_freq),end='\r\n',flush = True)
             print("message is "+str(r_buff[3:-1]),end='\r\n')
             
+            # Extract latitude and longitude from the message
+            message = r_buff[3:-1].decode('utf-8')
+            lines = message.split('\r\n')
+            for line in lines:
+                if line.startswith('$GNRMC'):
+                    parts = line.split(',')
+                    if len(parts) > 5:
+                        lat = parts[3]
+                        lon = parts[5]
+                        #print(f"Latitude: {lat}, Longitude: {lon}")
+                        # Convert latitude and longitude to standard format
+                        lat_deg = int(lat[:2])
+                        lat_min = float(lat[2:])
+                        lat_standard = lat_deg + (lat_min / 60)
+                        lat_direction = 'N' if parts[4] == 'N' else 'S'
+
+                        lon_deg = int(lon[:3])
+                        lon_min = float(lon[3:])
+                        lon_standard = lon_deg + (lon_min / 60)
+                        lon_direction = 'E' if parts[6] == 'E' else 'W'
+
+                        print(f"Latitude: {lat_standard:.5f} {lat_direction}")
+                        print(f"Longitude: {lon_standard:.5f} {lon_direction}")
             # print the rssi
             if self.rssi:
                 # print('\x1b[3A',end='\r')
