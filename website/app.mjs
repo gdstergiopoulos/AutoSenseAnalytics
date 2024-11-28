@@ -149,7 +149,7 @@ router.route('/contact').post(async (req, res) => {
         }
         else{
             await model.addMessage(req.body.name, req.body.email, req.body.message);
-            res.render('contact', {success: 'Message sent successfully'});
+            res.render('contact', {success: 'Message sent successfully', username: req.session.username});
         }
     }
     catch(err){
