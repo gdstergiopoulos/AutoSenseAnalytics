@@ -10,9 +10,9 @@ import pytz
 
 # InfluxDB connection details
 influxdb_url = "http://150.140.186.118:8086"
-bucket = "AutoSenseAnalyticsWifi"
+bucket = "AutoSenseAnalytics"
 org = "students"
-token = "jkI_Bn1t6eUWgXg2Q5xxoS5k9HiKUpgTs_Ru0yetoz5NEjSYS-QA0ahjkhR5fwRO2gjR4KhnocOSlIMSDI-x6Q=="
+token = "oOsRHLaYY8_Wp_89wMVENUlChhoGpJ4x9VwjXDQK69Pb3IYTs0Mw9XsfXl5aOWd7MuX82DtAxiChfajweZIWFA=="
 
 
 # FIWARE Context Broker details
