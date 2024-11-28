@@ -5,6 +5,7 @@ import { engine } from 'express-handlebars'
 import session from 'express-session';
 import * as model from './model/model.mjs'
 import Handlebars from './helpers.js'
+import mqtt from 'mqtt';
 //TODO not logged in or declared Μάθημα 1 .. κλπ με toggle συντελεστή
 
 const app = express()
@@ -155,6 +156,17 @@ router.route('/contact').post(async (req, res) => {
     catch(err){
         res.render('contact', {error: err.message});
     }
+});
+
+router.route('/wakeup').get((req, res) => {
+    const client = mqtt.connect('mqtt://150.140.186.118:1883');
+
+    client.on('connect', () => {
+        client.publish('autosense/wifi', 'Server is awake');
+        client.end();
+    });
+
+    res.redirect('/');
 });
 
 router.use((req, res) => {

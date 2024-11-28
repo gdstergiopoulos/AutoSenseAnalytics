@@ -30,7 +30,8 @@
     "nodemon": "^3.1.0",
     "pg": "^8.11.5",
     "better-sqlite3": "^9.6.0",
-    "bcrypt": "^5.0.1"
+    "bcrypt": "^5.0.1",
+    "mqtt": "^4.2.5"
   },
   "devDependencies": {
     "@flydotio/dockerfile": "^0.5.7"

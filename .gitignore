@@ -5,3 +5,4 @@ hardware/SX126X_LoRa_HAT_Code/stm32
 hardware/SX126X_LoRa_HAT_Code/windows
 hardware/SX126X_LoRa_HAT_Code/.lgd-nfy0
 hardware/SX126X_LoRa_HAT_Code/raspberrypi/python/.lgd-nfy0s
+settings.json
