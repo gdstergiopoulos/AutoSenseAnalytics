@@ -1,7 +1,7 @@
 import mysql.connector
 import json
 from influxdb_client import InfluxDBClient, Point
-from influxdb_client.client.write_api import ASYNCHRONOUS
+#from influxdb_client.client.write_api import ASYNCHRONOUS
 import pytz
 import requests
 import time
@@ -34,7 +34,7 @@ fiware_headers = {
     "Fiware-ServicePath": "/AutoSenseAnalytics/Wifi"       
 }
 
-def get_last_field_value():
+def get_last_influx_value():
     try:
         query=' from(bucket: "AutoSenseAnalytics")\
                 |> range(start: -1d)\
@@ -49,11 +49,11 @@ def get_last_field_value():
                     utc_time = record.get_time()
                     athens_tz = pytz.timezone('Europe/Athens')
                     local_time = utc_time.astimezone(athens_tz)
-                    print(local_time)
+                    #print(local_time)
                     timestamp = local_time.strftime('%Y-%m-%d %H:%M:%S')
                     #timestamp in iso format
                     timestamp = local_time.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
-                    print(f"Last field value timestamp (Athens time): {timestamp}")
+                    #print(f"Last field value timestamp (Athens time): {timestamp}")
                     return timestamp
 
         return None
@@ -64,19 +64,6 @@ def get_last_field_value():
                     
 
 def fetch_data(table_name, attr_name, start_datetime=None, end_datetime=None):
-    """
-    Fetches recvTime and attrValue from the specified table for rows where attrName matches 
-    and recvTime is between start_datetime and end_datetime.
-
-    Parameters:
-    - table_name (str): The name of the table to query.
-    - attr_name (str): The attribute name to filter on.
-    - start_datetime (str or None): The start datetime (inclusive) in "YYYY-MM-DD HH:MM:SS" format. Defaults to None.
-    - end_datetime (str or None): The end datetime (inclusive) in "YYYY-MM-DD HH:MM:SS" format. Defaults to None.
-    
-    Returns:
-    - list of tuples: Each tuple contains (recvTime, attrValue) for each matching row.
-    """
     try:
         # Establish the connection to the database
         connection = mysql.connector.connect(**db_config)
@@ -88,8 +75,8 @@ def fetch_data(table_name, attr_name, start_datetime=None, end_datetime=None):
         #     FROM {table_name}
         #     WHERE attrName = %s
         # """
-        print("Start datetime: ", start_datetime)
-        print("End datetime: ", end_datetime)
+        # print("Start datetime: ", start_datetime)
+        # print("End datetime: ", end_datetime)
         query = f"""
             SELECT R1.recvTimeTs, R1.recvTime, R1.attrName, R1.attrValue, 
                R2.attrName, R2.attrValue, R3.attrName, R3.attrValue, 
@@ -135,17 +122,21 @@ def fetch_data(table_name, attr_name, start_datetime=None, end_datetime=None):
         for row in results:
             json_result = process_data(row)
             json_results.append(json_result)
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
         return json_results
 
     except mysql.connector.Error as err:
         print(f"Error: {err}")
 
-    finally:
+#    finally:
         # Close the cursor and connection
-        if cursor:
-            cursor.close()
-        if connection:
-            connection.close()
+        # if cursor:
+        #     cursor.close()
+        # if connection:
+        #     connection.close()
 
 
 
@@ -154,8 +145,8 @@ def get_last_fiware():
 
     if response.status_code == 200:
         entity = response.json()
-        print("Full entity with service and path:")
-        print(entity)
+        #print("Full entity with service and path:")
+        #print(entity)
         #return the timestamp
         return entity["timestamp"]["value"]
         # print("\nNoise attribute value:")
@@ -209,30 +200,33 @@ def write_batch_to_influxdb(data):
 
         # Write the data to InfluxDB
         write_api.write(bucket=bucket, org=org, record=points)
-        print(f"Data written to InfluxDB: {data}")
+        print(f"Data written to InfluxDB")
+        points.clear()
+        write_api.close()
+        
 
     except Exception as e:
         print(f"Error writing to InfluxDB: {e}")
 
 
-def write_to_influxdb(processed_data):
-    #Write the processed data to InfluxDB
-    try:
-        # Create a point in InfluxDB with the processed data
-        point = Point("rssi_bssid") \
-            .tag("wifi", "wifi_home") \
-            .field("mac_address", processed_data["mac_address"]) \
-            .field("rssi", processed_data["rssi"]) \
-            .field("latitude", processed_data["latitude"]) \
-            .field("longitude", processed_data["longitude"]) \
-            .time(convert_to_utc(processed_data["timestamp"]))
+# def write_to_influxdb(processed_data):
+#     #Write the processed data to InfluxDB
+#     try:
+#         # Create a point in InfluxDB with the processed data
+#         point = Point("rssi_bssid") \
+#             .tag("wifi", "wifi_home") \
+#             .field("mac_address", processed_data["mac_address"]) \
+#             .field("rssi", processed_data["rssi"]) \
+#             .field("latitude", processed_data["latitude"]) \
+#             .field("longitude", processed_data["longitude"]) \
+#             .time(convert_to_utc(processed_data["timestamp"]))
 
-        # Write the data to InfluxDB
-        write_api.write(bucket=bucket, org=org, record=point)
-        print(f"Data written to InfluxDB: {processed_data}")
+#         # Write the data to InfluxDB
+#         write_api.write(bucket=bucket, org=org, record=point)
+#         print(f"Data written to InfluxDB: {processed_data}")
     
-    except Exception as e:
-        print(f"Error writing to InfluxDB: {e}")
+#     except Exception as e:
+#         print(f"Error writing to InfluxDB: {e}")
 
 def convert_to_utc(timestamp):
         try:
@@ -271,7 +265,7 @@ def convert_to_utc(timestamp):
 # for row in data:
 #    # write_to_influxdb(row)
 #     print(f"Data written to InfluxDB: {row}")
-influx_last=get_last_field_value()
+influx_last=get_last_influx_value()
 fiware_last=get_last_fiware()
 print("Influx last: ", influx_last)
 print("Fiware last: ", fiware_last)
@@ -288,9 +282,11 @@ if influx_last and fiware_last:
             start_datetime=influx_last,
             end_datetime=fiware_last
         )
+        print(f"Fetched {len(data)} rows of data")
         write_batch_to_influxdb(data)
+        write_api.close()
 
 else:
     print("Could not retrieve timestamps from both sources.")
 # Close the write API
-write_api.close()
+
