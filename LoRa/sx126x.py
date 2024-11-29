@@ -1,4 +1,4 @@
-# This file is used for LoRa and Raspberry pi4B related issues 
+# This file is used for LoRa and Raspberry pi4B related issues
 
 import RPi.GPIO as GPIO
 import serial
@@ -256,8 +256,8 @@ class sx126x:
             time.sleep(0.5)
             r_buff = self.ser.read(self.ser.inWaiting())
 
-            print("receive message from node address with frequence\033[1;32m %d,%d.125MHz\033[0m"%((r_buff[0]<<8)+r_buff[1],r_buff[2]+self.start_freq),end='\r\n',flush = True)
-            print("message is "+str(r_buff[3:-1]),end='\r\n')
+            # print("receive message from node address with frequence\033[1;32m %d,%d.125MHz\033[0m"%((r_buff[0]<<8)+r_buff[1],r_buff[2]+self.start_freq),end='\r\n',flush = True)
+            # print("message is "+str(r_buff[3:-1]),end='\r\n')
             
             # Extract latitude and longitude from the message
             message = r_buff[3:-1].decode('utf-8')
@@ -283,10 +283,10 @@ class sx126x:
                         print(f"Latitude: {lat_standard:.5f} {lat_direction}")
                         print(f"Longitude: {lon_standard:.5f} {lon_direction}")
             # print the rssi
-            if self.rssi:
-                # print('\x1b[3A',end='\r')
-                print("the packet rssi value: -{0}dBm".format(256-r_buff[-1:][0]))
-                self.get_channel_rssi()
+            # if self.rssi:
+            #     # print('\x1b[3A',end='\r')
+            #     print("the packet rssi value: -{0}dBm".format(256-r_buff[-1:][0]))
+            #     self.get_channel_rssi()
             else:
                 pass
                 #print('\x1b[2A',end='\r')
