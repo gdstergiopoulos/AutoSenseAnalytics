@@ -37,7 +37,7 @@ fiware_headers = {
 def get_last_field_value():
     try:
         query=' from(bucket: "AutoSenseAnalytics")\
-                |> range(start: -1d)\
+                |> range(start: -7d)\
                 |> filter(fn: (r) => r["_measurement"] == "rssi_bssid")\
                 |> filter(fn: (r) => r["_field"] == "rssi")\
                 |> last()'
@@ -113,7 +113,7 @@ def fetch_data(table_name, attr_name, start_datetime=None, end_datetime=None):
         """
         
         # Define parameters for the query
-        params = attr_name
+        params = tuple(attr_name)
 
         # Add datetime filtering if start and end datetimes are provided
         # if start_datetime:
@@ -192,10 +192,10 @@ def write_to_influxdb(processed_data):
         # Create a point in InfluxDB with the processed data
         point = Point("rssi_bssid") \
             .tag("wifi", "wifi_home") \
-            .field("mac_address", processed_data["mac_address"]) \
-            .field("rssi", processed_data["rssi"]) \
-            .field("latitude", processed_data["latitude"]) \
-            .field("longitude", processed_data["longitude"]) \
+            .field("mac_address", str(processed_data["mac_address"])) \
+            .field("rssi", float(processed_data["rssi"]))\
+            .field("latitude", float(processed_data["latitude"])) \
+            .field("longitude", float(processed_data["longitude"])) \
             .time(convert_to_utc(processed_data["timestamp"]))
 
         # Write the data to InfluxDB
