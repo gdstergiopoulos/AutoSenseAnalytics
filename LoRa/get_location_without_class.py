@@ -62,7 +62,9 @@ def main():
     try:
         while True:
             print("\n--- Fetching GPS Data ---")
-            receive_data(ser)  # Receive and process GPS data
+            gps_data=receive_data(ser)  # Receive and process GPS data
+            if gps_data:
+                print(gps_data)
             time.sleep(10)     # Wait for 10 seconds
     except KeyboardInterrupt:
         print("\nExiting program...")
