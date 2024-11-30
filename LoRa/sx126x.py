@@ -265,23 +265,29 @@ class sx126x:
             for line in lines:
                 if line.startswith('$GNRMC'):
                     parts = line.split(',')
-                    if len(parts) > 5:
+                    if len(parts) > 6:
                         lat = parts[3]
                         lon = parts[5]
+                        status=parts[2]
                         #print(f"Latitude: {lat}, Longitude: {lon}")
                         # Convert latitude and longitude to standard format
-                        lat_deg = int(lat[:2])
-                        lat_min = float(lat[2:])
-                        lat_standard = lat_deg + (lat_min / 60)
-                        lat_direction = 'N' if parts[4] == 'N' else 'S'
+                        if status=="A":
+                            lat_deg = int(lat[:2])
+                            lat_min = float(lat[2:])
+                            lat_standard = lat_deg + (lat_min / 60)
+                            lat_direction = 'N' if parts[4] == 'N' else 'S'
 
-                        lon_deg = int(lon[:3])
-                        lon_min = float(lon[3:])
-                        lon_standard = lon_deg + (lon_min / 60)
-                        lon_direction = 'E' if parts[6] == 'E' else 'W'
+                            lon_deg = int(lon[:3])
+                            lon_min = float(lon[3:])
+                            lon_standard = lon_deg + (lon_min / 60)
+                            lon_direction = 'E' if parts[6] == 'E' else 'W'
 
-                        print(f"Latitude: {lat_standard:.5f} {lat_direction}")
-                        print(f"Longitude: {lon_standard:.5f} {lon_direction}")
+                            print(f"Latitude: {lat_standard:.5f} {lat_direction}")
+                            print(f"Longitude: {lon_standard:.5f} {lon_direction}")
+                    else:  # No valid GPS signal
+                        print("No GPS signal received.")
+                        print("Latitude: 0.00000")
+                        print("Longitude: 0.00000")
             # print the rssi
             # if self.rssi:
             #     # print('\x1b[3A',end='\r')
