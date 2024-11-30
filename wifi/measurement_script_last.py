@@ -30,7 +30,7 @@ def create_json(bssid, rssi, timestamp, location):
         "location": {
             "value": {
                 "type": "Point",
-                "coordinates": {location[1], location[0]}
+                "coordinates": [location[1], location[0]]
             },
             "type": "geo:json"
         },
