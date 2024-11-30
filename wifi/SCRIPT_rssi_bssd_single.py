@@ -29,9 +29,9 @@ def get_wifi_measurement():
         #timestamp = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())  # Get the current timestamp
         #timestamp = datetime.now().isoformat()
         # return {"BSSID": bssid, "RSSI (dBm)": rssi, "Timestamp": timestamp}
-        return bssid, rssi, timestamp, [21.753150, 38.230462]
+        return bssid, rssi, timestamp                       #, [21.753150, 38.230462]
     else:
-        return "0",-100,timestamp, [21.753150, 38.230462]
+        return "0",-100,timestamp                            #, [21.753150, 38.230462]
 
 # Infinite loop to repeatedly measure every 10 seconds
 def get_wifi_print_loop():
