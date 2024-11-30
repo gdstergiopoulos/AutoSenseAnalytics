@@ -189,10 +189,10 @@ def write_batch_to_influxdb(data):
             # Create a point in InfluxDB with the processed data
             point = Point("rssi_bssid") \
                 .tag("wifi", "wifi_home") \
-                .field("mac_address", row["mac_address"]) \
-                .field("rssi", row["rssi"]) \
-                .field("latitude", row["latitude"]) \
-                .field("longitude", row["longitude"]) \
+                .field("mac_address", str(row["mac_address"])) \
+                .field("rssi", float(row["rssi"])) \
+                .field("latitude", float(row["latitude"])) \
+                .field("longitude", float(row["longitude"])) \
                 .time(convert_to_utc(row["timestamp"]))
 
             # Add the point to the list
