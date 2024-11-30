@@ -14,6 +14,8 @@ def init_serial():
 
 def receive_data(ser):
     """Receive and process GPS data from the LoRa module."""
+    ser.flushInput()
+    time.sleep(0.5)  # Wait for data to be fully received
     if ser.inWaiting() > 0:
         time.sleep(0.5)  # Wait for data to be fully received
         r_buff = ser.read(ser.inWaiting())
@@ -62,9 +64,7 @@ def main():
     try:
         while True:
             print("\n--- Fetching GPS Data ---")
-            gps_data=receive_data(ser)  # Receive and process GPS data
-            if gps_data:
-                print(gps_data)
+            receive_data(ser)  # Receive and process GPS data
             time.sleep(10)     # Wait for 10 seconds
     except KeyboardInterrupt:
         print("\nExiting program...")
