@@ -134,6 +134,10 @@ router.route('/mycompany').get(async (req, res) => {
 });
 
 router.route('/mycompany/project/:id').get(async (req, res) => {
+    if(!req.session.username){
+        res.redirect('/login');
+    }
+    else{
     try{
         let project= await model.getProjectData(req.params.id);
         res.render('projectpg', {username: req.session.username, project: project});
@@ -141,6 +145,7 @@ router.route('/mycompany/project/:id').get(async (req, res) => {
     catch(err){
         res.redirect('/mycompany', {error: err.message});
     }
+}
 });
 
 router.route('/contact').post(async (req, res) => {
