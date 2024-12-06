@@ -124,7 +124,7 @@ def main():
             if processed_data:
                 # Write to InfluxDB
                 write_to_influxdb(processed_data)
-        time.sleep(10)  # Adjust the interval as needed
+        time.sleep(5)  # Adjust the interval as needed
 
 if __name__ == "__main__":
     main()
