@@ -1,0 +1,3 @@
+from sync_mqtt_triggered_and_periodicly import get_last_fiware
+
+get_last_fiware()

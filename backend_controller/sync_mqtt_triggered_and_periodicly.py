@@ -121,10 +121,12 @@ def get_last_influx():
     client = InfluxDBClient(url=influxdb_url,bucket=bucket, token=token, org=org)
 
     try:
+        print(influxdb_url,bucket)
         query=f'from(bucket: "{bucket}")\
                 |> range(start: -1y)\
                 |> filter(fn: (r) => r["_measurement"] == "rssi_bssid")\
                 |> filter(fn: (r) => r["_field"] == "rssi")\
+                |> filter(fn: (r) => r["wifi"]=="wifi_home")\
                 |> last()'
         tables = client.query_api().query(query, org=org)
         if tables:
