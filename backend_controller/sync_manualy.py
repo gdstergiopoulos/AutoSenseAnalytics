@@ -1,12 +1,12 @@
 import mysql.connector
 import json
-from influxdb_client import InfluxDBClient, Point
-from influxdb_client.client.write_api import ASYNCHRONOUS
-import pytz
 import requests
-import time
+from influxdb_client import InfluxDBClient, Point
+from influxdb_client.client.write_api import SYNCHRONOUS
+import pytz
 from datetime import datetime
-# from fiware_to_influxdb import write_to_influxdb
+
+# Database connection details
 db_config = {
     'host': '150.140.186.118',
     'port': 3306,
@@ -15,18 +15,6 @@ db_config = {
     'database': 'default'
 }
 
-influxdb_url = "http://150.140.186.118:8086"
-bucket = "AutoSenseAnalytics"
-org = "students"
-token = "oOsRHLaYY8_Wp_89wMVENUlChhoGpJ4x9VwjXDQK69Pb3IYTs0Mw9XsfXl5aOWd7MuX82DtAxiChfajweZIWFA=="
-
-measurement = "rssi_bssid"
-
-client = InfluxDBClient(url=influxdb_url, token=token, org=org)
-write_api = client.write_api()
-
-#fiware connection
-# FIWARE Context Broker details
 fiware_url = "http://150.140.186.118:1026/v2/entities/elenishome/attrs"  
 #entity_id = "elenishome"  # Replace with your entity ID
 fiware_headers = {
@@ -34,34 +22,11 @@ fiware_headers = {
     "Fiware-ServicePath": "/AutoSenseAnalytics/Wifi"       
 }
 
-def get_last_field_value():
-    try:
-        query=' from(bucket: "AutoSenseAnalytics")\
-                |> range(start: -7d)\
-                |> filter(fn: (r) => r["_measurement"] == "rssi_bssid")\
-                |> filter(fn: (r) => r["_field"] == "rssi")\
-                |> last()'
-        tables = client.query_api().query(query, org=org)
-        if tables:
-            for table in tables:
-                for record in table.records:
-                     # Convert UTC time to Athens time
-                    utc_time = record.get_time()
-                    athens_tz = pytz.timezone('Europe/Athens')
-                    local_time = utc_time.astimezone(athens_tz)
-                    print(local_time)
-                    timestamp = local_time.strftime('%Y-%m-%d %H:%M:%S')
-                    #timestamp in iso format
-                    timestamp = local_time.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
-                    print(f"Last field value timestamp (Athens time): {timestamp}")
-                    return timestamp
+influxdb_url = "http://150.140.186.118:8086"
+bucket = "test4batch"
+org = "students"
+token = "5WxJWTfxkAha1Pk2Yx9MVFUacJhBONLdMbK840pOLq48trsIlwy6qULCH7zzG5uFn4opIFOyrSWsfH8ggAQiew=="
 
-        return None
-    except Exception as e:
-        print(f"Error retrieving last field value: {e}")
-    return None
-
-                    
 
 def fetch_data(table_name, attr_name, start_datetime=None, end_datetime=None):
     """
@@ -88,8 +53,6 @@ def fetch_data(table_name, attr_name, start_datetime=None, end_datetime=None):
         #     FROM {table_name}
         #     WHERE attrName = %s
         # """
-        print("Start datetime: ", start_datetime)
-        print("End datetime: ", end_datetime)
         query = f"""
             SELECT R1.recvTimeTs, R1.recvTime, R1.attrName, R1.attrValue, 
                R2.attrName, R2.attrValue, R3.attrName, R3.attrValue, 
@@ -113,7 +76,7 @@ def fetch_data(table_name, attr_name, start_datetime=None, end_datetime=None):
         """
         
         # Define parameters for the query
-        params = tuple(attr_name)
+        params = attr_name
 
         # Add datetime filtering if start and end datetimes are provided
         # if start_datetime:
@@ -128,6 +91,7 @@ def fetch_data(table_name, attr_name, start_datetime=None, end_datetime=None):
 
         # Fetch and return the results
         results = cursor.fetchall()
+        
         # for row in results:
         #     recvTimeTs, recvTime, attrName1, attrValue1, attrName2, attrValue2, attrName3, attrValue3, attrName4, attrValue4 = row
             # print(f"DateTime: {recvTime}, AttrName1: {attrName1}, AttrValue1: {attrValue1}, AttrName2: {attrName2}, AttrValue2: {attrValue2}, AttrName3: {attrName3}, AttrValue3: {attrValue3}, AttrName4: {attrName4}, AttrValue4: {attrValue4}")
@@ -147,6 +111,67 @@ def fetch_data(table_name, attr_name, start_datetime=None, end_datetime=None):
         if connection:
             connection.close()
 
+def process_data(data):
+    
+    try:
+        return {
+            # "id": int(data[0]),
+            "rssi": float(data[3]),
+            "mac_address": str(data[5]),
+            "latitude": json.loads(data[7])["coordinates"][1],
+            "longitude": json.loads(data[7])["coordinates"][0],
+            "timestamp": data[9]
+        }
+
+       
+
+    except (KeyError, ValueError, TypeError) as e:
+        print(f"Error processing data: {e}")
+        return None
+    
+
+
+
+
+
+def get_last_influx():
+    # influxdb_url = "http://150.140.186.118:8086"
+    # bucket = "test2batch"
+    # org = "students"
+    # token = "U5PdI0KVW2rkwAYou6ti_-aWv_dsITk6ShtiQ2OiwkRJzatC_WQt2kRZuXx-q14AycVY9UhCfV_vUGsev8WgYA=="
+
+    pass
+
+    client = InfluxDBClient(url=influxdb_url,bucket=bucket, token=token, org=org)
+
+    try:
+        query=f'from(bucket: "{bucket}")\
+                |> range(start: -1y)\
+                |> filter(fn: (r) => r["_measurement"] == "rssi_bssid")\
+                |> filter(fn: (r) => r["_field"] == "rssi")\
+                |> last()'
+        tables = client.query_api().query(query, org=org)
+        if tables:
+            for table in tables:
+                for record in table.records:
+                     # Convert UTC time to Athens time
+                    utc_time = record.get_time()
+                    athens_tz = pytz.timezone('Europe/Athens')
+                    local_time = utc_time.astimezone(athens_tz)
+                    #print(local_time)
+                    timestamp = local_time.strftime('%Y-%m-%d %H:%M:%S')
+                    #timestamp in iso format
+                    timestamp = local_time.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+                    #print(f"Last field value timestamp (Athens time): {timestamp}")
+                    client.close()
+                    return timestamp
+        client.close()
+        client.flush()
+        return None
+    except Exception as e:
+        print(f"Error retrieving last field value: {e}")
+        client.close()
+    return None
 
 
 def get_last_fiware():
@@ -164,47 +189,6 @@ def get_last_fiware():
         print(f"Failed to retrieve entity: {response.status_code}")
         print(response.json())
 
-
-
-
-
-
-def process_data(data):
-    
-    try:
-        return {
-            "rssi": float(data[3]),
-            "mac_address": str(data[5]),
-            "latitude": json.loads(data[7])["coordinates"][1],
-            "longitude": json.loads(data[7])["coordinates"][0],
-            "timestamp": data[9]
-        }
-
-       
-
-    except (KeyError, ValueError, TypeError) as e:
-        print(f"Error processing data: {e}")
-        return None
-    
-def write_to_influxdb(processed_data):
-    #Write the processed data to InfluxDB
-    try:
-        # Create a point in InfluxDB with the processed data
-        point = Point("rssi_bssid") \
-            .tag("wifi", "wifi_home") \
-            .field("mac_address", str(processed_data["mac_address"])) \
-            .field("rssi", float(processed_data["rssi"]))\
-            .field("latitude", float(processed_data["latitude"])) \
-            .field("longitude", float(processed_data["longitude"])) \
-            .time(convert_to_utc(processed_data["timestamp"]))
-
-        # Write the data to InfluxDB
-        write_api.write(bucket=bucket, org=org, record=point)
-        print(f"Data written to InfluxDB: {processed_data}")
-    
-    except Exception as e:
-        print(f"Error writing to InfluxDB: {e}")
-
 def convert_to_utc(timestamp):
         try:
             # Define the Athens timezone
@@ -220,50 +204,82 @@ def convert_to_utc(timestamp):
             utc_time = local_time.astimezone(pytz.utc)
             
             # Return the UTC time in the same format
-            print(utc_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ"))
+            #print(utc_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ"))
             return utc_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
         
         except Exception as e:
             print(f"Error converting timestamp to UTC: {e}")
             return None    
 
-# Example usage
-# Fetch and process data from MySQL to influxDB wanted format
-# data=fetch_data(
-#     table_name="AutoSenseAnalytics_Wifi_elenishome_rssi_bssid",
-#     attr_name=['rssi', 'macAddress', 'location', 'timestamp'],
-#     start_datetime="2024-10-15 00:00:00",
-#     end_datetime="2024-11-17 23:59:59"
-# )
-# print(data)
+def update_influxdb(points):
+    # influxdb_url = "http://150.140.186.118:8086"
+    # bucket = "test2batch"
+    # org = "students"
+    # token = "U5PdI0KVW2rkwAYou6ti_-aWv_dsITk6ShtiQ2OiwkRJzatC_WQt2kRZuXx-q14AycVY9UhCfV_vUGsev8WgYA=="
+
+    client = InfluxDBClient(url=influxdb_url,bucket=bucket, token=token, org=org)
+    try:
+        write_api = client.write_api(write_options=SYNCHRONOUS)
+        write_api.write(bucket=bucket, org=org, record=points)
+        write_api.flush()
+    finally:
+        client.close()
+        print("InfluxDB updated successfully")
+
+    return 0
 
 
 
-# for row in data:
-#    # write_to_influxdb(row)
-#     print(f"Data written to InfluxDB: {row}")
-influx_last=get_last_field_value()
-fiware_last=get_last_fiware()
-print("Influx last: ", influx_last)
-print("Fiware last: ", fiware_last)
-if influx_last and fiware_last:
-    influx_last_dt = datetime.strptime(influx_last, '%Y-%m-%dT%H:%M:%S.%fZ')
-    fiware_last_dt = datetime.strptime(fiware_last, '%Y-%m-%dT%H:%M:%S.%fZ')
 
-    if influx_last_dt >= fiware_last_dt:
-        print("InfluxDB is up to date")
-    else:
-        data=fetch_data(
-            table_name="AutoSenseAnalytics_Wifi_elenishome_rssi_bssid",
-            attr_name=['rssi', 'macAddress', 'location', 'timestamp'],
-            start_datetime=influx_last,
-            end_datetime=fiware_last
-        )
-        for row in data:
-            print(row)
-            write_to_influxdb(row)
 
-else:
-    print("Could not retrieve timestamps from both sources.")
-# Close the write API
-write_api.close()
+
+
+
+
+def sync():
+    fiware_last=get_last_fiware()
+    influx_last=get_last_influx()
+
+    print(f"Last Fiware timestamp: {fiware_last}")
+    print(f"Last InfluxDB timestamp: {influx_last}")
+
+    if influx_last is None:
+        influx_last = "2024-11-20T00:00:00.000Z"
+    #compare the timestamps
+    if influx_last and fiware_last:
+        influx_last_dt = datetime.strptime(influx_last, '%Y-%m-%dT%H:%M:%S.%fZ')
+        fiware_last_dt = datetime.strptime(fiware_last, '%Y-%m-%dT%H:%M:%S.%fZ')
+
+        if influx_last_dt >= fiware_last_dt:
+            print("InfluxDB is up to date")
+        else:
+            print("InfluxDB need sync")
+            data=fetch_data(
+                table_name="AutoSenseAnalytics_Wifi_elenishome_rssi_bssid",
+                attr_name=['rssi', 'macAddress', 'location', 'timestamp'],
+                start_datetime=influx_last,
+                end_datetime=fiware_last
+                )
+            print(len(data))
+            #need to update the influxdb
+            #get the data from the fiware
+            #process the data
+            #write the data to influxdb
+            points=[]
+            for i in data:
+                print(i)
+                point=Point("rssi_bssid")\
+                    .tag("wifi", "wifi_home")\
+                    .field("mac_address", str(i["mac_address"]))\
+                    .field("rssi", float(i["rssi"]))\
+                    .field("latitude", float(i["latitude"]))\
+                    .field("longitude", float(i["longitude"]))\
+                    .time(convert_to_utc(i["timestamp"]))
+                points.append(point)
+
+            # Write the data to InfluxDB
+            update_influxdb(points)
+    
+
+sync()
+        
