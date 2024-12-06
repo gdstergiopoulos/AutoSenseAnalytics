@@ -28,9 +28,9 @@ fiware_headers = {
 
 # InfluxDB connection details
 influxdb_url = "http://150.140.186.118:8086"
-bucket = "test5batch"
+bucket = "AutoSenseAnalytics"
 org = "students"
-token = "ehfh8EWIRwv8CQ7wm6HPeKoroT7TW5GF-l99osXzZx-V_0yqV4rzIBCcCvVy9hpui_pDg2_VHRJ0m41rXhI3iA=="
+token = "oOsRHLaYY8_Wp_89wMVENUlChhoGpJ4x9VwjXDQK69Pb3IYTs0Mw9XsfXl5aOWd7MuX82DtAxiChfajweZIWFA=="
 
 #mqtt connection details
 mqtt_host = '150.140.186.118'
