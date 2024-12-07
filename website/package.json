@@ -31,7 +31,8 @@
     "pg": "^8.11.5",
     "better-sqlite3": "^9.6.0",
     "bcrypt": "^5.0.1",
-    "mqtt": "^4.2.5"
+    "mqtt": "^4.2.5",
+    "@influxdata/influxdb-client": "^1.32.0"
   },
   "devDependencies": {
     "@flydotio/dockerfile": "^0.5.7"

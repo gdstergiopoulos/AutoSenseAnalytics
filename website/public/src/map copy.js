@@ -17,26 +17,13 @@ document.addEventListener("DOMContentLoaded", function() {
         shape: 'circle',
         prefix: 'fa'
       });
-
-    fetch('http://localhost:3000/measurements')
-      .then(response => response.json())
-      .then(data => {
-        data.forEach(point => {
-          var marker = L.marker([point.latitude, point.longitude], {icon: custom}).addTo(map);
-          marker.bindPopup(`MAC Address: ${point.mac_address}<br>RSSI: ${point.rssi}`).addEventListener('click', function() {
-            marker.openPopup();
-          });
-        });
-      })
-      .catch(error => console.error('Error fetching data:', error));
-      
     var marker = L.marker([38.28864841960415, 21.788658751750393],{icon:custom}).addTo(map);
     marker.bindPopup("AutoSense").addEventListener(this.onclick, function() {
         marker.bindPopup("AutoSense").openPopup();});
 
         var layer1=L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-            maxZoom: 50,
+            maxZoom: 18,
             id: 'mapbox/streets-v11',
             tileSize: 512,
             zoomOffset: -1,
@@ -45,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function() {
         
         var layer2 = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
           attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-          maxZoom: 50,
+          maxZoom: 18,
           id: 'mapbox/dark-v11',
           tileSize: 512,
           zoomOffset: -1,
@@ -55,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function() {
         
           var layer3=L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-            maxZoom: 50,
+            maxZoom: 18,
             id: 'mapbox/satellite-v9',
             tileSize: 512,
             zoomOffset: -1,

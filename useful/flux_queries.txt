@@ -1,0 +1,8 @@
+get the whole measurment BE CAREFUL PUT UTC TIME IN THE QUERY
+
+from(bucket: "AutoSenseAnalytics")
+  |> range(start: 2024-12-06T10:19:35Z, stop: 2024-12-06T10:48:57Z)
+  |> filter(fn: (r) => r._measurement == "rssi_bssid")
+  |> filter(fn: (r) => r._field == "rssi" or r._field == "mac_address" or r._field == "latitude" or r._field == "longitude")
+  |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+  |> keep(columns: ["_time", "rssi", "mac_address", "latitude", "longitude"])
