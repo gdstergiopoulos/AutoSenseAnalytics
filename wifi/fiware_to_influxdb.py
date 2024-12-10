@@ -4,7 +4,6 @@ from influxdb_client import InfluxDBClient, Point, WritePrecision
 from datetime import datetime
 import pytz
 
-#ενδεχομενως προβλημα με το json format και το location 
 
 
 
