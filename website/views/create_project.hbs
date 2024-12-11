@@ -1,0 +1,15 @@
+{{>navbar username=username}}
+<div id="createproject">
+    <form action="/admin/createproject" method="post">
+        <div>
+            <label for="projectName" class="form-label">Project Name:</label>
+            <input type="text" id="projectName" name="projectName" class="form-control" required>
+        </div>
+        <div>
+            <label for="projectDescription" class="form-label">Project Description:</label>
+            <textarea id="projectDescription" name="projectDescription" class="form-control" required></textarea>
+        </div>
+        <button class="btn btn-primary" type="submit">Create Project</button>
+    </form>
+</div>
+{{>footer}}

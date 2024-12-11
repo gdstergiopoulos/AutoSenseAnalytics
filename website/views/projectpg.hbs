@@ -6,7 +6,7 @@
 <div id="dashboard"><iframe src="https://labserver.sense-campus.gr:8087/d/ee5awawrs54w0b/autosenseanalytics-wifi?from=now-5m&to=now&timezone=browser&refresh=5s" width="1100" height="500" frameborder="0"></iframe></div>
 <h3 id="welcomecomp">Heatmap</h3>
 {{#if (eq project.projName "Signal Coverage - LoRA")}}
-    {{>LoRa project=project projectPoints=projectPoints}}   
-    {{!-- {{>LoRa_leaflet project=project}} --}}
+    {{!-- {{>LoRa project=project projectPoints=projectPoints}}    --}}
+    {{>LoRa_leaflet project=project}}
 {{/if}}
 {{>footer}}

@@ -143,8 +143,8 @@ router.route('/mycompany/project/:id').get(async (req, res) => {
         let project= await model.getProjectData(req.params.id);
         let projectPoints= await model_influx.getMeasurements();
         // console.log(projectPoints);
-        res.render('projectpg', {layout: 'main_google' , username: req.session.username, project: project, projectPoints: projectPoints});
-        // res.render('projectpg', {layout: 'main',username: req.session.username, project: project});
+        // res.render('projectpg', {layout: 'main_google' , username: req.session.username, project: project, projectPoints: projectPoints});
+        res.render('projectpg', {layout: 'main',username: req.session.username, project: project});
     }
     catch(err){
         res.redirect('/mycompany', {error: err.message});
@@ -189,21 +189,69 @@ router.route('/measurements').get(async (req, res) => {
 });
 
 router.route('/admin/assignproject').get(async (req, res) => {
-    if(req.session.username){
-        try{
-            if (req.session.username == 'AutoSense'){
-            res.render('assignproject', {username: req.session.username, users: users, projects: projects});
-            }
-            else{
-                res.redirect('/login', {error: 'You do not have permission to access this page'});
-            }
+    // if(req.session.username){
+    //     try{
+    //         if (req.session.username == 'AutoSense'){
+    //             let users = await model.getAllUsers();
+    //             let projects = await model.getAllProjects();
+    //             console.log(users);
+    //             res.render('assignproject', {username: req.session.username, users: users, projects: projects});
+    //         }
+    //         else{
+    //             res.render('login', {error: 'You do not have permission to access this page'});
+    //         }
+    //     }
+    //     catch(err){
+    //         res.render('assignproject', {error: err.message});
+    //     }
+    // }
+    // else{
+    //     res.redirect('/login');
+    // }
+    let users = await model.getAllUsers();
+    let projects = await model.getAllProjects();
+    res.render('assignproject', {username: req.session.username, users: users, projects: projects});
+}
+);
+
+router.route('/api/company/:name/projects').get(async (req, res) => {
+    try{
+        let projects = await model.getCompanyProjects(req.params.name);
+        res.send(projects);
+    }
+    catch(err){
+        res.send(err.message);
+    }
+}
+);
+
+router.route('/api/project/:id/users').get(async (req, res) => {
+    try{
+        let users = await model.getProjectUsers(req.params.id);
+        res.send(users);
+    }
+    catch(err){
+        res.send(err.message);
+    }
+});
+
+router.route('/admin/createproject').get((req, res) => {
+    res.render('create_project');
+});
+
+router.route('/admin/createproject').post(async (req, res) => {
+    try{
+        console.log(req.body);
+        if(req.body.projectName === '' || req.body.req.body.projectDescription === ''){
+            res.render('create_project', {error: 'All fields are required'});
         }
-        catch(err){
-            res.render('assignproject', {error: err.message});
+        else{
+            await model.createProject(req.body.projectName, req.body.projectDescription);
+            res.render('create_project', {success: 'Project created successfully'});
         }
     }
-    else{
-        res.redirect('/login');
+    catch(err){
+        res.render('create_project', {error: err.message});
     }
 }
 );

@@ -46,7 +46,39 @@ export let getCompanyProjects = async (username) => {
     let stmt = await sql.prepare('SELECT projName,id FROM Project,HasAccess WHERE username = ? AND projID=id');
     try{
         let projects = stmt.all(username);
+        // console.log(projects);
         return projects;
+    }
+    catch(err){
+        throw err;
+    }
+}
+
+export let getProjectUsers = async (projID) => {
+    let stmt = await sql.prepare("SELECT username FROM Project,HasAccess WHERE projID = ? AND projID=id AND username != 'AutoSense'");
+    try{
+        let users = stmt.all(projID);
+        return users;
+    }
+    catch(err){
+        throw err;
+    }
+}
+
+export let createProject = async (projName, projDesc) => {
+    let idStmt = await sql.prepare('SELECT MAX(id) as maxId FROM Project');
+    try{
+        let result = idStmt.get();
+        let newId = (result.maxId || 0) + 1;
+
+        let stmt = await sql.prepare('INSERT INTO Project(id,projName,projDescrip) VALUES(?,?,?)');
+        try{
+            stmt.run(newid,projName,projDesc);
+            return true;
+        }
+        catch(err){
+            throw err;
+        }
     }
     catch(err){
         throw err;
@@ -58,6 +90,30 @@ export let getProjectData = async (projID) => {
     try{
         let project = stmt.get(projID);
         return project;
+    }
+    catch(err){
+        throw err;
+    }
+}
+
+export let getAllProjects = async () => {
+    let stmt = await sql.prepare('SELECT DISTINCT * FROM Project');
+    try{
+        let projects = stmt.all();
+        return projects;
+    }
+    catch(err){
+        throw err;
+    }
+}
+
+export let getAllUsers = async () => {
+    console.log('In model');
+    let stmt = sql.prepare("SELECT * FROM User WHERE username != 'AutoSense'");
+    try{
+        let users = stmt.all();
+        console.log(users)
+        return users;
     }
     catch(err){
         throw err;

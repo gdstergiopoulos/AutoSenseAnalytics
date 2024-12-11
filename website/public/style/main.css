@@ -6,7 +6,8 @@
   background-color: #161b22;
   margin-top: 6%;
   width: 100%;
-    height: 100%;
+  height: 100%;
+  color:#12ffd0;
 }
 #loginbtn{
   background-color: #12ffd0;
@@ -617,4 +618,70 @@ footer .social-icons a:hover {
 
 #mapProject>#mapcont{
     width: 58%;
+}
+
+#projassignmentLists{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+#projList{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5%;
+}
+
+#projList>#listTitle>#createProjBtn{
+    background-color: #16e4bc;
+    border-color: #16e4bc;
+    color:#000000;
+    margin-bottom: 6%;
+    align-self: flex-end;
+}
+
+#projList>#listTitle>#createProjBtn:hover{
+    opacity: 0.6;
+}
+
+#projList>#listTitle>h3{
+    color:#16e4bc;
+    align-self: flex-start;
+    flex-grow: 1;
+}
+
+#listTitle{
+    display: flex;
+    flex-direction: row;
+    color:#16e4bc;
+    align-items: space-between;
+    width:100%;
+}
+
+#createproject{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+.btn{
+    background-color: #16e4bc;
+    border-color: #16e4bc;
+    color:#000000;
+    margin-bottom: 6%;
+}
+
+.btn:hover{
+    opacity: 0.6;
+    background-color: #16e4bc;
+    border-color: #16e4bc;
+    color:#000000;
 }
