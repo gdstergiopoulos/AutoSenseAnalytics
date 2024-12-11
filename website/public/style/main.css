@@ -600,7 +600,21 @@ footer .social-icons a:hover {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: 5%;
+    margin-top: 3%;
     width: 100%;
     height: 80%;
+}
+
+#mapProject{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+#mapProject>#mapcont{
+    width: 58%;
 }

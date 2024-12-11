@@ -141,7 +141,10 @@ router.route('/mycompany/project/:id').get(async (req, res) => {
     else{
     try{
         let project= await model.getProjectData(req.params.id);
-        res.render('projectpg', {username: req.session.username, project: project});
+        let projectPoints= await model_influx.getMeasurements();
+        // console.log(projectPoints);
+        res.render('projectpg', {layout: 'main_google' , username: req.session.username, project: project, projectPoints: projectPoints});
+        // res.render('projectpg', {layout: 'main',username: req.session.username, project: project});
     }
     catch(err){
         res.redirect('/mycompany', {error: err.message});
@@ -184,6 +187,26 @@ router.route('/measurements').get(async (req, res) => {
         res.send(err.message);
     }
 });
+
+router.route('/admin/assignproject').get(async (req, res) => {
+    if(req.session.username){
+        try{
+            if (req.session.username == 'AutoSense'){
+            res.render('assignproject', {username: req.session.username, users: users, projects: projects});
+            }
+            else{
+                res.redirect('/login', {error: 'You do not have permission to access this page'});
+            }
+        }
+        catch(err){
+            res.render('assignproject', {error: err.message});
+        }
+    }
+    else{
+        res.redirect('/login');
+    }
+}
+);
 
 router.use((req, res) => {
     res.render('catcherror');
