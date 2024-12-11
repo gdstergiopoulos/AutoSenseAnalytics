@@ -11,7 +11,7 @@ topic = "Asset tracking/dragino-lora-gps:1"
 def on_message(client, userdata, message):
     print(f"Received message: {message.payload.decode()} on topic {message.topic}")
     
-    with open("./test.json", "a") as file:
+    with open("./test2.json", "a") as file:
         json.dump({"topic": message.topic, "payload": message.payload.decode()}, file)
         file.write("\n")
 
