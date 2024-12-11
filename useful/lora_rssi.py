@@ -10,26 +10,10 @@ topic = "Asset tracking/dragino-lora-gps:1"
 # Define the callback function for when a message is received
 def on_message(client, userdata, message):
     print(f"Received message: {message.payload.decode()} on topic {message.topic}")
-    payload = json.loads(message.payload.decode().replace("'", '"'))
-
-    # Extract the GPS coordinates
-    gps_coords = payload["object"]["location"]
-
-    # Extract RSSI values
-    rssi_values = [gateway["rssi"] for gateway in payload["rxInfo"]]
-
-    # Data to write
-    output_data = {
-        "gps_coordinates": gps_coords,
-        "rssi_values": rssi_values
-    }
-
-    # Write to test.json
-    with open("test.json", "w") as file:
-        json.dump(output_data, file, indent=4)
-        with open("test.json", "a") as file:
-            json.dump({"topic": message.topic, "payload": message.payload.decode()}, file)
-            file.write("\n")
+    
+    with open("./test.json", "a") as file:
+        json.dump({"topic": message.topic, "payload": message.payload.decode()}, file)
+        file.write("\n")
 
 # Create an MQTT client instance
 client = mqtt.Client()

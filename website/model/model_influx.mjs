@@ -43,7 +43,6 @@ export async function getMeasurements() {
                 reject(error);
             },
             complete: () => {
-                console.log('Query completed');
                 withGps = localwithGps;
                 allMeasurements = all;
                 resolve();

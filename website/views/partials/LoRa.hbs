@@ -1,0 +1,10 @@
+<h2>{{project.projName}}</h2>
+<gmp-map center="38.272486,21.759024" zoom="13" map-id="DEMO_MAP_ID">
+      {{#each projectPoints}}
+            <gmp-advanced-marker position="{{latitude}},{{longitude}}" title="{{rssi}}"></gmp-advanced-marker>
+            {{/each}}
+      <gmp-advanced-marker position="40.12150192260742,-100.45039367675781" title="My location"></gmp-advanced-marker>
+</gmp-map>
+
+<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOcqkcLPbNWFbEwAAEBfrHSUqz1oA-zsg&callback=console.debug&libraries=maps,marker&v=beta" defer>
+    </script>
