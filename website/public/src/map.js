@@ -3,6 +3,8 @@
 document.addEventListener("DOMContentLoaded", function() {
     // Ensure that the HTML element with id "map" exists
     var mapElement = document.getElementById("map");
+    
+    
     if (!mapElement) {
         console.error("Element with id 'map' not found.");
         return;
@@ -17,22 +19,47 @@ document.addEventListener("DOMContentLoaded", function() {
         shape: 'circle',
         prefix: 'fa'
       });
-
-    fetch('http://localhost:3000/api/measurements/wifi')
-      .then(response => response.json())
-      .then(data => {
-        data.forEach(point => {
-          var marker = L.marker([point.latitude, point.longitude], {icon: custom}).addTo(map);
-          marker.bindPopup(`MAC Address: ${point.mac_address}<br>RSSI: ${point.rssi}`).addEventListener('click', function() {
-            marker.openPopup();
+    try{
+      let projectName = document.getElementById("welcomecomp").innerText;
+      if(projectName=="Signal Coverage - LoRA"){
+        fetch('http://localhost:3000/api/measurements/lora')
+        .then(response => response.json())
+        .then(data => {
+          data.forEach(point => {
+            var marker = L.marker([point.latitude, point.longitude], {icon: custom}).addTo(map);
+            marker.bindPopup(`RSSI: ${point.rssi}`).addEventListener('click', function() {
+              marker.openPopup();
+            });
           });
-        });
-      })
-      .catch(error => console.error('Error fetching data:', error));
+        })
+        .catch(error => console.error('Error fetching data:', error));
+      }
+      else if(projectName=="Access Point Mapping - eduroam"){
+        fetch('http://localhost:3000/api/measurements/wifi')
+        .then(response => response.json())
+        .then(data => {
+          data.forEach(point => {
+            var marker = L.marker([point.latitude, point.longitude], {icon: custom}).addTo(map);
+            marker.bindPopup(`RSSI: ${point.rssi}`).addEventListener('click', function() {
+              marker.openPopup();
+            });
+          });
+        })
+        .catch(error => console.error('Error fetching data:', error));
+      }
+    }
+    catch(error){
+      console.error('Error fetching data:', error);
+      var marker = L.marker([38.28864841960415, 21.788658751750393],{icon:custom}).addTo(map);
+      marker.bindPopup("AutoSense").addEventListener(this.onclick, function() {
+          marker.bindPopup("AutoSense").openPopup();});
+    }
+    
+    
+
+   
       
-    var marker = L.marker([38.28864841960415, 21.788658751750393],{icon:custom}).addTo(map);
-    marker.bindPopup("AutoSense").addEventListener(this.onclick, function() {
-        marker.bindPopup("AutoSense").openPopup();});
+   
 
         var layer1=L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',

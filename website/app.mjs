@@ -149,8 +149,8 @@ router.route('/mycompany/project/:id').get(async (req, res) => {
             projectPoints= await model_influx.getMeasurementsWifi();
         }
         // console.log(projectPoints);
-        res.render('projectpg', {layout: 'main_google' , username: req.session.username, project: project, projectPoints: projectPoints});
-        // res.render('projectpg', {layout: 'main',username: req.session.username, project: project});
+        // res.render('projectpg', {layout: 'main_google' , username: req.session.username, project: project, projectPoints: projectPoints});
+        res.render('projectpg', {layout: 'main',username: req.session.username, project: project});
     }
     catch(err){
         res.redirect('/mycompany', {error: err.message});
