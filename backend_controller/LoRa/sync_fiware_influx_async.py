@@ -129,16 +129,97 @@ def update_influxdb(points):
 
     return 0
 
+def get_last_influx():
+    pass
 
-mysql_data=fetch_data(table_name,["rssi","location","timestamp"])
-points=[]
-for i in mysql_data:
-    point = Point("LoraMeasurement") \
-        .tag("LoRa", "Uni") \
-        .field("rssi", float(i["rssi"]))\
-        .field("latitude", float(i["latitude"]))\
-        .field("longitude", float(i["longitude"]))\
-        .time(convert_to_utc(i["timestamp"]))
-    points.append(point)
+    client = InfluxDBClient(url=influxdb_url,bucket=bucket, token=token, org=org)
 
-update_influxdb(points)
+    try:
+        # print(influxdb_url,bucket)
+        query=f'from(bucket: "{bucket}")\
+                |> range(start: -1y)\
+                |> filter(fn: (r) => r["_measurement"] == "LoraMeasurement")\
+                |> filter(fn: (r) => r["LoRa"] == "Uni")\
+                |> filter(fn: (r) => r["_field"] == "rssi")\
+                |> last()'
+        tables = client.query_api().query(query, org=org)
+        if tables:
+            for table in tables:
+                for record in table.records:
+                     # Convert UTC time to Athens time
+                    utc_time = record.get_time()
+                    athens_tz = pytz.timezone('Europe/Athens')
+                    local_time = utc_time.astimezone(athens_tz)
+                    #print(local_time)
+                    timestamp = local_time.strftime('%Y-%m-%d %H:%M:%S')
+                    #timestamp in iso format
+                    timestamp = local_time.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+                    #print(f"Last field value timestamp (Athens time): {timestamp}")
+                    client.close()
+                    return timestamp
+        client.close()
+        client.flush()
+        return None
+    except Exception as e:
+        print(f"Error retrieving last field value: {e}")
+        client.close()
+    return None
+
+#function to get the last timestamp from the fiware data 
+def get_last_fiware():
+    response = requests.get(fiware_url, headers=fiware_headers)
+
+    if response.status_code == 200:
+        entity = response.json()
+        print("Full entity with service and path:")
+        print(entity)
+        #return the timestamp
+        return entity["timestamp"]["value"]
+        
+    else:
+        print(f"Failed to retrieve entity: {response.status_code}")
+        print(response.json())
+
+
+
+# influx_last=get_last_influx()
+# fiware_last=get_last_fiware()
+# print(f'InfluxDB last timestamp: {influx_last}\nFiware last timestamp: {fiware_last}')
+
+#function to sync the data from fiware to influxdb (if needed)
+def sync():
+    fiware_last=get_last_fiware()
+    influx_last=get_last_influx()
+
+    print(f"Last Fiware timestamp: {fiware_last}")
+    print(f"Last InfluxDB timestamp: {influx_last}")
+
+    if influx_last is None:
+        print("InfluxDB is empty")
+        influx_last = "2024-11-20T00:00:00.000Z"
+
+    if influx_last and fiware_last:
+        influx_last_dt = datetime.strptime(influx_last, '%Y-%m-%dT%H:%M:%S.%fZ')
+        fiware_last_dt = datetime.strptime(fiware_last, '%Y-%m-%dT%H:%M:%S.%fZ')
+
+        if influx_last_dt >= fiware_last_dt:
+            print("InfluxDB is up to date")
+        else:
+            print("InfluxDB need sync")
+            mysql_data=fetch_data(table_name,["rssi","location","timestamp"])
+            points=[]
+            for i in mysql_data:
+                point = Point("LoraMeasurement") \
+                    .tag("LoRa", "Uni") \
+                    .field("rssi", float(i["rssi"]))\
+                    .field("latitude", float(i["latitude"]))\
+                    .field("longitude", float(i["longitude"]))\
+                    .time(convert_to_utc(i["timestamp"]))
+                points.append(point)
+
+            # update_influxdb(points)
+
+            # Write the data to InfluxDB
+            update_influxdb(points)
+
+sync()
