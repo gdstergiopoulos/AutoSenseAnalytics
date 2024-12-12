@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function() {
         prefix: 'fa'
       });
 
-    fetch('http://localhost:3000/measurements')
+    fetch('http://localhost:3000/api/measurements/wifi')
       .then(response => response.json())
       .then(data => {
         data.forEach(point => {

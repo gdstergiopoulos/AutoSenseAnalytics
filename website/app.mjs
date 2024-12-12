@@ -141,10 +141,10 @@ router.route('/mycompany/project/:id').get(async (req, res) => {
     else{
     try{
         let project= await model.getProjectData(req.params.id);
-        let projectPoints= await model_influx.getMeasurements();
+        let projectPoints= await model_influx.getMeasurementsLoRa();
         // console.log(projectPoints);
-        // res.render('projectpg', {layout: 'main_google' , username: req.session.username, project: project, projectPoints: projectPoints});
-        res.render('projectpg', {layout: 'main',username: req.session.username, project: project});
+        res.render('projectpg', {layout: 'main_google' , username: req.session.username, project: project, projectPoints: projectPoints});
+        // res.render('projectpg', {layout: 'main',username: req.session.username, project: project});
     }
     catch(err){
         res.redirect('/mycompany', {error: err.message});
