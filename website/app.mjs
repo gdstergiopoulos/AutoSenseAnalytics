@@ -180,7 +180,7 @@ router.route('/wakeup').get((req, res) => {
 
 router.route('/measurements').get(async (req, res) => {
     try{
-        const measurements = await model_influx.getMeasurements();
+        const measurements = await model_influx.getMeasurementsWifi();
         res.send(measurements);
     }
     catch(err){
@@ -229,6 +229,23 @@ router.route('/api/project/:id/users').get(async (req, res) => {
     try{
         let users = await model.getProjectUsers(req.params.id);
         res.send(users);
+    }
+    catch(err){
+        res.send(err.message);
+    }
+});
+
+router.route('/api/measurements/:project/').get(async (req, res) => {
+    try{
+        let nocase = req.params.project.toLowerCase();
+        if(nocase=="lora"){
+            let measurements = await model_influx.getMeasurementsLoRa();
+            res.send(measurements);
+        }
+        else if(nocase=="wifi"){
+            let measurements = await model_influx.getMeasurementsWifi();
+            res.send(measurements);
+        }
     }
     catch(err){
         res.send(err.message);
