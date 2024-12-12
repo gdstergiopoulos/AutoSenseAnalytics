@@ -7,7 +7,6 @@ import * as model from './model/model.mjs'
 import * as model_influx from './model/model_influx.mjs'
 import Handlebars from './helpers.js'
 import mqtt from 'mqtt';
-//TODO not logged in or declared Μάθημα 1 .. κλπ με toggle συντελεστή
 
 const app = express()
 const router = express.Router();
