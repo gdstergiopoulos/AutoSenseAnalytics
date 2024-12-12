@@ -141,7 +141,13 @@ router.route('/mycompany/project/:id').get(async (req, res) => {
     else{
     try{
         let project= await model.getProjectData(req.params.id);
-        let projectPoints= await model_influx.getMeasurementsLoRa();
+        let projectPoints;
+        if(project.projName==="Signal Coverage - LoRA"){
+            projectPoints= await model_influx.getMeasurementsLoRa();
+        }
+        else if (project.projName==="Access Point Mapping - eduroam"){
+            projectPoints= await model_influx.getMeasurementsWifi();
+        }
         // console.log(projectPoints);
         res.render('projectpg', {layout: 'main_google' , username: req.session.username, project: project, projectPoints: projectPoints});
         // res.render('projectpg', {layout: 'main',username: req.session.username, project: project});
