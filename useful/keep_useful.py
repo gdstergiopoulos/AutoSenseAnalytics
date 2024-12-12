@@ -24,9 +24,6 @@ def extract_measurements(entry):
 
 
 def create_json(rssi, timestamp, location):
-    """
-    Creates a JSON object in the specified format without the macAddress field.
-    """
     measurement = {
         "rssi": {
             "value": rssi,
@@ -46,14 +43,11 @@ def create_json(rssi, timestamp, location):
     }
     return measurement
 
-# Direct program execution
-file_path = "11_12_measurements.json"  # Replace with the actual file path
-# formatted_measurements = []
+
+file_path = "11_12_measurements.json"  
 
 # Open the file and process it
 with open(file_path, "r") as file:
-    # Load the file as JSON (assume it's an array of measurement dictionaries)
-    # Process each row in the file
     for line in file:
         try:
             # Extract measurements from the current row
