@@ -268,8 +268,9 @@ router.route('/admin/createproject').post(async (req, res) => {
             res.render('create_project', {error: 'All fields are required'});
         }
         else{
+            console.log("im here")
             await model.createProject(req.body.projectName, req.body.projectDescription);
-            res.render('create_project', {success: 'Project created successfully'});
+            res.redirect('/admin/assignproject');
         }
     }
     catch(err){

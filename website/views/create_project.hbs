@@ -9,7 +9,12 @@
             <label for="projectDescription" class="form-label">Project Description:</label>
             <textarea id="projectDescription" name="projectDescription" class="form-control" required></textarea>
         </div>
-        <button class="btn btn-primary" type="submit">Create Project</button>
+        {{#if error}}
+                <div class="alert alert-danger" role="alert">
+                    {{error}}
+                </div>
+                {{/if}}
+        <button id="createprojectbtn" class="btn btn-primary" type="submit">Create Project</button>
     </form>
 </div>
 {{>footer}}

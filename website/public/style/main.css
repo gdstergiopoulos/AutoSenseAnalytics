@@ -625,7 +625,7 @@ footer .social-icons a:hover {
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-    margin-top: 5%;
+    margin-top: 1%;
     margin-bottom: 5%;
 }
 
@@ -672,11 +672,18 @@ footer .social-icons a:hover {
     margin-bottom: 5%;
 }
 
-.btn{
+#createprojectbtn{
     background-color: #16e4bc;
     border-color: #16e4bc;
     color:#000000;
     margin-bottom: 6%;
+    margin-top: 5%;
+}
+/* .btn{
+    background-color: #16e4bc;
+    border-color: #16e4bc;
+    color:#000000;
+    
 }
 
 .btn:hover{
@@ -684,4 +691,4 @@ footer .social-icons a:hover {
     background-color: #16e4bc;
     border-color: #16e4bc;
     color:#000000;
-}
+} */
