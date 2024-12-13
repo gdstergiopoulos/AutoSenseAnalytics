@@ -263,15 +263,18 @@ router.route('/admin/createproject').get((req, res) => {
 
 router.route('/admin/createproject').post(async (req, res) => {
     try{
-        console.log(req.body);
-        if(req.body.projectName === '' || req.body.req.body.projectDescription === ''){
-            res.render('create_project', {error: 'All fields are required'});
-        }
-        else{
-            console.log("im here")
-            await model.createProject(req.body.projectName, req.body.projectDescription);
-            res.redirect('/admin/assignproject');
-        }
+        await model.createProject(req.body.projectName, req.body.projectDescription);
+        // res.render('assignproject', {success: 'Project created successfully'});
+        res.redirect('/admin/assignproject');
+        // console.log(req.body);
+        // if(req.body.projectName === '' || req.body.req.body.projectDescription === ''){
+        //     res.render('create_project', {error: 'All fields are required'});
+        // }
+        // else{
+        //     console.log("im here")
+        //     // await model.createProject(req.body.projectName, req.body.projectDescription);
+        //     res.redirect('/admin/assignproject');
+        // }
     }
     catch(err){
         res.render('create_project', {error: err.message});

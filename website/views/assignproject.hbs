@@ -1,7 +1,7 @@
 {{>navbar username=username}}
 <h1>This is the assign project page</h1>
 
-<p>
+
     {{!-- {{#each users}}
         <div class="card" style="width: 18rem;">
             <div class="card-body">
@@ -16,6 +16,16 @@
             </div>
         </div>
     {{/each}} --}}
+    {{#if success}}
+        <div class="alert alert-success" role="alert">
+            {{success}}
+        </div>
+    {{/if}}
+    {{#if error}}
+        <div class="alert alert-danger" role="alert">
+            {{error}}
+        </div>
+    {{/if}}
     <div id="projassignmentLists">
         <div id="projList">
             <div id="listTitle">
@@ -46,7 +56,7 @@
             </div>
         </div>
     </div>
-</p>
+
 <script>
     document.querySelectorAll('.card-title').forEach(item => {
         item.addEventListener('click', event => {

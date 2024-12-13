@@ -66,14 +66,15 @@ export let getProjectUsers = async (projID) => {
 }
 
 export let createProject = async (projName, projDesc) => {
-    let idStmt = await sql.prepare('SELECT MAX(id) as maxId FROM Project');
+    
     try{
+        let idStmt = await sql.prepare('SELECT MAX(id) as maxId FROM Project');
         let result = idStmt.get();
         let newId = (result.maxId || 0) + 1;
 
         let stmt = await sql.prepare('INSERT INTO Project(id,projName,projDescrip) VALUES(?,?,?)');
         try{
-            stmt.run(newid,projName,projDesc);
+            stmt.run(newId,projName,projDesc);
             return true;
         }
         catch(err){
