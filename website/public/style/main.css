@@ -387,6 +387,8 @@ footer .social-icons a:hover {
 }
 
 @media screen and (max-width: 900px) {
+
+
     #projgroup{
         display: flex;
         flex-direction: column;
@@ -581,6 +583,8 @@ footer .social-icons a:hover {
     
 }
 
+
+
 @media screen and (max-width: 700px) {
     #pagebody{
         margin-top: 40%;
@@ -661,6 +665,9 @@ footer .social-icons a:hover {
     align-items: center;
     margin-top: 5%;
 }
+.card{
+    flex-grow: 1;
+}
 
 #projList>#listTitle>#createProjBtn{
     background-color: #16e4bc;
@@ -730,5 +737,15 @@ footer .social-icons a:hover {
 }
 
 
-
+@media screen and (max-width: 700px) {
+    #projassignmentLists{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-top: 5%;
+        margin-bottom: 5%;
+    }
+    
+}
 

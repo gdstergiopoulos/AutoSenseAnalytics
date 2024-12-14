@@ -1,21 +1,5 @@
 {{>navbar username=username}}
 <h1>This is the assign project page</h1>
-
-
-    {{!-- {{#each users}}
-        <div class="card" style="width: 18rem;">
-            <div class="card-body">
-                <h5 class="card-title">{{username}}</h5>
-            </div>
-        </div>
-    {{/each}}
-    {{#each projects}}
-        <div class="card" style="width: 18rem;">
-            <div class="card-body">
-                <h5 class="card-title">{{projName}}</h5>
-            </div>
-        </div>
-    {{/each}} --}}
     {{#if success}}
         <div class="alert alert-success" role="alert">
             {{success}}
@@ -46,18 +30,19 @@
                     <a id="createProjBtn" class="btn btn-primary">Add user</a>
             </div>
             <div class="card" style="width: 18rem;">
-            {{!--  {{#each users}}
-                    <div class="card-body">
-                        {{!-- <a href="/api/company/{{username}}/projects" class="card-title">{{username}}</a> 
-                        <a href="#" class="card-title">{{username}}</a>
-
-                    </div> 
-                {{/each}} --}}
             </div>
         </div>
     </div>
 
 <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const projectCard = document.querySelectorAll('.card')[1];
+        const initialMessageDiv = document.createElement('div');
+        initialMessageDiv.className = 'card-body';
+        initialMessageDiv.innerHTML = `<h5 class="card-title">Select a project to see the users with access to it</h5>`;
+        projectCard.appendChild(initialMessageDiv);
+    });
+
     document.querySelectorAll('.card-title').forEach(item => {
         item.addEventListener('click', event => {
             console.log(item.innerText);

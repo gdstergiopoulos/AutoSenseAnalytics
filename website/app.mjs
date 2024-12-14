@@ -230,6 +230,16 @@ router.route('/api/company/:name/projects').get(async (req, res) => {
 }
 );
 
+router.route('/api/users').get(async (req, res) => {
+    try{
+        let users = await model.getAllUsers();
+        res.send(users);
+    }
+    catch(err){
+        res.send(err.message);
+    }
+});
+
 router.route('/api/project/:id/users').get(async (req, res) => {
     try{
         let users = await model.getProjectUsers(req.params.id);
