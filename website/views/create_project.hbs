@@ -1,6 +1,7 @@
 {{>navbar username=username}}
-<div id="createproject">
-    <form action="/admin/createproject" method="post">
+{{!-- <div id="createproject">
+    <h2>Create a New Project</h2>
+    <form id="createprojectform" action="/admin/createproject" method="post">
         <div>
             <label for="projectName" class="form-label">Project Name:</label>
             <input type="text" id="projectName" name="projectName" class="form-control" required>
@@ -16,5 +17,19 @@
                 {{/if}}
         <button id="createprojectbtn" class="btn btn-primary" type="submit">Create Project</button>
     </form>
+</div> --}}
+<div id="createnewprojectform">
+    <h1>Create new project</h1>
+    <form method="POST">
+        <label for="name">Project name</label>
+        <input type="text" id="name" name="projectName" class="form-control" required>
+
+        <label for="description">Project Description:</label>
+        <textarea id="description" name="projectDescription" class="form-control"></textarea>
+        
+        <div style="text-align: center; margin-top:2%">
+            <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+    </form>
 </div>
-{{>footer}}
+

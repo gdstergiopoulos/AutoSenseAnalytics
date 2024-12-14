@@ -4,18 +4,34 @@
             <img src="/media/autologo.png" alt="AutoSense Logo" style="height: 40px;">
         </a>
         <ul class="nav">
-            <li class="nav-item">
-                <a class="nav-link" href="/home" {{#if (eq page 'home')}} style="color: #12ffd0" {{/if}}>Home</a>
-            </li>
-            <li>
-                <a class="nav-link" href="/projects" {{#if (eq page 'projects')}} style="color: #12ffd0" {{/if}} >Projects</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/about" {{#if (eq page 'about')}} style="color: #12ffd0" {{/if}}>About Us</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/contact" {{#if (eq page 'contact')}} style="color: #12ffd0" {{/if}}>Contact</a>
-            </li>
+            {{#if (eq username "AutoSense")}}
+                <li class="nav-item">
+                <a class="nav-link" href="/mycompany" {{#if (eq page 'mycompany')}} style="color: #12ffd0" {{/if}}>Main</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/assignproject" {{#if (eq page 'assignproject')}} style="color: #12ffd0" {{/if}}>Assign Project</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/createproject" {{#if (eq page 'createproject')}} style="color: #12ffd0" {{/if}}>Create Project</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" {{#if (eq page 'live')}} style="color: #12ffd0" {{/if}}>Live Status</a>
+                </li>
+            {{else}}
+                <li class="nav-item">
+                    <a class="nav-link" href="/home" {{#if (eq page 'home')}} style="color: #12ffd0" {{/if}}>Home</a>
+                </li>
+                <li>
+                    <a class="nav-link" href="/projects" {{#if (eq page 'projects')}} style="color: #12ffd0" {{/if}} >Projects</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/about" {{#if (eq page 'about')}} style="color: #12ffd0" {{/if}}>About Us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/contact" {{#if (eq page 'contact')}} style="color: #12ffd0" {{/if}}>Contact</a>
+                </li>
+            {{/if}}
+
             {{#unless username}}
                 <a class="btn btn-primary" id="loginbtn" href="/login">Login</a>
             {{/unless}}

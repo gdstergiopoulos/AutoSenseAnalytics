@@ -118,10 +118,10 @@ router.route('/mycompany').get(async (req, res) => {
         try{
             try {
                 let projects = await model.getCompanyProjects(req.session.username);
-                res.render('companyhome', {username: req.session.username, projects: projects});
+                res.render('companyhome', {username: req.session.username, page:"mycompany",projects: projects});
             }
             catch(err){
-                res.render('companyhome', {username: req.session.username, error: err.message});
+                res.render('companyhome', {username: req.session.username, page:"mycompany", error: err.message});
             }
         }
         catch(err){
@@ -215,7 +215,7 @@ router.route('/admin/assignproject').get(async (req, res) => {
     // }
     let users = await model.getAllUsers();
     let projects = await model.getAllProjects();
-    res.render('assignproject', {username: req.session.username, users: users, projects: projects});
+    res.render('assignproject', {username: req.session.username, page:"assignproject" , users: users, projects: projects});
 }
 );
 
@@ -258,7 +258,7 @@ router.route('/api/measurements/:project/').get(async (req, res) => {
 });
 
 router.route('/admin/createproject').get((req, res) => {
-    res.render('create_project');
+    res.render('create_project',{username: req.session.username, page:"createproject"});
 });
 
 router.route('/admin/createproject').post(async (req, res) => {
