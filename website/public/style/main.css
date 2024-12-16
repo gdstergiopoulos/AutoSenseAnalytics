@@ -563,7 +563,7 @@ footer .social-icons a:hover {
 
 #projpath{
     display: inline;
-    margin-left: 4%;
+    margin-left: 3%;
 }
 
 #projpath>a{
@@ -747,5 +747,12 @@ footer .social-icons a:hover {
         margin-bottom: 5%;
     }
     
+}
+
+#projpageLabels{
+    color:#16e4bc;
+    margin-left: 6%;
+    margin-top: 2%;
+    margin-bottom: 2%;
 }
 

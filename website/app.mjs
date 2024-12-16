@@ -292,6 +292,12 @@ router.route('/admin/createproject').post(async (req, res) => {
 }
 );
 
+router.route('/test').get(async (req, res) => {
+    let measurements=await model_influx.getMeasurementsLoRa();
+    res.render('heatmap', {layout: 'heatmap_layout',points:measurements});
+});
+
+
 router.use((req, res) => {
     res.render('catcherror');
 });

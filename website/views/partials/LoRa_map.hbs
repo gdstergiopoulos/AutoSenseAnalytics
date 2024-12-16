@@ -1,0 +1,60 @@
+{{!-- <h2>{{project.projName}}</h2> --}}
+<h3 id="projpageLabels">Heatmap</h3>
+<div id="map"></div>
+
+<script>
+        // Example RSSI data with locations
+        fetch('/api/measurements/lora')
+            .then(response => response.json())
+            .then(data => {
+                //console.log(data);
+                const rssiData = data.map(point => ({
+                    lat: point.latitude,
+                    lng: point.longitude,
+                    rssi: point.rssi
+                }));
+                
+
+                // Normalize RSSI values (example: convert -100 to 0 and -50 to 1)
+                function normalizeRSSI(rssi, minRSSI, maxRSSI) {
+                    return (rssi - minRSSI) / (maxRSSI - minRSSI);
+                }
+
+            
+
+                const minRSSI = Math.min(...rssiData.map(point => point.rssi));
+                const maxRSSI = Math.max(...rssiData.map(point => point.rssi));
+                console.log(`Min RSSI: ${minRSSI}, Max RSSI: ${maxRSSI}`);
+                // Prepare heatmap data
+               const heatmapData = rssiData.map(data => {
+                    //console.log(data.lat, data.lng); // Check if lat and lng are correct
+                    return {
+                        location: new google.maps.LatLng(parseFloat(data.lat), parseFloat(data.lng)),
+                        weight: normalizeRSSI(data.rssi, minRSSI, maxRSSI),
+                    };
+                });
+
+
+                console.log(heatmapData)
+                // Initialize the map
+                function initMap() {
+                    const map = new google.maps.Map(document.getElementById("map"), {
+                        center: { lat: 38.2876, lng: 21.7883 },
+                        zoom: 16.8,
+                    });
+
+                    // Create a heatmap layer
+                    const heatmap = new google.maps.visualization.HeatmapLayer({
+                        data: heatmapData,
+                        map: map,
+                        radius: 30, // Adjust radius for better visualization
+                    });
+                }
+
+                // Load the map
+                initMap();
+                
+                });
+
+</script>
+
