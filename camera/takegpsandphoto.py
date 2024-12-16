@@ -4,36 +4,37 @@ from PIL import Image, ExifTags
 import serial
 import time
 from get_location_without_class import fetch_gps_data
-
+import piexif
 
 def embed_gps_metadata(image_path, latitude, longitude):
     try:
-        img = Image.open(image_path)
-        exif_data = img.info.get("exif", {})
-        gps_info = {}
-
         # Convert latitude and longitude to EXIF GPS format
-        gps_info[1] = "N" if latitude >= 0 else "S"
-        gps_info[2] = (
-            (abs(int(latitude)), 1),
-            (int((abs(latitude) % 1) * 60), 1),
-            (int(((abs(latitude) * 60) % 1) * 60 * 10000), 10000),
-        )
-        gps_info[3] = "E" if longitude >= 0 else "W"
-        gps_info[4] = (
-            (abs(int(longitude)), 1),
-            (int((abs(longitude) % 1) * 60), 1),
-            (int(((abs(longitude) * 60) % 1) * 60 * 10000), 10000),
-        )
+        gps_ifd = {
+            piexif.GPSIFD.GPSLatitudeRef: "N" if latitude >= 0 else "S",
+            piexif.GPSIFD.GPSLatitude: [
+                (abs(int(latitude)), 1),
+                (int((abs(latitude) % 1) * 60), 1),
+                (int(((abs(latitude) * 60) % 1) * 60 * 10000), 10000),
+            ],
+            piexif.GPSIFD.GPSLongitudeRef: "E" if longitude >= 0 else "W",
+            piexif.GPSIFD.GPSLongitude: [
+                (abs(int(longitude)), 1),
+                (int((abs(longitude) % 1) * 60), 1),
+                (int(((abs(longitude) * 60) % 1) * 60 * 10000), 10000),
+            ],
+        }
 
-        # Add GPS data to the EXIF dictionary
-        exif_data["GPSInfo"] = gps_info
+        # Load the image and existing EXIF data
+        exif_dict = {"GPS": gps_ifd}
+        exif_bytes = piexif.dump(exif_dict)
 
-        # Save the image with updated metadata
-        img.save(image_path, exif=exif_data)
+        # Write EXIF metadata to the image
+        img = Image.open(image_path)
+        img.save(image_path, exif=exif_bytes)
         print(f"GPS metadata embedded: Latitude={latitude}, Longitude={longitude}")
     except Exception as e:
         print(f"Error embedding GPS metadata: {e}")
+
 
 # Main script
 def main():
@@ -54,6 +55,7 @@ def main():
         embed_gps_metadata(filename, latitude, longitude)
     except subprocess.CalledProcessError as e:
         print(f"Error capturing image: {e}")
+
 
 if __name__ == "__main__":
     main()
