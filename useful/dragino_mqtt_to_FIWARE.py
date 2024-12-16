@@ -91,7 +91,7 @@ def on_message(client, userdata, message):
             print("Invalid coordinates")
         else:
             formatted_measurement = create_json(rssi, timestamp, location)
-            patch_measument(formatted_measurement,fiware_url,headers)
+            patch_measument(formatted_measurement,fiware_url+'/LoRaMeasurement/attrs',headers)
             print(formatted_measurement)
     except Exception as e:
         print(f"Error processing entry: {str(e)}")
