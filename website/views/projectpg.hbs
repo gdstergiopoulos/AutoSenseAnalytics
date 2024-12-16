@@ -3,14 +3,17 @@
 <div id="projpath"><a  href="/mycompany">AutoSense<a href="/mycompany">&gt;Projects</a><a href="/mycompany/project/{{project.id}}">&gt;{{project.projName}}</a></a></div>
 {{!-- <div id="dashboard"><iframe src="https://labserver.sense-campus.gr:8087/d-solo/ee5awawrs54w0b/autosenseanalytics-wifi?from=1732770651103&to=1732792251103&timezone=browser&orgId=2&panelId=1&__feature.dashboardSceneSolo" width="450" height="200" frameborder="0"></iframe></div> --}}
 {{!-- this is the one --}}
-<div id="dashboard"><iframe src="https://labserver.sense-campus.gr:8087/d/ee5awawrs54w0b/autosenseanalytics-wifi?from=now-5m&to=now&timezone=browser&refresh=5s" width="1100" height="500" frameborder="0"></iframe></div>
-<h3 id="welcomecomp">Heatmap</h3>
+
+
 {{#if (eq project.projName "Signal Coverage - LoRA")}}
-    {{>project_map project=project projectPoints=projectPoints}}   
+    <h3 id="projpageLabels">Dashboard</h3>
+    <div id="dashboard"><iframe src="https://labserver.sense-campus.gr:8087/d/ae73dhsqu28zkd/autosenseanalyticslora?from=1733827833828&to=1733828948981&timezone=browser&orgId=2" width="1100" height="500" frameborder="0"></iframe></div>
+    {{>LoRa_map project=project projectPoints=projectPoints}}   
     {{!-- {{>LoRa_leaflet project=project}} --}}
 {{/if}}
 {{#if (eq project.projName 'Access Point Mapping - eduroam')}}
-    {{>project_map project=project projectPoints=projectPoints}}
+    <div id="dashboard"><iframe src="https://labserver.sense-campus.gr:8087/d/ee5awawrs54w0b/autosenseanalytics-wifi?from=now-5m&to=now&timezone=browser&refresh=5s" width="1100" height="500" frameborder="0"></iframe></div>
+    {{>WiFi_map project=project projectPoints=projectPoints}}
     {{!-- {{>LoRa_leaflet project=project}} --}}
 {{/if}}
 {{>footer}}
