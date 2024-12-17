@@ -73,7 +73,8 @@ export async function getMeasurementsLoRa() {
     try {
         // Time range in UTC
         const start = '2024-12-10T10:50:33Z';
-        const stop = '2024-12-10T11:09:16Z';
+        // const stop = '2024-12-10T11:09:16Z';
+        const stop = '2024-12-17T13:14:13.601Z';
 
         // Flux query
         const query = `
