@@ -3,6 +3,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import requests
+from influxdb_client import InfluxDBClient, Point
+from influxdb_client.client.write_api import SYNCHRONOUS
+
+#influxdb
+org="students"
+bucket="testproc"
+token="Om7csZjKnfCnYUXFZRYo1BSo7TeXDikSkAAZcWv8hqJqzMKMbFnKc0WqcbaJ69FIk9R-E88JU2OCW8WbacJaTA=="
+url="http://150.140.186.118:8086/"
 
 # Get data
 def get_data():
@@ -82,7 +90,7 @@ data = get_data()  # Get data from your API
 data = [item for item in data if item['rssi'] > -200]
 
 # Set grid size in meters
-grid_size = 50  # Adjust this based on your dataset
+grid_size = 25  # Adjust this based on your dataset
 
 # Group and average the data
 avg_data,avg_data_send = group_and_average_data(data, grid_size)
@@ -106,14 +114,49 @@ ax.set_title('3D Scatter Plot of Averaged RSSI Measurements')
 
 plt.show()
 
-# Send averaged data to server
-def send_data_to_server(avg_data):
-    url = 'http://localhost:3000/api/measurements/processed'
-    headers = {'Content-Type': 'application/json'}
-    response = requests.post(url, json=avg_data, headers=headers)
-    return response.status_code, response.text
+# # Send averaged data to server
+# def send_data_to_server(avg_data):
+#     url = 'http://localhost:3000/api/measurements/processed'
+#     headers = {'Content-Type': 'application/json'}
+#     response = requests.post(url, json=avg_data, headers=headers)
+#     return response.status_code, response.text
 
-# Send the averaged data
-status_code, response_text = send_data_to_server(avg_data_send)
-print(f'Status Code: {status_code}')
-print(f'Response: {response_text}')
+# # Send the averaged data
+# status_code, response_text = send_data_to_server(avg_data_send)
+# print(f'Status Code: {status_code}')
+# print(f'Response: {response_text}')
+
+
+def update_influxdb(points):
+
+    client = InfluxDBClient(url=url,bucket=bucket, token=token, org=org)
+    try:
+        write_api = client.write_api(write_options=SYNCHRONOUS)
+        write_api.write(bucket=bucket, org=org, record=points)
+        write_api.flush()
+    finally:
+        client.close()
+        print("InfluxDB updated successfully")
+
+    return 0
+
+# Store the averaged data in InfluxDB
+def write_proc_to_data(data):
+    
+    
+    client = InfluxDBClient(url=url,bucket=bucket, token=token, org=org)
+    write_api=client.write_api(write_options=SYNCHRONOUS)
+    for i in data:
+        point = Point("LoraMeasurement_proc") \
+                .field("rssi", float(i["rssi"]))\
+                .field("latitude", float(i["latitude"]))\
+                .field("longitude", float(i["longitude"]))
+        print(point)
+        write_api.write(bucket=bucket, org=org, record=point)
+        write_api.flush()
+    client.close()
+        
+
+
+# Write the processed data to InfluxDB
+# write_proc_to_data(avg_data_send)

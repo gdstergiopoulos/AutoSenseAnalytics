@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function() {
     try{
       let projectName = document.getElementById("welcomecomp").innerText;
       if(projectName=="Signal Coverage - LoRA"){
-        fetch('http://localhost:3000/api/measurements/lora')
+        fetch('http://localhost:3000/api/measurements/processed')
         .then(response => response.json())
         .then(data => {
             var markersLayer = L.layerGroup();
@@ -31,10 +31,10 @@ document.addEventListener("DOMContentLoaded", function() {
             var overlappingPoints = [];
             let nonOverlappingPoints=[];
 
-            data.forEach(point => {
-              point.latitude += (Math.random() - 0.5) * 0.00001; // Small latitude jitter
-              point.longitude += (Math.random() - 0.5) * 0.00001; // Small longitude jitter
-          });
+          //   data.forEach(point => {
+          //     point.latitude += (Math.random() - 0.5) * 0.00001; // Small latitude jitter
+          //     point.longitude += (Math.random() - 0.5) * 0.00001; // Small longitude jitter
+          // });
           
 
             data.forEach((point, index) => {

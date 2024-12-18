@@ -261,6 +261,10 @@ router.route('/api/measurements/:project/').get(async (req, res) => {
             let measurements = await model_influx.getMeasurementsWifi();
             res.send(measurements);
         }
+        else if(nocase=="processed"){
+            let measurements = await model_influx.getMeasurementsLoRaproc();
+            res.send(measurements);
+        }
     }
     catch(err){
         res.send(err.message);
@@ -311,15 +315,7 @@ router.route('/test/leaflet/heatmap').get(async (req, res) => {
     }
 });
 
-router.route('/api/measurements/processed').post(async (req, res) => {
-    try {
-        const data = req.body;
-        console.log(data);
-        res.send(data);
-    } catch (err) {
-        res.send(err.message);
-    }
-});
+
 
 router.use((req, res) => {
     res.render('catcherror');
