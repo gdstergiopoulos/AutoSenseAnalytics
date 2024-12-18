@@ -8,8 +8,8 @@
 {{#if (eq project.projName "Signal Coverage - LoRA")}}
     <h3 id="projpageLabels">Dashboard</h3>
     <div id="dashboard"><iframe src="https://labserver.sense-campus.gr:8087/d/ae73dhsqu28zkd/autosenseanalyticslora?from=1733827833828&to=1733828948981&timezone=browser&orgId=2" width="1100" height="500" frameborder="0"></iframe></div>
-    {{>LoRa_map project=project projectPoints=projectPoints}}   
-    {{!-- {{>LoRa_leaflet project=project}} --}}
+    {{!-- {{>LoRa_map project=project projectPoints=projectPoints}}    --}}
+    {{>LoRa_leaflet project=project}}
 {{/if}}
 {{#if (eq project.projName 'Access Point Mapping - eduroam')}}
     <div id="dashboard"><iframe src="https://labserver.sense-campus.gr:8087/d/ee5awawrs54w0b/autosenseanalytics-wifi?from=now-5m&to=now&timezone=browser&refresh=5s" width="1100" height="500" frameborder="0"></iframe></div>

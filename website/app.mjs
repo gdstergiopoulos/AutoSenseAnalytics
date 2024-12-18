@@ -292,15 +292,39 @@ router.route('/admin/createproject').post(async (req, res) => {
 }
 );
 
-router.route('/test').get(async (req, res) => {
-    let measurements=await model_influx.getMeasurementsLoRa();
-    res.render('heatmap', {layout: 'heatmap_layout',points:measurements});
+router.route('/test/leaflet/heatmap').get(async (req, res) => {
+    try{
+        let project= await model.getProjectData(3);
+        let projectPoints;
+        if(project.projName==="Signal Coverage - LoRA"){
+            projectPoints= await model_influx.getMeasurementsLoRa();
+        }
+        else if (project.projName==="Access Point Mapping - eduroam"){
+            projectPoints= await model_influx.getMeasurementsWifi();
+        }
+        // console.log(projectPoints);
+        // res.render('projectpg', {layout: 'main_google' , username: req.session.username, project: project, projectPoints: projectPoints});
+        res.render('projectpg', {layout: 'main',username: req.session.username, project: project});
+    }
+    catch(err){
+        res.redirect('/mycompany', {error: err.message});
+    }
 });
 
+router.route('/api/measurements/processed').post(async (req, res) => {
+    try {
+        const data = req.body;
+        console.log(data);
+        res.send(data);
+    } catch (err) {
+        res.send(err.message);
+    }
+});
 
 router.use((req, res) => {
     res.render('catcherror');
 });
+
 
 
 

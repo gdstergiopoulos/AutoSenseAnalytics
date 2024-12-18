@@ -46,10 +46,13 @@
                     // Create a heatmap layer
                     const heatmap = new google.maps.visualization.HeatmapLayer({
                         data: heatmapData,
-                        map: map,
-                        radius: 30, // Adjust radius for better visualization
+                        map: map
                     });
+
+                    heatmap.set("radius", 30);
                 }
+
+                
 
                 // Load the map
                 initMap();
