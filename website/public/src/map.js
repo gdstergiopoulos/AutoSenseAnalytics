@@ -1,5 +1,6 @@
 // Ensure that the HTML element with id "map" exists
 
+
 document.addEventListener("DOMContentLoaded", function() {
     // Ensure that the HTML element with id "map" exists
     var mapElement = document.getElementById("map");
@@ -25,12 +26,94 @@ document.addEventListener("DOMContentLoaded", function() {
         fetch('http://localhost:3000/api/measurements/lora')
         .then(response => response.json())
         .then(data => {
-          data.forEach(point => {
-            var marker = L.marker([point.latitude, point.longitude], {icon: custom}).addTo(map);
-            marker.bindPopup(`RSSI: ${point.rssi}`).addEventListener('click', function() {
+            var markersLayer = L.layerGroup();
+            var heatLayer = L.layerGroup();
+            var overlappingPoints = [];
+            let nonOverlappingPoints=[];
+
+            data.forEach(point => {
+              point.latitude += (Math.random() - 0.5) * 0.00001; // Small latitude jitter
+              point.longitude += (Math.random() - 0.5) * 0.00001; // Small longitude jitter
+          });
+          
+
+            data.forEach((point, index) => {
+              for (let i = index + 1; i < data.length; i++) {
+                if (point.latitude === data[i].latitude && point.longitude === data[i].longitude) {
+                  overlappingPoints.push(point);
+                  break;
+                }
+              }
+            });
+
+            var uniquePoints = {};
+
+            overlappingPoints.forEach(point => {
+              var key = `${point.latitude},${point.longitude}`;
+              if (!uniquePoints[key]) {
+                uniquePoints[key] = { ...point, count: 1 };
+              } else {
+                uniquePoints[key].rssi += point.rssi;
+                uniquePoints[key].count += 1;
+              }
+            });
+
+            var averagedPoints = Object.values(uniquePoints).map(point => ({
+              latitude: point.latitude,
+              longitude: point.longitude,
+              rssi: point.rssi / point.count
+            }));
+
+            data = data.filter(point => !overlappingPoints.includes(point)).concat(averagedPoints);
+            
+            data.forEach((point, index) => {
+              if (!overlappingPoints.includes(point)) {
+                nonOverlappingPoints.push(point);
+              }
+            });
+
+            console.log("Overlapping Points:", overlappingPoints);
+            console.log("Non-Overlapping Points:", nonOverlappingPoints);
+            console.log("averagedPoints:", averagedPoints);
+
+            var validPoints = nonOverlappingPoints.concat(averagedPoints);
+            console.log("Valid Points:", validPoints);
+            
+            validPoints.forEach(point => {
+            var marker = L.marker([point.latitude, point.longitude], {icon: custom}).addTo(markersLayer);
+            marker.bindPopup(`RSSI: ${point.rssi}, Lat: ${point.latitude}, Lon: ${point.longitude},norm: ${-(point.rssi+120)/(-63)}`).addEventListener('click', function() {
               marker.openPopup();
             });
-          });
+            });
+
+
+            var rssiValues = validPoints.map(point => point.rssi).filter(rssi => rssi > -200);
+            var minRssi = Math.min(...rssiValues);
+            var maxRssi = Math.max(...rssiValues);
+            console.log(minRssi, maxRssi);
+
+            var heatData = validPoints.map(point => {
+              var normalizedRssi = (point.rssi-minRssi) / (maxRssi - minRssi);
+              return [point.latitude, point.longitude, normalizedRssi];
+            });
+
+            console.log(heatData)
+            var heat = L.heatLayer(heatData, {
+            radius: 25,
+            blur: 15,
+            maxZoom: 17
+            }).addTo(heatLayer);
+
+            markersLayer.addTo(map);
+            heatLayer.addTo(map);
+
+            var overlayMaps = {
+            "Markers": markersLayer,
+            "Heatmap": heatLayer
+            };
+
+            L.control.layers(baseMap, overlayMaps).addTo(map);
+            
         })
         .catch(error => console.error('Error fetching data:', error));
       }
@@ -96,7 +179,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         };
 
-        L.control.layers(baseMap).addTo(map);
+        // L.control.layers(baseMap).addTo(map);
 });
 
     

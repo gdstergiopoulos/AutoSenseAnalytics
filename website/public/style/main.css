@@ -637,6 +637,7 @@ footer .social-icons a:hover {
 
 #mapProject{
     display: flex;
+    flex-grow: 1;
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
@@ -647,6 +648,7 @@ footer .social-icons a:hover {
 
 #mapProject>#mapcont{
     width: 58%;
+
 }
 
 #projassignmentLists{
