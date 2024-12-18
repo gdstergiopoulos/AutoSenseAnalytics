@@ -35,7 +35,7 @@ try:
         az = accel_z / 16384.0
         
         print(f"Ax: {ax:.2f} g, Ay: {ay:.2f} g, Az: {az:.2f} g")
-        time.sleep(0.5)
+        time.sleep(0.1)
 
 except KeyboardInterrupt:
     print("Measurement stopped.")
