@@ -1,4 +1,4 @@
-*
+/*
   Replace NWKSKEY, APPSKEY, DEVADDR
 
   Reference: https://github.com/goodcheney/ttn_mapper/blob/master/gps_shield
@@ -225,8 +225,8 @@ void GPSRead() {
   unsigned long age;
   gps.f_get_position(&flat, &flon, &age);
   falt = gps.f_altitude(); // Get altitude
-  Serial.println(falt);
-  Serial.println(flon);
+  //Serial.println(falt);
+  //Serial.println(flon);
   flat == TinyGPS::GPS_INVALID_F_ANGLE ? 0.0 : flat, 6;
   flon == TinyGPS::GPS_INVALID_F_ANGLE ? 0.0 : flon, 6; // Save six decimal places
   falt == TinyGPS::GPS_INVALID_F_ANGLE ? 0.0 : falt, 2; // Save two decimal places
@@ -237,6 +237,11 @@ void GPSWrite() {
   datastring1 += dtostrf(flat, 0, 4, gps_lat);
   datastring2 += dtostrf(flon, 0, 4, gps_lon);
   // datastring3 += dtostrf(falt, 0, 2, gps_alt);
+  Serial.print("Latitude: ");
+  Serial.println(flat, 6); // Print latitude with 6 decimal places
+  Serial.print("Longitude: ");
+  Serial.println(flon, 6); // Print longitude with 6 decimal places
+
 
   if (flat != 1000.000000) {
     strcat(gps_lat, ",");
