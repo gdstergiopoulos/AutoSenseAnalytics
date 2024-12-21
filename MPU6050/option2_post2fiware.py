@@ -4,6 +4,7 @@ from datetime import datetime
 from take_measurements import measure_average_acceleration
 import threading 
 from queue import Queue
+import smbus
 
 fiware_url = "http://150.140.186.118:1026/v2/entities"
 
@@ -131,7 +132,7 @@ def take_measurements():
 
         # Add the measurement to the queue
         accum_queue.put(measurement)
-        print(f"Measurement queued: {accx:.2f} g")
+        #print(f"Measurement queued: {accx:.2f} g")
 
 
 if __name__ == "__main__":
