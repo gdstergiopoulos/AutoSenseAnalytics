@@ -13,6 +13,8 @@ headers = {
     "Fiware-ServicePath": "/AutoSenseAnalytics"
 }
 
+accum_queue = Queue()
+
 def create_json(lat_list,lon_list,acc1,acc2,acc3, timestamp):
     measurement = {
         "latitude": {
@@ -119,8 +121,37 @@ def accum_measurements(duration=2, sample_interval=0.2):
 
     
         return accel_x_values, accel_y_values, accel_z_values
-    
-def test():
-    test1 = accum_measurements()
-    print(test1)
+def take_measurements():
+    while True:
+        accx, accy, accz = accum_measurements()
+        timestamp = datetime.now().isoformat()
+        location=[21.753150, 38.230462]
+        measurement = create_json(location[0], location[1], accx, accy, accz, timestamp)
+        print(measurement)
+
+        # Add the measurement to the queue
+        accum_queue.put(measurement)
+        print(f"Measurement queued: {accx:.2f} g")
+
+
+if __name__ == "__main__":
+    try:
+        measure_thread = threading.Thread(target=take_measurements,daemon=True)
+        measure_thread.start()
+
+        # Main loop: Post data to FIWARE when the queue is not empty
+        while True:
+            try:
+                measurement = accum_queue.get(timeout=0.1)
+            except: 
+                measurement = None
+            if measurement:
+                post_to_fiware(measurement,"http://150.140.186.118:1026/v2/entities/imu/attrs", headers)
+                accum_queue.task_done()         # Mark the task as done
+
+            else:
+                time.sleep(0.1)  # Avoid busy waiting
+
+    except KeyboardInterrupt:
+        print("Program stopped by user.")
     
