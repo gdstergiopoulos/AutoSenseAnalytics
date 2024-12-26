@@ -131,3 +131,25 @@ export let addMessage = async (name,email,msg) => {
         throw err;
     }
 }
+
+export let writePhotoData = async (timestamp, latitude, longitude, path) => {
+    let stmt = await sql.prepare('INSERT INTO Photos VALUES(?,?,?,?)');
+    try{
+        stmt.run(latitude, longitude,timestamp, path);
+        return true;
+    }
+    catch(err){
+        throw err;
+    }
+}
+
+export let getPhotos = async () => {
+    let stmt = await sql.prepare('SELECT * FROM Photos');
+    try{
+        let photos = stmt.all();
+        return photos;
+    }
+    catch(err){
+        throw err;
+    }
+}

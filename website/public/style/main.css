@@ -758,3 +758,7 @@ footer .social-icons a:hover {
     margin-bottom: 2%;
 }
 
+.popup-img {
+    max-width: 200px;
+    height: auto;
+}

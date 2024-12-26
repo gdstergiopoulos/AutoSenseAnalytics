@@ -130,9 +130,30 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .catch(error => console.error('Error fetching data:', error));
       }
+      else if(projectName=="3D Reconstruction"){
+        fetch('http://localhost:3000/api/photos')
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(entry => {
+                console.log(entry);
+                // Create a marker for each photo
+                const marker = L.marker([entry.lat, entry.lon]).addTo(map);
+
+                // Bind a popup with the photo and metadata
+                marker.bindPopup(`
+                    <b>Timestamp:</b> ${new Date(entry.timestamp).toLocaleString()}<br>
+                    <img src="${entry.path}" class="popup-img" alt="Photo">
+                `);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching metadata:', error);
+        });
+      }
     }
     catch(error){
       console.error('Error fetching data:', error);
+      
       var marker = L.marker([38.28864841960415, 21.788658751750393],{icon:custom}).addTo(map);
       marker.bindPopup("AutoSense").addEventListener(this.onclick, function() {
           marker.bindPopup("AutoSense").openPopup();});
@@ -174,11 +195,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
         baseMap = {
             "Mapbox Satellite": layer3,
-            "Mapbox Streets": layer1,
             "Mapbox Dark": layer2,
+            "Mapbox Streets": layer1,
 
         };
-
+        let projectName = document.getElementById("welcomecomp").innerText;
+        if(projectName!="Signal Coverage - LoRA"){
+            L.control.layers(baseMap).addTo(map);
+        }
         // L.control.layers(baseMap).addTo(map);
 });
 

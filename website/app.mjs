@@ -7,6 +7,11 @@ import * as model from './model/model.mjs'
 import * as model_influx from './model/model_influx.mjs'
 import Handlebars from './helpers.js'
 import mqtt from 'mqtt';
+import multer from 'multer';
+import fs from 'fs';
+import path from 'path';
+
+
 
 const app = express()
 const router = express.Router();
@@ -31,6 +36,22 @@ router.use(session({
       sameSite: true
     }
   }));
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        const uploadDir = 'public/uploads';
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir); // Create the directory if it doesn't exist
+        }
+        cb(null, uploadDir);
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + path.extname(file.originalname)); // Unique filename
+    }
+});
+
+const upload = multer({ storage: storage });
 
 router.route('/').get(async (req, res) => {
     
@@ -147,12 +168,15 @@ router.route('/mycompany/project/:id').get(async (req, res) => {
         else if (project.projName==="Access Point Mapping - eduroam"){
             projectPoints= await model_influx.getMeasurementsWifi();
         }
+        else if(project.projName==="3D Reconstruction"){
+            projectPoints= await model.getPhotos();
+        }
         // console.log(projectPoints);
-        res.render('projectpg', {layout: 'main_google' , username: req.session.username, project: project, projectPoints: projectPoints});
-        // res.render('projectpg', {layout: 'main',username: req.session.username, project: project});
+        // res.render('projectpg', {layout: 'main_google' , username: req.session.username, project: project, projectPoints: projectPoints});
+        res.render('projectpg', {layout: 'main',username: req.session.username, project: project});
     }
     catch(err){
-        res.redirect('/mycompany', {error: err.message});
+        res.redirect('companyhome', {error: err.message});
     }
 }
 });
@@ -312,6 +336,58 @@ router.route('/test/leaflet/heatmap').get(async (req, res) => {
     }
     catch(err){
         res.redirect('/mycompany', {error: err.message});
+    }
+});
+
+router.route('/upload_photo').post(upload.single('photo'), async (req, res) => {
+    const metadata = req.body;
+    const photoFile = req.file;
+
+    if (!photoFile || !metadata.lat || !metadata.lon || !metadata.timestamp) {
+        return res.status(400).send('Photo and metadata (lat, lon, timestamp) are required.');
+    }
+
+    // Save metadata to a JSON file (you can replace this with a database)
+    const metadataFile = 'metadata.json';
+    const metadataEntry = {
+        lat: metadata.lat,
+        lon: metadata.lon,
+        timestamp: metadata.timestamp,
+        photoPath: `/uploads/${photoFile.filename}`
+    };
+
+    //write the data to the sqlite
+    try{
+        await model.writePhotoData(metadata.timestamp, metadata.lat, metadata.lon, metadataEntry.photoPath);
+    }
+    catch(err){
+        console.log(err);
+    }
+
+    // fs.readFile(metadataFile, (err, data) => {
+    //     const metadataArray = err ? [] : JSON.parse(data); // If file doesn't exist, start with an empty array
+    //     metadataArray.push(metadataEntry);
+
+    //     fs.writeFile(metadataFile, JSON.stringify(metadataArray, null, 2), (err) => {
+    //         if (err) {
+    //             console.error(err);
+    //             return res.status(500).send('Error saving metadata.');
+    //         }
+    //         res.send({
+    //             message: 'Photo and metadata saved successfully!',
+    //             data: metadataEntry,
+    //         });
+    //     });
+    // });
+});
+
+router.route('/api/photos').get(async (req, res) => {
+    try{
+        let photos = await model.getPhotos();
+        res.send(photos);
+    }
+    catch(err){
+        res.send(err.message);
     }
 });
 
