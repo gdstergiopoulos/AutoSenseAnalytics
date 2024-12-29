@@ -2,6 +2,18 @@
   background-color: #2e2f36;
 }
 
+/* .btn .btn-primary{
+  background-color: #12ffd0;
+  border-color: #12ffd0;
+  color: #000000;
+}
+
+.btn:hover .btn-primary:hover{
+  background-color: #12ffd08e;
+  border-color: #12ffd08e;
+  color: #000000;
+} */
+
 #pagebody{
   background-color: #161b22;
   margin-top: 6%;
@@ -660,18 +672,41 @@ footer .social-icons a:hover {
     margin-bottom: 5%;
 }
 
-#projList{
+#projList, #userList{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     margin-top: 5%;
 }
-.card{
-    flex-grow: 1;
+
+.card {
+    flex: 1; /* Ensure the cards take up equal space */
+    display: flex;
+    flex-direction: column; /* Stack content vertically */
+    justify-content: flex-start; /* Align content at the top */
+    min-height: 300px; /* Set a minimum height */
+    max-height: 400px; /* Set a maximum height for the cards */
+    overflow-y: auto; /* Enable vertical scrolling if content overflows */
+    background-color: white; /* Match the background */
+    border-radius: 8px; /* Optional: Rounded corners */
+    padding: 16px; /* Add padding */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Subtle shadow */
 }
 
-#projList>#listTitle>#createProjBtn{
+/* Optional: Style the scrollbar */
+.card::-webkit-scrollbar {
+    width: 8px; /* Set scrollbar width */
+}
+.card::-webkit-scrollbar-thumb {
+    background: #888; /* Set scrollbar thumb color */
+    border-radius: 4px; /* Rounded scrollbar thumb */
+}
+.card::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Darker thumb on hover */
+}
+
+#projList>#listTitle>#createProjBtn , #userList>#listTitle>#createUserBtn{
     background-color: #16e4bc;
     border-color: #16e4bc;
     color:#000000;
@@ -679,11 +714,11 @@ footer .social-icons a:hover {
     align-self: flex-end;
 }
 
-#projList>#listTitle>#createProjBtn:hover{
+#projList>#listTitle>#createProjBtn:hover , #userList>#listTitle>#createUserBtn:hover{
     opacity: 0.6;
 }
 
-#projList>#listTitle>h3{
+#listTitle>h3{
     color:#16e4bc;
     align-self: flex-start;
     flex-grow: 1;

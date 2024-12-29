@@ -101,6 +101,7 @@ export let getAllProjects = async () => {
     let stmt = await sql.prepare('SELECT DISTINCT * FROM Project');
     try{
         let projects = stmt.all();
+        //console.log(projects);
         return projects;
     }
     catch(err){
@@ -109,11 +110,11 @@ export let getAllProjects = async () => {
 }
 
 export let getAllUsers = async () => {
-    console.log('In model');
+    // console.log('In model');
     let stmt = sql.prepare("SELECT * FROM User WHERE username != 'AutoSense'");
     try{
         let users = stmt.all();
-        console.log(users)
+        //console.log(users)
         return users;
     }
     catch(err){

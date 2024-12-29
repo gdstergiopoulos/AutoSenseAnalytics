@@ -1,5 +1,5 @@
 {{>navbar username=username}}
-<h1>This is the assign project page</h1>
+<h1 id="welcomecomp">Project and User Management</h1>
     {{#if success}}
         <div class="alert alert-success" role="alert">
             {{success}}
@@ -19,58 +19,25 @@
             <div class="card" style="width: 18rem;">
                 {{#each projects}}
                     <div class="card-body">
-                        <a href="#" class="card-title">{{projName}} <span hidden>{{id}}</span><a>
+                        <a href="#" class="card-title">{{projName}}</a>
                     </div>
                 {{/each}} 
             </div>
+             <p style="color: white;margin-top: 2%; opacity: 0.4">Select a project to manage it</p>
         </div>
-        <div id="projList">
+        <div id="userList">
             <div id="listTitle">
-                    <h3>Users</h3>
-                    <a id="createProjBtn" class="btn btn-primary">Add user</a>
+                <h3>Users</h3>
+                <a href="/admin/createuser" id="createUserBtn" class="btn btn-primary">Create new user</a>
             </div>
             <div class="card" style="width: 18rem;">
+                {{#each users}}
+                    <div class="card-body">
+                        <a href="#" class="card-title">{{username}}</a>
+                    </div>
+                {{/each}} 
             </div>
+            <p style="color: white;margin-top: 2%; opacity: 0.4">Select a user to manage</p>
         </div>
     </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', (event) => {
-        const projectCard = document.querySelectorAll('.card')[1];
-        const initialMessageDiv = document.createElement('div');
-        initialMessageDiv.className = 'card-body';
-        initialMessageDiv.innerHTML = `<h5 class="card-title">Select a project to see the users with access to it</h5>`;
-        projectCard.appendChild(initialMessageDiv);
-    });
-
-    document.querySelectorAll('.card-title').forEach(item => {
-        item.addEventListener('click', event => {
-            console.log(item.innerText);
-            const projectId = item.querySelector('span').innerText;
-            fetch('/api/project/' + projectId + '/users')
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                 const projectCard = document.querySelectorAll('.card')[1];
-                projectCard.innerHTML = ''; // Clear previous projects
-                if (data.length === 0) {
-                    const noUsersDiv = document.createElement('div');
-                    noUsersDiv.className = 'card-body';
-                    noUsersDiv.innerHTML = `<h5 class="card-title">No users have access to this project</h5>`;
-                    projectCard.appendChild(noUsersDiv);
-                }
-                else{
-                    data.forEach(user => {
-                    const projectDiv = document.createElement('div');
-                    projectDiv.className = 'card-body';
-                    projectDiv.innerHTML = `<h5 class="card-title">${user.username}</h5>`;
-                    projectCard.appendChild(projectDiv);
-                 });
-                }
-            });
-        });
-
-        
-    });
-</script>
-{{>footer}}

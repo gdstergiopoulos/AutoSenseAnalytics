@@ -1,23 +1,5 @@
 {{>navbar username=username}}
-{{!-- <div id="createproject">
-    <h2>Create a New Project</h2>
-    <form id="createprojectform" action="/admin/createproject" method="post">
-        <div>
-            <label for="projectName" class="form-label">Project Name:</label>
-            <input type="text" id="projectName" name="projectName" class="form-control" required>
-        </div>
-        <div>
-            <label for="projectDescription" class="form-label">Project Description:</label>
-            <textarea id="projectDescription" name="projectDescription" class="form-control" required></textarea>
-        </div>
-        {{#if error}}
-                <div class="alert alert-danger" role="alert">
-                    {{error}}
-                </div>
-                {{/if}}
-        <button id="createprojectbtn" class="btn btn-primary" type="submit">Create Project</button>
-    </form>
-</div> --}}
+
 <div id="createnewprojectform">
     <h1>Create new project</h1>
     <form method="POST">
@@ -26,8 +8,20 @@
 
         <label for="description">Project Description:</label>
         <textarea id="description" name="projectDescription" class="form-control"></textarea>
-        
+        {{#if error}}
+        <br><br>
+        <div class="alert alert-danger" role="alert">
+            {{error}}
+        </div>
+        {{/if}}
+        {{#if success}}
+        <br><br>
+        <div class="alert alert-success" role="alert">
+            {{success}}
+        </div>
+        {{/if}}
         <div style="text-align: center; margin-top:2%">
+            <a style="background-color:#606060; color:white; border-color:#606060" href="/admin/assignproject" class="btn btn-primary">Go back</a>
             <button type="submit" class="btn btn-primary">Create</button>
         </div>
     </form>

@@ -299,11 +299,38 @@ router.route('/admin/createproject').get((req, res) => {
     res.render('create_project',{username: req.session.username, page:"createproject"});
 });
 
+router.route('/admin/createuser').get((req, res) => {
+    res.render('create_newuser',{username: req.session.username, page:"createuser"});
+}
+);
+
+router.route('/admin/createuser').post(async (req, res) => {
+    // res.render('create_newuser',{username: req.session.username, page:"createuser"});
+    try{
+        if(req.body.username === '' || req.body.email === '' || req.body.password === '' || req.body.confirmpassword === '') {
+            res.render('create_newuser', {username: req.session.username, page:"createuser",error: 'All fields are required'});
+        }
+        if(req.body.password !== req.body.confirmpassword){
+            res.render('create_newuser', {username: req.session.username, page:"createuser",error: 'Passwords do not match'});
+        }
+        else{
+            if(await model.registerUser(req.body.username,req.body.email, req.body.password)){
+                // req.session.username = req.body.username;
+                res.render('create_newuser', {username: req.session.username, page:"createuser",success: 'User created successfully'});
+            }
+        }
+    }
+    catch(err){
+        res.render('create_newuser', {username: req.session.username,page:"createuser",error: err.message});
+    }
+}
+);
+
 router.route('/admin/createproject').post(async (req, res) => {
     try{
         await model.createProject(req.body.projectName, req.body.projectDescription);
         // res.render('assignproject', {success: 'Project created successfully'});
-        res.redirect('/admin/assignproject');
+        res.render('create_project', {username: req.session.username ,success: 'Project created successfully'});
         // console.log(req.body);
         // if(req.body.projectName === '' || req.body.req.body.projectDescription === ''){
         //     res.render('create_project', {error: 'All fields are required'});
@@ -315,7 +342,7 @@ router.route('/admin/createproject').post(async (req, res) => {
         // }
     }
     catch(err){
-        res.render('create_project', {error: err.message});
+        res.render('create_project', {username: req.session.username,error: err.message});
     }
 }
 );

@@ -1,0 +1,36 @@
+{{>navbar username=username}}
+<div id="createnewprojectform">
+    <h1>Create new user</h1>
+    <form action="/admin/createuser" method="POST">
+        <label for="name">Username</label>
+        <input type="text" id="name" name="username" class="form-control" required>
+
+
+        <label for="email">Email</label>
+        <input id="description" name="email" class="form-control"></input>
+
+        <label for="password">Password</label>
+        <input type="password" id="description" name="password" class="form-control"></input>
+
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="description" name="confirmpassword" class="form-control"></input>
+
+        {{#if error}}
+        <br><br>
+        <div class="alert alert-danger" role="alert">
+            {{error}}
+        </div>
+        {{/if}}
+        {{#if success}}
+        <br><br>
+        <div class="alert alert-success" role="alert">
+            {{success}}
+        </div>
+        {{/if}}
+        <div style="text-align: center; margin-top:2%">
+            <a style="background-color:#606060; color:white; border-color:#606060" href="/admin/assignproject" class="btn btn-primary">Go back</a>
+            <button type="submit" class="btn btn-primary">Create Account</button>
+        </div>
+        
+    </form>
+</div>
