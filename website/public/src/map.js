@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function() {
     try{
       let projectName = document.getElementById("welcomecomp").innerText;
       if(projectName=="Signal Coverage - LoRA"){
-        fetch('http://localhost:3000/api/measurements/processed')
+        fetch('/api/measurements/processed')
         .then(response => response.json())
         .then(data => {
             var markersLayer = L.layerGroup();
@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .catch(error => console.error('Error fetching data:', error));
       }
       else if(projectName=="Access Point Mapping - eduroam"){
-        fetch('http://localhost:3000/api/measurements/wifi')
+        fetch('/api/measurements/wifi')
         .then(response => response.json())
         .then(data => {
           data.forEach(point => {
@@ -131,7 +131,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .catch(error => console.error('Error fetching data:', error));
       }
       else if(projectName=="3D Reconstruction"){
-        fetch('http://localhost:3000/api/photos')
+        fetch('/api/photos')
         .then(response => response.json())
         .then(data => {
             data.forEach(entry => {
