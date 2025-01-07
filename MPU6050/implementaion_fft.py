@@ -49,6 +49,7 @@ def collect_acceleration_data(duration=2, sample_interval=0.01):
 
         # Calculate total acceleration magnitude
         total_acceleration = math.sqrt(ax**2 + ay**2 + az**2)
+        print(total_acceleration)
         acceleration_data.append(total_acceleration)
 
         # Adjust timing to maintain precise sampling intervals
@@ -59,7 +60,7 @@ def collect_acceleration_data(duration=2, sample_interval=0.01):
 
 
 # Bandpass Filter
-def bandpass_filter(data, lowcut, highcut, fs, order=4):
+def bandpass_filter(data, fs, lowcut=5, highcut=49,  order=4):
     """
     Apply a bandpass Butterworth filter to the input data.
     Args:
@@ -110,7 +111,7 @@ def process_fft_and_filter(data, fs):
     # print(f"FFT Magnitudes: {np.abs(fft_values[relevant_indices])}")
 
     # Apply bandpass filter
-    filtered_data = bandpass_filter(data, lowcut=5, highcut=49, fs=fs)
+    filtered_data = bandpass_filter(data,fs=fs lowcut=5, highcut=49, )
 
     # Take the absolute value of the filtered signal
     absolute_data = np.abs(filtered_data)
