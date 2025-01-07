@@ -125,13 +125,14 @@ if __name__ == "__main__":
     duration = 2  # Duration for data collection in seconds
 
     try:
-        print("Collecting data from MPU6050...")
-        raw_acceleration_data = collect_acceleration_data(duration, sample_interval=1/fs)
+        while True:
+            print("Collecting data from MPU6050...")
+            raw_acceleration_data = collect_acceleration_data(duration, sample_interval=1/fs)
 
-        print("Processing data...")
-        final_avg_acceleration = process_fft_and_filter(raw_acceleration_data, fs)
+            print("Processing data...")
+            final_avg_acceleration = process_fft_and_filter(raw_acceleration_data, fs)
 
-        print(f"Final average acceleration after filtering: {final_avg_acceleration:.2f} g")
+            print(f"Final average acceleration after filtering: {final_avg_acceleration:.2f} g")
 
     except KeyboardInterrupt:
         print("Program stopped by user.")
