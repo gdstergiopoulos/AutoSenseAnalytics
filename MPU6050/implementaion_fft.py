@@ -45,10 +45,25 @@ def collect_acceleration_data(duration=2, sample_interval=0.01):
 
 
 def bandpass_filter(data, lowcut, highcut, fs, order=4):
-
-    nyquist = 0.5 * fs
+    """
+    Apply a bandpass Butterworth filter to the input data.
+    Args:
+        data: 1D array of raw acceleration data.
+        lowcut: Low cutoff frequency in Hz.
+        highcut: High cutoff frequency in Hz.
+        fs: Sampling frequency in Hz.
+        order: Filter order (default is 4).
+    Returns:
+        Filtered data.
+    """
+    nyquist = 0.5 * fs  # Nyquist frequency
     low = lowcut / nyquist
     high = highcut / nyquist
+
+    # Ensure frequencies are in the valid range
+    if low <= 0 or high >= 1:
+        raise ValueError("Critical frequencies must satisfy 0 < low < high < 1.")
+
     b, a = butter(order, [low, high], btype='band')
     return filtfilt(b, a, data)
 
