@@ -83,8 +83,6 @@ def bandpass_filter(data, fs, lowcut=5, highcut=49,  order=4):
     b, a = butter(order, [low, high], btype='band')
     return filtfilt(b, a, data)
 
-
-# FFT and Filtering
 def process_fft_and_filter(data, fs):
     """
     Perform FFT and apply a bandpass filter to the input data.
@@ -99,19 +97,18 @@ def process_fft_and_filter(data, fs):
 
     # Apply FFT
     n = len(data)
-    fft_values = fft(data)
-    frequencies = fftfreq(n, d=1/fs)
+    fft_values = fft(data)  # Full FFT result (complex numbers)
+    frequencies = fftfreq(n, d=1/fs)  # Corresponding frequencies (positive and negative)
 
-    # Use only positive frequencies
-    positive_frequencies = frequencies[frequencies >= 0]
-    relevant_indices = (positive_frequencies >= 5) & (positive_frequencies <= 50)
+    # Calculate magnitudes (absolute values) of the FFT
+    fft_magnitudes = np.abs(fft_values)
 
-    # Debugging: Print FFT results (optional)
-    # print(f"Relevant Frequencies: {positive_frequencies[relevant_indices]}")
-    # print(f"FFT Magnitudes: {np.abs(fft_values[relevant_indices])}")
+    # Debugging: Print all frequencies and their corresponding magnitudes
+    print("Frequencies:", frequencies)
+    print("FFT Magnitudes:", fft_magnitudes)
 
-    # Apply bandpass filter
-    filtered_data = bandpass_filter(data,fs=fs lowcut=5, highcut=49, )
+    # Apply bandpass filter in the time domain
+    filtered_data = bandpass_filter(data,fs=fs, lowcut=5, highcut=49, )
 
     # Take the absolute value of the filtered signal
     absolute_data = np.abs(filtered_data)
