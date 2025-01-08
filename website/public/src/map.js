@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         //for camera controller
 
-        fetch('http://localhost:5000/api/photos')
+        fetch('http://localhost:4943/api/photos')
         .then(response => response.json())
         .then(data => {
             data.forEach(entry => {
@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     <b>Acc X:</b> ${entry.accx}<br>
                     <b>Acc Y:</b> ${entry.accy}<br>
                     <b>Acc Z:</b> ${entry.accz}<br>
-                    <img src="http://localhost:5000/photo/${entry.id}" class="popup-img" alt="Photo">
+                    <img src="http://localhost:4943/photo/${entry.id}" class="popup-img" alt="Photo">
                 `);
             });
         })

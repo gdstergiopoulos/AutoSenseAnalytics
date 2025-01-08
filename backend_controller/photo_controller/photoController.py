@@ -78,6 +78,12 @@ def convert_to_degrees(value):
     d, m, s = value
     return d + (m / 60.0) + (s / 3600.0)
 
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({"message":"Welcome to the photo API! Up and running"})
+
+
+
 @app.route("/upload", methods=["POST"])
 def upload_photo():
     if "photo" not in request.files:
@@ -188,4 +194,4 @@ def get_all_photos():
     return jsonify(photos)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=4943, debug=True)

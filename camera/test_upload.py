@@ -9,7 +9,7 @@ def upload_photo():
             'accy': 0,
             'accz': 0
         }
-        response = requests.post('http://localhost:5000/upload', files=files, data=data)
+        response = requests.post('http://localhost:4943/upload', files=files, data=data)
         if response.status_code == 200 or response.status_code == 201:
             print("Upload successful:", response.json())
         else:
