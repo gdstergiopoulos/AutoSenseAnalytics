@@ -10,6 +10,8 @@ import mqtt from 'mqtt';
 import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
+import cors from 'cors';
+
 
 
 
@@ -20,7 +22,7 @@ const port = process.env.PORT || '3000';
 app.use(express.static('public'));
 app.engine('hbs', engine({ extname: 'hbs' }));
 app.set('view engine', 'hbs');
-
+app.use(cors());
 
 app.use(router);
 router.use(express.json());

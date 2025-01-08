@@ -131,24 +131,45 @@ document.addEventListener("DOMContentLoaded", function() {
         .catch(error => console.error('Error fetching data:', error));
       }
       else if(projectName=="3D Reconstruction"){
-        fetch('/api/photos')
+        // fetch('/api/photos')
+        // .then(response => response.json())
+        // .then(data => {
+        //     data.forEach(entry => {
+        //         console.log(entry);
+        //         // Create a marker for each photo
+        //         const marker = L.marker([entry.lat, entry.lon]).addTo(map);
+
+        //         // Bind a popup with the photo and metadata
+        //         marker.bindPopup(`
+        //             <b>Timestamp:</b> ${new Date(entry.timestamp).toLocaleString()}<br>
+        //             <img src="http://localhost:5000/photo/7" class="popup-img" alt="Photo">
+        //         `);
+        //     });
+        // })
+        // .catch(error => {
+        //     console.error('Error fetching metadata:', error);
+        // });
+
+        //for camera controller
+
+        fetch('http://localhost:5000/api/photos')
         .then(response => response.json())
         .then(data => {
             data.forEach(entry => {
                 console.log(entry);
                 // Create a marker for each photo
-                const marker = L.marker([entry.lat, entry.lon]).addTo(map);
+                const marker = L.marker([entry.latitude, entry.longitude]).addTo(map);
 
                 // Bind a popup with the photo and metadata
                 marker.bindPopup(`
-                    <b>Timestamp:</b> ${new Date(entry.timestamp).toLocaleString()}<br>
-                    <img src="${entry.path}" class="popup-img" alt="Photo">
+                    <b>Timestamp:</b> ${entry.timestamp}<br>
+                    <b>Acc X:</b> ${entry.accx}<br>
+                    <b>Acc Y:</b> ${entry.accy}<br>
+                    <b>Acc Z:</b> ${entry.accz}<br>
+                    <img src="http://localhost:5000/photo/${entry.id}" class="popup-img" alt="Photo">
                 `);
             });
         })
-        .catch(error => {
-            console.error('Error fetching metadata:', error);
-        });
       }
     }
     catch(error){

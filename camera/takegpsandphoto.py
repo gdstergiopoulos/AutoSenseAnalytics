@@ -26,6 +26,17 @@ def embed_gps_metadata(image_path, latitude, longitude):
 
         # Load the image and existing EXIF data
         exif_dict = {"GPS": gps_ifd}
+
+    ## Add timestamp to the exif_dict this is how will this be done
+    #      exif_dict = {
+    #     "GPS": {
+    #         gps_ifd
+    #     },
+    #     "Exif": {
+    #         piexif.ExifIFD.DateTimeOriginal: timestamp.encode(), ##NEED TO REPLACE
+    #     }
+    # }
+        
         exif_bytes = piexif.dump(exif_dict)
 
         # Write EXIF metadata to the image
