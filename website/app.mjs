@@ -349,6 +349,30 @@ router.route('/admin/createproject').post(async (req, res) => {
 }
 );
 
+router.route('/admin/editproject/:id').get(async (req, res) => {
+    try{
+        let project = await model.getProjectData(req.params.id);
+        let users_assigned = await model.getProjectUsers(req.params.id);
+        console.log(users_assigned);
+        res.render('edit_project', {username: req.session.username, project: project,users_assigned: users_assigned});
+    }
+    catch(err){
+        res.render('edit_project', {username: req.session.username, error: err.message});
+    }
+});
+
+router.route('/admin/edituser/:username').get(async (req, res) => {
+    try{
+        let user = await model.getUserData(req.params.username);
+        let projects_assigned = await model.getUserProjects(req.params.username);
+        res.render('edit_user', {username: req.session.username, user: user, projects_assigned: projects_assigned});
+    }
+    catch(err){
+        res.render('edit_user', {username: req.session.username, error: err.message});
+    }
+}
+);
+
 router.route('/test/leaflet/heatmap').get(async (req, res) => {
     try{
         let project= await model.getProjectData(3);

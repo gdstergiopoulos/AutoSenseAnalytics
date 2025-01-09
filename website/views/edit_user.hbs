@@ -1,0 +1,55 @@
+{{>navbar username=username}}
+
+<h1 id="welcomecomp">Edit User Profile</h1>
+
+{{#if success}}
+    <div class="alert alert-success" role="alert">
+        {{success}}
+    </div>
+{{/if}}
+{{#if error}}
+    <div class="alert alert-danger" role="alert">
+        {{error}}
+    </div>
+{{/if}}
+<div id="editProjPage">
+<form id="editProjForm" action="/admin/edituser/{{user.username}}" method="POST">
+    <div class="form-group">
+        <div id="listTitle">
+                <h3>User Info</h3>
+            </div>
+        <label for="projName">Username</label>
+        <input type="text" class="form-control" id="projName" name="projName" value="{{user.username}}">
+
+        <label for="projDesc">Password</label>
+        <br>
+        <button style="margin-bottom:4%; background-color:rgb(95, 250, 255); border-color:rgb(95, 250, 255) ;color:black" class="btn btn-primary"><img width="30" height="30" src="https://img.icons8.com/glyph-neue/64/key.png" alt="key"/> Reset Password</button>
+    </div>
+    {{!-- back button --}}
+    <div id="formBtns">
+        <a href="/admin/assignproject" class="btn btn-primary">Back</a>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>
+
+{{!-- list of users assigned and option to add one --}}
+<div id="userList">
+            <div id="listTitle">
+                <h3>Projects</h3>
+                <a href="/admin/createuser" id="createUserBtn" class="btn btn-primary">Assign Project</a>
+            </div>
+            <div class="card" style="width: 18rem;">
+                {{#if projects_assigned}}
+                {{#each projects_assigned}}
+                    <div class="card-body">
+                        <a href="#" class="card-title">{{projName}}</a>
+                    </div>
+                {{/each}} 
+                {{else}}
+                    <div class="card-body">
+                        <a href="#" class="card-title" style="text-decoration:none">This user has no Projects</a>
+                    </div>
+                {{/if}}
+            </div>
+        </div>
+</div>

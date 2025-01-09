@@ -65,6 +65,28 @@ export let getProjectUsers = async (projID) => {
     }
 }
 
+export let getUserData = async (username) => {
+    let stmt = await sql.prepare('SELECT * FROM User WHERE username = ?');
+    try{
+        let user = stmt.get(username);
+        return user;
+    }
+    catch(err){
+        throw err;
+    }
+}
+
+export let getUserProjects = async (username) => {
+    let stmt = await sql.prepare('SELECT projName,id FROM Project,HasAccess WHERE username = ? AND projID=id');
+    try{
+        let projects = stmt.all(username);
+        return projects;
+    }
+    catch(err){
+        throw err;
+    }
+}
+
 export let createProject = async (projName, projDesc) => {
     
     try{

@@ -1,0 +1,54 @@
+{{>navbar username=username}}
+
+<h1 id="welcomecomp">Edit Project</h1>
+
+{{#if success}}
+    <div class="alert alert-success" role="alert">
+        {{success}}
+    </div>
+{{/if}}
+{{#if error}}
+    <div class="alert alert-danger" role="alert">
+        {{error}}
+    </div>
+{{/if}}
+<div id="editProjPage">
+<form id="editProjForm" action="/admin/editproject/{{project.id}}" method="POST">
+    <div class="form-group">
+        <div id="listTitle">
+                <h3>Project Info</h3>
+            </div>
+        <label for="projName">Project Name</label>
+        <input type="text" class="form-control" id="projName" name="projName" value="{{project.projName}}">
+
+        <label for="projDesc">Project Description</label>
+        <textarea class="form-control" id="projDesc" name="projDesc" rows="3">{{project.projDesc}}</textarea>
+    </div>
+    {{!-- back button --}}
+    <div id="formBtns">
+        <a href="/admin/assignproject" class="btn btn-primary">Back</a>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>
+
+{{!-- list of users assigned and option to add one --}}
+<div id="userList">
+            <div id="listTitle">
+                <h3>Users</h3>
+                <a href="/admin/createuser" id="createUserBtn" class="btn btn-primary">Add user</a>
+            </div>
+            <div class="card" style="width: 18rem;">
+                {{#if users_assigned}}
+                {{#each users_assigned}}
+                    <div class="card-body">
+                        <a href="#" class="card-title">{{username}}</a>
+                    </div>
+                {{/each}} 
+                {{else}}
+                    <div class="card-body">
+                        <a href="#" class="card-title" style="text-decoration:none">No users in this Project</a>
+                    </div>
+                {{/if}}
+            </div>
+        </div>
+</div>

@@ -797,3 +797,76 @@ footer .social-icons a:hover {
     max-width: 200px;
     height: auto;
 }
+
+#editProjPage{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1%;
+    margin-bottom: 5%;
+}
+
+#editProjPage>#userList{
+    width: 50%;
+}
+
+#editProjForm{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 3%;
+    margin-bottom: 5%;
+    width: 50%;
+}
+
+#editProjForm>div{
+    width: 40%;
+}
+
+#formBtns{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-self: center;
+    justify-content: center;
+    margin-top: 1%;
+}
+
+#formBtns>button{
+    background-color: #16e4bc;
+    border-color: #16e4bc;
+    color:#000000;
+    margin-right: 2%;
+}
+
+#formBtns>button:hover{
+    opacity: 0.6;
+}
+
+#formBtns>a{
+    background-color:#606060; 
+    color:white; 
+    border-color:#606060;
+    margin-right: 2%;
+}
+
+#formBtns>a:hover{
+    opacity: 0.6;
+}
+
+#editProjPage>#userList>#listTitle{
+    width: 288px;
+}
+
+@media screen and (max-width: 700px) {
+    #editProjPage{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-top: 5%;
+        margin-bottom: 5%;
+    }
+}

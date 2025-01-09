@@ -19,7 +19,7 @@
             <div class="card" style="width: 18rem;">
                 {{#each projects}}
                     <div class="card-body">
-                        <a href="#" class="card-title">{{projName}}</a>
+                        <a href="/admin/editproject/{{id}}" class="card-title">{{projName}}</a>
                     </div>
                 {{/each}} 
             </div>
@@ -33,7 +33,7 @@
             <div class="card" style="width: 18rem;">
                 {{#each users}}
                     <div class="card-body">
-                        <a href="#" class="card-title">{{username}}</a>
+                        <a href="/admin/edituser/{{username}}" class="card-title">{{username}}</a>
                     </div>
                 {{/each}} 
             </div>
