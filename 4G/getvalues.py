@@ -1,22 +1,18 @@
 import serial
 import time
 
-# Serial port configuration
-SERIAL_PORT = "/dev/ttyUSB2"  # Replace with your actual port
+SERIAL_PORT = "/dev/ttyUSB2"  
 BAUD_RATE = 115200
 TIMEOUT = 1
 
 
 
 def send_at_command(serial_conn, command, delay=1):
-    """
-    Sends an AT command to the modem and reads the response.
-    """
     try:
         serial_conn.write(f"{command}\r".encode())
         time.sleep(delay)
         response = serial_conn.read(serial_conn.in_waiting or 1000)
-        print(response)
+        # print(response)
         return [response.decode()]
     except Exception as e:
         print(f"Error sending command {command}: {e}")
@@ -30,11 +26,9 @@ def get_rssi(serial_conn):
     try:
         for line in response:
             if "+CSQ:" in line:
-                # Extract RSSI and BER from response
                 rssi_index = int(line.split(":")[1].split(",")[0].strip())
-                # Convert RSSI index to dBm
                 if rssi_index == 99:
-                    return "Signal not detectable"
+                    return "-200 dBm"
                 rssi_dbm = -113 + (rssi_index * 2)
                 return f"{rssi_dbm} dBm"
     except Exception as e:
@@ -45,7 +39,6 @@ def get_gps_info(serial_conn):
     AT+CGPSINFO.
     """
     
-    send_at_command(serial_conn, "AT+CGPS=1", delay=2)
 
     response = send_at_command(serial_conn, "AT+CGPSINFO", delay=2)
     try:
@@ -58,7 +51,7 @@ def get_gps_info(serial_conn):
     except Exception as e:
         print(f"Error parsing GPS data: {e}")
 
-        
+
 
 def parse_gps_info(gps_data):
     try:
@@ -80,20 +73,21 @@ def parse_gps_info(gps_data):
 def main():
     try:
         with serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=TIMEOUT) as ser:
-            print("Serial connection established")
-            send_at_command(ser, "AT")
-            
+            # print("Serial connection established")
+            # send_at_command(ser, "AT")
+            send_at_command(ser, "AT+CGPS=1", delay=2)
+
             time.sleep(1)
-            
-            rssi = get_rssi(ser)
-            print(f"RSSI: {rssi}")
+            while True:
+                
+                rssi = get_rssi(ser)
+                print(f"RSSI: {rssi}")
 
-            print("Fetching GPS location...")
-            gps_info = get_gps_info(ser)
-            print(f"GPS Info: {gps_info}")
+                gps_info = get_gps_info(ser)
+                print(f"GPS Info: {gps_info}")
+                time.sleep(5)
 
-            # Stop GPS if needed
-            send_at_command(ser, "AT+CGPS=0")
+            # send_at_command(ser, "AT+CGPS=0")
     except Exception as e:
         print(f"Error opening serial port: {e}")
 
