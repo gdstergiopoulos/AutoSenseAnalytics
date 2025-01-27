@@ -1,5 +1,6 @@
 import serial
 import time
+import json
 
 SERIAL_PORT = "/dev/ttyUSB2"  
 BAUD_RATE = 115200
@@ -57,18 +58,45 @@ def parse_gps_info(gps_data):
     try:
         fields = gps_data.split(",")
         if len(fields) < 8:
-            return "Incomplete GPS data"
+            return {
+                "latitude": None,
+                "longitude": None,
+                "date": None,
+                "time_utc": None,
+                "altitude": None,
+                "speed": None,
+                "error": "Incomplete GPS data"
+            }
 
-        latitude = fields[0] + " " + fields[1]
-        longitude = fields[2] + " " + fields[3]
-        date = fields[4]  # DDMMYYYY
-        time_utc = fields[5]  # HHMMSS
-        altitude = fields[6]
-        speed = fields[7]
+        return {
+            "latitude": fields[0] + " " + fields[1],
+            "longitude": fields[2] + " " + fields[3],
+            "date": fields[4],  # DDMMYYYY
+            "time_utc": fields[5],  # HHMMSS
+            "altitude": fields[6],
+            "speed": fields[7],
+        }
 
-        return f"Latitude: {latitude}, Longitude: {longitude}, Date: {date}, Time: {time_utc} UTC, Altitude: {altitude}, Speed: {speed}"
     except Exception as e:
-        print(f"Error parsing GPS data: {e}")
+         return {
+            "latitude": None,
+            "longitude": None,
+            "date": None,
+            "time_utc": None,
+            "altitude": None,
+            "speed": None,
+            "error": "Error parsing GPS data"
+        }
+
+
+def save_to_json_file(data, filename="Nosignal_4G_data.json"):
+
+    try:
+        with open(filename, "a") as file:  
+            file.write(json.dumps(data) + "\n")  
+    except Exception as e:
+        print(f"Error writing to file {filename}: {e}")
+
 
 def main():
     try:
@@ -85,6 +113,20 @@ def main():
 
                 gps_info = get_gps_info(ser)
                 print(f"GPS Info: {gps_info}")
+
+                if rssi == "-200 dBm":
+                    data = {
+                        "rssi": rssi,
+                        "latitude": gps_info.get("latitude"),
+                        "longitude": gps_info.get("longitude"),
+                        "date": gps_info.get("date"),
+                        "time_utc": gps_info.get("time_utc"),
+                        "altitude": gps_info.get("altitude"),
+                        "speed": gps_info.get("speed"),
+                        "error": gps_info.get("error"),
+                    }
+                    save_to_json_file(data)
+                    print(f"Data saved: {data}")
                 time.sleep(5)
 
             # send_at_command(ser, "AT+CGPS=0")
