@@ -74,8 +74,8 @@ def process_fft_and_filter(data, fs):
 
     fft_magnitudes = np.abs(fft_values)
 
-    print("Frequencies:", frequencies)
-    print("FFT Magnitudes:", fft_magnitudes)
+    # print("Frequencies:", frequencies)
+    # print("FFT Magnitudes:", fft_magnitudes)
 
     filtered_data = bandpass_filter(data,fs=fs, lowcut=5, highcut=49, )
 
