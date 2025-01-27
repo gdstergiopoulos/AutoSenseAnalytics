@@ -36,7 +36,7 @@ def get_gps_location(serial_port, baud_rate, timeout=1):
         return f"Error retrieving GPS data: {e}"
 
 
-serial_port = "/dev/ttyUSB2"  # Replace with your serial port
+serial_port = "/dev/ttyUSB2"  
 baud_rate = 115200
 
 gps_location = get_gps_location(serial_port, baud_rate)
