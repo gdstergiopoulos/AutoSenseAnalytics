@@ -4,6 +4,13 @@ import math
 import numpy as np
 from scipy.fft import fft, fftfreq
 from scipy.signal import butter, filtfilt
+from getlocationfrom4Ghat import get_gps_location
+
+
+
+serial_port = "/dev/ttyUSB2"  
+baud_rate = 115200
+
 
 
 def collect_acceleration_data(duration, sample_interval=0.01):
@@ -90,8 +97,11 @@ if __name__ == "__main__":
 
             print("Processing data...")
             final_avg_acceleration = process_fft_and_filter(raw_acceleration_data, fs)
+            if final_avg_acceleration:
+                gps_location = get_gps_location(serial_port, baud_rate)
 
             print(f"Final average acceleration after filtering: {final_avg_acceleration:.2f} g")
+            print(gps_location)
 
     except KeyboardInterrupt:
         print("Program stopped by user.")
