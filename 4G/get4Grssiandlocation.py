@@ -167,9 +167,11 @@ def main():
 
                 gps_info = get_gps_info(ser)
                 print(f"GPS Info: {gps_info}")
-                if gps_info:
-                    measurement=create_json(rssi, gps_info)
-                    post_to_fiware(measurement,fiware_url=fiware_url, headers=headers)    
+                
+                measurement=create_json(rssi, gps_info)
+                print(measurement)
+
+                post_to_fiware(measurement,fiware_url=fiware_url, headers=headers)    
                     
 
                 if rssi == "-200 dBm":
