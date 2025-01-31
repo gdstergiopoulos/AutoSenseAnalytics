@@ -19,6 +19,8 @@ headers = {
 
 def create_json(rssi, gps_info):
     measurement = {
+        "id": "4G_Measurement",
+        "type": "4G",
         "rssi": {
             "value": rssi,
             "type": "Number"
@@ -50,7 +52,14 @@ def create_json(rssi, gps_info):
     return measurement
 
 
-
+def post_to_fiware(measurement,fiware_url=fiware_url, headers=headers):
+    try:
+        response = requests.post(fiware_url, headers=headers, json=measurement)
+        response.raise_for_status()
+        print("Measurement posted successfully.")
+    except requests.exceptions.HTTPError as err:
+        print(f"Failed to post measurement: {err}")
+    return 0
 
 
 
@@ -158,6 +167,10 @@ def main():
 
                 gps_info = get_gps_info(ser)
                 print(f"GPS Info: {gps_info}")
+                if gps_info:
+                    measurement=create_json(rssi, gps_info)
+                    post_to_fiware(measurement,fiware_url=fiware_url, headers=headers)    
+                    
 
                 if rssi == "-200 dBm":
                     data = {
