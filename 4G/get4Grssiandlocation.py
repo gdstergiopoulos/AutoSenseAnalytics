@@ -84,9 +84,9 @@ def get_rssi(serial_conn):
             if "+CSQ:" in line:
                 rssi_index = int(line.split(":")[1].split(",")[0].strip())
                 if rssi_index == 99:
-                    return "-200 dBm"
+                    return "-200"
                 rssi_dbm = -113 + (rssi_index * 2)
-                return f"{rssi_dbm} dBm"
+                return f"{rssi_dbm}"
     except Exception as e:
         print(f"Error parsing RSSI: {e}")
 
