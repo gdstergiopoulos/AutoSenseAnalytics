@@ -21,8 +21,8 @@ headers = {
 
 def create_json(rssi, gps_info):
     measurement = {
-        "id": "4G_Measurement",
-        "type": "4G",
+        # "id": "4G_Measurement",
+        # "type": "4G",
         "rssi": {
             "value": rssi,
             "type": "Number"
@@ -98,8 +98,8 @@ def get_gps_info(serial_conn):
         for line in response:
             if "+CGPSINFO:" in line:
                 gps_data = line.split(":")[1].strip()
-                if gps_data == ",,,,,,,,": 
-                    return "No GPS fix available"
+                # if gps_data == ",,,,,,,,": 
+                #     return "No GPS fix available"
                 return parse_gps_info(gps_data)
     except Exception as e:
         print(f"Error parsing GPS data: {e}")
@@ -129,23 +129,16 @@ def format_gps_datetime(date_str, time_str):
         formatted_datetime = datetime.strptime(date_str + time_str, "%d%m%Y%H%M%S").isoformat() + "Z"
         return formatted_datetime
     except ValueError:
-        return None  # Handle errors
+        return None  
 
 
 def parse_gps_info(gps_data):
     try:
+        if gps_data == ",,,,,,,,": 
+            raise ValueError("No GPS fix available")
         fields = gps_data.split(",")
         if len(fields) < 8:
-            
-           return {
-                "latitude": None,
-                "longitude": None,
-                "date": None,
-                "time_utc": None,
-                "altitude": None,
-                "speed": None,
-                "error": "Insufficient GPS data"
-            }
+            raise ValueError("Insufficient GPS data")
         
         latitude = convert_nmea_to_decimal(fields[0], fields[1])
         longitude = convert_nmea_to_decimal(fields[2], fields[3])
@@ -160,12 +153,11 @@ def parse_gps_info(gps_data):
 
     except Exception as e:
          return {
-            "latitude": None,
-            "longitude": None,
-            "date": None,
-            "time_utc": None,
-            "altitude": None,
-            "speed": None,
+            "latitude": 9999,
+            "longitude": 9999,
+            "date": "1970-01-01T00:00:00Z",
+            "altitude": 0,
+            "speed": 0,
             "error": "Error parsing GPS data"
         }
 
@@ -197,23 +189,12 @@ def main():
                 
                 measurement=create_json(rssi, gps_info)
                 print(measurement)
+                if measurement:
+                    post_to_fiware(measurement,fiware_url=fiware_url, headers=headers)    
+                
 
-                post_to_fiware(measurement,fiware_url=fiware_url, headers=headers)    
-                    
-
-                if rssi == "-200 dBm":
-                    data = {
-                        "rssi": rssi,
-                        "latitude": gps_info.get("latitude"),
-                        "longitude": gps_info.get("longitude"),
-                        "date": gps_info.get("date"),
-                        "time_utc": gps_info.get("time_utc"),
-                        "altitude": gps_info.get("altitude"),
-                        "speed": gps_info.get("speed"),
-                        "error": gps_info.get("error"),
-                    }
-                    save_to_json_file(data)
-                    print(f"Data saved: {data}")
+                # save_to_json_file(data)
+                # print(f"Data saved: {data}")
                 time.sleep(5)
 
             # send_at_command(ser, "AT+CGPS=0")
