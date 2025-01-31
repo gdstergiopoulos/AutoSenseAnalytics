@@ -1,20 +1,19 @@
 from car import Car
 import requests
 
-# def init_cars(num_cars):
-#     cars = []
-#     for i in range(num_cars):
-#         cars.append(Car(i))
-#     return cars
+def init_cars(num_cars):
+    cars = []
+    for i in range(num_cars+1):
+        cars.append(Car(i))
+        print(f"Car {i} created")
+    return cars
 
 def main():
-
     #maybe check how many paths (=>cars) are there
+    cars = init_cars(7)
+    for car in cars:
+        car.post_data()
 
-    car0 = Car(0)
-  
-    for i in range(3):
-        data=car0.generate_data()
-    print(data)
+
 
 main()
