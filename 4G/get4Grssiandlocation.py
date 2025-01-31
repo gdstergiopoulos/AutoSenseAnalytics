@@ -66,6 +66,9 @@ def patch_measurement( measurement,fiware_url=fiware_url, headers=headers):
         print("Measurement patched successfully.")
     except requests.exceptions.HTTPError as err:
         print(f"Failed to patch measurement: {err}")
+        save_to_json_file(measurement)
+        print(f"Data saved to json file")
+
 
     return 0
 
@@ -215,8 +218,7 @@ def main():
                     # post_to_fiware(measurement,fiware_url=fiware_url, headers=headers)    
                     patch_measurement(measurement,fiware_url+"/4G_Measurement/attrs", headers)
 
-                # save_to_json_file(data)
-                # print(f"Data saved: {data}")
+                
                 time.sleep(5)
 
             # send_at_command(ser, "AT+CGPS=0")
