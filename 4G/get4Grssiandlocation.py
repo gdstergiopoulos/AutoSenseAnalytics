@@ -2,6 +2,8 @@ import serial
 import time
 import json
 import requests
+from datetime import datetime
+
 
 
 SERIAL_PORT = "/dev/ttyUSB2"  
@@ -122,27 +124,40 @@ def convert_nmea_to_decimal(nmea_coord, direction):
 
     return round(decimal_coord, 6)  # Round to 6 decimal places
 
+def format_gps_datetime(date_str, time_str):
+    """ Convert GPS date (DDMMYYYY) and time (HHMMSS) into ISO 8601 format """
+    if not date_str or not time_str:
+        return None  # Handle missing data
+
+    try:
+        formatted_datetime = datetime.strptime(date_str + time_str, "%d%m%Y%H%M%S").isoformat() + "Z"
+        return formatted_datetime
+    except ValueError:
+        return None  # Handle errors
+
 
 def parse_gps_info(gps_data):
     try:
         fields = gps_data.split(",")
         if len(fields) < 8:
-            return {
+            
+           return {
                 "latitude": None,
                 "longitude": None,
                 "date": None,
                 "time_utc": None,
                 "altitude": None,
                 "speed": None,
-                "error": "Incomplete GPS data"
+                "error": "Insufficient GPS data"
             }
+        
         latitude = convert_nmea_to_decimal(fields[0], fields[1])
         longitude = convert_nmea_to_decimal(fields[2], fields[3])
+        isodatetime = format_gps_datetime(fields[4], fields[5])
         return {
             "latitude": latitude,
             "longitude": longitude,
-            "date": fields[4],  # DDMMYYYY
-            "time_utc": fields[5],  # HHMMSS
+            "date": isodatetime,
             "altitude": float(fields[6]),
             "speed": float(fields[7]),
         }
