@@ -35,12 +35,12 @@ class Car:
 
         
     def generate_data(self):
-        self.battery_level=max(0,self.battery-0.8)
+        self.battery=max(0,self.battery-0.1)
         self.counter+=1
         return {
             "battery": {
                 "type": "Number",
-                "value": self.battery_level
+                "value": self.battery
             },
              "timestamp": {
                 "type": "DateTime",
