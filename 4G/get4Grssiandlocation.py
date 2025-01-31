@@ -121,15 +121,25 @@ def convert_nmea_to_decimal(nmea_coord, direction):
     return round(decimal_coord, 6)  # Round to 6 decimal places
 
 def format_gps_datetime(date_str, time_str):
-    """ Convert GPS date (DDMMYYYY) and time (HHMMSS) into ISO 8601 format """
+    """ Convert GPS date (DDMMYY) and time (HHMMSS) into ISO 8601 format """
     if not date_str or not time_str:
-        return None  # Handle missing data
+        return "1970-01-01T00:00:00Z"  
 
     try:
+        
+        time_str = time_str.split(".")[0]  
+
+        
+        if len(date_str) == 6:  # Check if date is in YYMMDD format
+            year = "20" + date_str[4:6]  # Convert YY to YYYY
+            date_str = date_str[:4] + year  # New format: DDMMYYYY
+
+       
         formatted_datetime = datetime.strptime(date_str + time_str, "%d%m%Y%H%M%S").isoformat() + "Z"
         return formatted_datetime
-    except ValueError:
-        return None  
+    except ValueError as e:
+        print(f"Error formatting GPS DateTime: {e}")  
+        return "1970-01-01T00:00:00Z"  
 
 
 def parse_gps_info(gps_data):
