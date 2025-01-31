@@ -5,17 +5,25 @@ import random
 from shapely.geometry import LineString, Point
 import time 
 
-# 1. Download the road network for a city
-city = "London, UK"
 
-# graph = ox.graph_from_place(city, network_type="drive")
+
+# graph = ox.graph_from_place(city, network_type="drive"
+
+#patras center
 graph= ox.graph_from_bbox((21.730227,38.242933,21.742630,38.251881),network_type='drive')
 
+#uni campus
+graph_uni= ox.graph_from_bbox((21.777434,38.279393,21.799150,38.298088,),network_type='drive')
 
 # 2. Generate random starting points (nodes) for cars
 num_cars = 4
+uni_num_cars=3
+
 nodes = list(graph.nodes)
+uni_nodes = list(graph_uni.nodes)
+
 car_positions = random.sample(nodes, num_cars)
+uni_car_positions = random.sample(uni_nodes, uni_num_cars)
 
 # 3. Simulate movement of cars
 def simulate_movements(graph, car_positions, steps=20):
@@ -34,12 +42,20 @@ def simulate_movements(graph, car_positions, steps=20):
 
     return movements
 
-# Initialize car positions and simulate
+# Initialize car positions and simulate CENTER
 car_positions = {car: random.choice(nodes) for car in range(num_cars)}
-movements = simulate_movements(graph, car_positions)
+movements = simulate_movements(graph, car_positions,40)
+
+# Initialize car positions and simulate UNI
+uni_car_positions = {car: random.choice(uni_nodes) for car in range(uni_num_cars)}
+uni_movements = simulate_movements(graph_uni, uni_car_positions,30)
+
 
 # Correct map center calculation
 nodes, edges = ox.graph_to_gdfs(graph, nodes=True, edges=True)
+uni_nodes, uni_edges = ox.graph_to_gdfs(graph_uni, nodes=True, edges=True)
+
+
 map_center = (nodes.geometry.y.mean(), nodes.geometry.x.mean())
 
 # Create a Folium map
@@ -49,6 +65,12 @@ city_map = folium.Map(location=map_center, zoom_start=13)
 for _, row in edges.iterrows():
     line = LineString(row.geometry)
     folium.PolyLine([(coord[1], coord[0]) for coord in line.coords], color="gray", weight=1).add_to(city_map)
+
+for _, row in uni_edges.iterrows():
+    line = LineString(row.geometry)
+    folium.PolyLine([(coord[1], coord[0]) for coord in line.coords], color="red", weight=1).add_to(city_map)
+
+
 
 # for _, row in edges.sample(frac=0.1).iterrows():  # Use 10% of edges
 #     line = LineString(row.geometry)
@@ -63,8 +85,16 @@ for car, path in movements.items():
     path_coords = [(node['y'], node['x']) for node in path]
     print(path_coords)
     # list_of_paths.append(path_coords)
-    list_of_paths.append([{"car":car,"path":[{"lat":coord[0],"lon":coord[1]} for coord in path_coords]}])
+    list_of_paths.append([{"car":car,"location":"center","path":[{"lat":coord[0],"lon":coord[1]} for coord in path_coords]}])
     folium.PolyLine(path_coords, color=random.choice(colors), weight=2.5).add_to(city_map)
+
+for car, path in uni_movements.items():
+    path_coords = [(node['y'], node['x']) for node in path]
+    print(path_coords)
+    # list_of_paths.append(path_coords)
+    list_of_paths.append([{"car":car+num_cars,"location":"uni","path":[{"lat":coord[0],"lon":coord[1]} for coord in path_coords]}])
+    folium.PolyLine(path_coords, color=random.choice(colors), weight=2.5).add_to(city_map)
+
 
 import json 
 with open('path.json', 'w') as f:
@@ -88,6 +118,8 @@ def path_car(car):
     return flask.jsonify(list_of_paths[car])
 
 app.run()
+
+
 # for carpath in list_of_paths:
 #     color=random.choice(colors)
 #     for coord in carpath:
