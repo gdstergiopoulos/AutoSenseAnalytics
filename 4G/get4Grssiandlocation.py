@@ -108,6 +108,21 @@ def get_gps_info(serial_conn):
 
 
 
+def convert_nmea_to_decimal(nmea_coord, direction):
+    """ Convert NMEA format (DDMM.MMMM) to Decimal Degrees (DD.DDDDD) """
+    if not nmea_coord or nmea_coord == "":
+        return None  # Handle missing data
+
+    degrees = int(float(nmea_coord) / 100)  # Extract degrees
+    minutes = float(nmea_coord) % 100 / 60  # Convert minutes to decimal
+
+    decimal_coord = degrees + minutes
+    if direction in ["S", "W"]:  # South and West are negative
+        decimal_coord *= -1
+
+    return round(decimal_coord, 6)  # Round to 6 decimal places
+
+
 def parse_gps_info(gps_data):
     try:
         fields = gps_data.split(",")
@@ -121,14 +136,15 @@ def parse_gps_info(gps_data):
                 "speed": None,
                 "error": "Incomplete GPS data"
             }
-
+        latitude = convert_nmea_to_decimal(fields[0], fields[1])
+        longitude = convert_nmea_to_decimal(fields[2], fields[3])
         return {
-            "latitude": fields[0] + " " + fields[1],
-            "longitude": fields[2] + " " + fields[3],
+            "latitude": latitude,
+            "longitude": longitude,
             "date": fields[4],  # DDMMYYYY
             "time_utc": fields[5],  # HHMMSS
-            "altitude": fields[6],
-            "speed": fields[7],
+            "altitude": float(fields[6]),
+            "speed": float(fields[7]),
         }
 
     except Exception as e:
