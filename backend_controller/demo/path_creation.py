@@ -70,6 +70,22 @@ import json
 with open('path.json', 'w') as f:
     json.dump({"paths": list_of_paths},f,indent=4)    
 
+import flask
+app = flask.Flask(__name__)
+@app.route('/')
+def index():
+    return flask.send_file('car_simulation.html')
+
+
+@app.route('/path')
+def path():
+    return flask.send_file('./path.json')
+
+@app.route('/path/<int:car>')
+def path_car(car):
+    return flask.jsonify(list_of_paths[car])
+
+app.run()
 # for carpath in list_of_paths:
 #     color=random.choice(colors)
 #     for coord in carpath:
