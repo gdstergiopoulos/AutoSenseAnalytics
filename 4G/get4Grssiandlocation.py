@@ -140,6 +140,10 @@ def parse_gps_info(gps_data):
         if len(fields) < 8:
             raise ValueError("Insufficient GPS data")
         
+
+        print(f"Raw GPS Date: {fields[4]}, Raw GPS Time: {fields[5]}")
+
+        
         latitude = convert_nmea_to_decimal(fields[0], fields[1])
         longitude = convert_nmea_to_decimal(fields[2], fields[3])
         isodatetime = format_gps_datetime(fields[4], fields[5])
