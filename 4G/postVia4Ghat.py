@@ -54,17 +54,29 @@ def patch_measurement(serial_conn, measurement, fiware_url):
     try:
         print("Initializing HTTP PATCH request via 4G HAT...")
 
+        print("\nClosing previous HTTP session...")
         send_at_command(serial_conn, "AT+HTTPTERM")  
+
+        print("\nInitializing new HTTP session...")
         send_at_command(serial_conn, "AT+HTTPINIT")  
+
+        print("\nSetting HTTP parameters...")
         send_at_command(serial_conn, 'AT+HTTPPARA="CID",1')  
 
+
+        print(f"\nSetting API URL: {fiware_url}")
         send_at_command(serial_conn, f'AT+HTTPPARA="URL","{fiware_url}"')
 
         json_data = json.dumps(measurement)  
+        print(f"\nPreparing to send JSON data ({len(json_data)} bytes)...")
         send_at_command(serial_conn, f'AT+HTTPDATA={len(json_data)},5000')  # Tell module data size
         time.sleep(1)
+
+
+        print("\nSending json data...")
         send_at_command(serial_conn, json_data, delay=2)  # Send JSON payload
 
+        print("\n Executing HTTP PATCH request...")
         send_at_command(serial_conn, 'AT+HTTPACTION=2')  
         time.sleep(3)
 
