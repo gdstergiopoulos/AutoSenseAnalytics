@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pin Animation</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<body>
+    <div id="map" style="height: 500px;"></div>
+    <script>
+        // Initialize the map
+        const map = L.map('map').setView([38.2431253, 21.7376732], 15);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        // Define the path from JSON data
+        const path = [
+            { lat: 38.2431253, lon: 21.7376732 },
+            { lat: 38.2438124, lon: 21.7377754 },
+            { lat: 38.2435004, lon: 21.7367299 },
+            { lat: 38.2428137, lon: 21.7384083 },
+            { lat: 38.2435074, lon: 21.7388802 },
+            { lat: 38.2432278, lon: 21.7360065 },
+            { lat: 38.2431108, lon: 21.7356834 },
+            { lat: 38.2450676, lon: 21.7316066 },
+            { lat: 38.2462411, lon: 21.7302192 },
+            { lat: 38.2466127, lon: 21.7309301 },
+            { lat: 38.2467732, lon: 21.7313468 },
+            { lat: 38.2469656, lon: 21.7317984 },
+            { lat: 38.2472343, lon: 21.7321785 },
+            { lat: 38.2479218, lon: 21.7330527 },
+            { lat: 38.2485375, lon: 21.733816 },
+            { lat: 38.2504642, lon: 21.7361525 },
+            { lat: 38.2505704, lon: 21.7361981 },
+            { lat: 38.252354, lon: 21.7366894 },
+            { lat: 38.2459694, lon: 21.7297542 },
+            { lat: 38.2456796, lon: 21.7292705 }
+        ];
+
+        // Add the path to the map
+        const polyline = L.polyline(path.map(node => [node.lat, node.lon]), { color: 'blue' }).addTo(map);
+
+        // Add a marker (the "pin") to the first position
+        const marker = L.marker([path[0].lat, path[0].lon]).addTo(map);
+
+        // Function to animate the pin
+        let i = 0;
+        function animatePin() {
+            if (i < path.length) {
+                marker.setLatLng([path[i].lat, path[i].lon]);
+                i++;
+                setTimeout(animatePin, 500); // Move every 500ms
+            }
+        }
+
+        // Start the animation
+        animatePin();
+    </script>
+</body>
+</html>
