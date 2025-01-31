@@ -171,6 +171,46 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         })
       }
+      else if (projectName=="Live Status"){
+        fetch('http://localhost:5000/path/3')
+        .then(response => response.json())
+        .then(data => {
+          // Assuming the data structure matches the example you provided
+          const carPath = data[0].path;
+
+          // Extract coordinates
+          const pathCoords = carPath.map(coord => [coord.lat, coord.lon]);
+
+          // Draw the path on the map
+          const pathLine = L.polyline(pathCoords, { color: 'blue' }).addTo(map);
+
+          // Zoom the map to fit the path
+          map.fitBounds(pathLine.getBounds());
+
+          // Create a marker to simulate movement
+          const carMarker = L.circleMarker(pathCoords[0], {
+              radius: 8,
+              color: 'red',
+              fillColor: '#f03',
+              fillOpacity: 0.7
+          }).addTo(map);
+
+          // Function to simulate movement along the path
+          let index = 0;
+          function moveCar() {
+              if (index < pathCoords.length) {
+                  carMarker.setLatLng(pathCoords[index]); // Update the marker position
+                  index++;
+              } else {
+                  index = 0; // Loop back to the start of the path
+              }
+          }
+
+          // Update the car position every 500ms
+          setInterval(moveCar, 2000);
+      })
+      .catch(error => console.error('Error fetching the JSON data:', error));
+      }
     }
     catch(error){
       console.error('Error fetching data:', error);

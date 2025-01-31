@@ -444,7 +444,9 @@ router.route('/api/photos').get(async (req, res) => {
     }
 });
 
-
+router.route('/admin/live').get(async (req, res) => {
+    res.render('live', {username: req.session.username, page:"live"});
+});
 
 router.use((req, res) => {
     res.render('catcherror');
