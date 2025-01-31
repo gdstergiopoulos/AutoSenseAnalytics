@@ -1,5 +1,7 @@
 from car import Car
 import requests
+import time
+from fiware_to_influx import sync_indluxdb
 
 def init_cars(num_cars):
     cars = []
@@ -8,12 +10,16 @@ def init_cars(num_cars):
         print(f"Car {i} created")
     return cars
 
+
 def main():
     #maybe check how many paths (=>cars) are there
     cars = init_cars(7)
-    for car in cars:
-        car.post_data()
 
-
+    while True:
+        for car in cars:
+            car.post_data()
+            sync_indluxdb(car.car_id)
+        time.sleep(2)
+    
 
 main()
