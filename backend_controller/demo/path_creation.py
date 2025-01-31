@@ -15,15 +15,23 @@ graph= ox.graph_from_bbox((21.730227,38.242933,21.742630,38.251881),network_type
 #uni campus
 graph_uni= ox.graph_from_bbox((21.777434,38.279393,21.799150,38.298088,),network_type='drive')
 
+#in between
+between = ox.graph_from_bbox((21.745763,38.255234,21.776018,38.289095),network_type='drive')
+
 # 2. Generate random starting points (nodes) for cars
 num_cars = 4
 uni_num_cars=3
+in_between_car=1
 
 nodes = list(graph.nodes)
 uni_nodes = list(graph_uni.nodes)
+between_nodes=list(between.nodes)
 
 car_positions = random.sample(nodes, num_cars)
 uni_car_positions = random.sample(uni_nodes, uni_num_cars)
+in_between_car_positions = random.sample(between_nodes, in_between_car)
+
+
 
 # 3. Simulate movement of cars
 def simulate_movements(graph, car_positions, steps=20):
@@ -50,10 +58,16 @@ movements = simulate_movements(graph, car_positions,40)
 uni_car_positions = {car: random.choice(uni_nodes) for car in range(uni_num_cars)}
 uni_movements = simulate_movements(graph_uni, uni_car_positions,30)
 
+# Initialize car positions and simulate IN BETWEEN
+in_between_car_positions = {car: random.choice(between_nodes) for car in range(in_between_car)}
+in_between_movements = simulate_movements(between, in_between_car_positions,30)
+
+
 
 # Correct map center calculation
 nodes, edges = ox.graph_to_gdfs(graph, nodes=True, edges=True)
 uni_nodes, uni_edges = ox.graph_to_gdfs(graph_uni, nodes=True, edges=True)
+between_nodes, between_edges = ox.graph_to_gdfs(between, nodes=True, edges=True)
 
 
 map_center = (nodes.geometry.y.mean(), nodes.geometry.x.mean())
@@ -70,6 +84,9 @@ for _, row in uni_edges.iterrows():
     line = LineString(row.geometry)
     folium.PolyLine([(coord[1], coord[0]) for coord in line.coords], color="red", weight=1).add_to(city_map)
 
+for _,row in between_edges.iterrows():
+    line = LineString(row.geometry)
+    folium.PolyLine([(coord[1], coord[0]) for coord in line.coords], color="blue", weight=1).add_to(city_map)
 
 
 # for _, row in edges.sample(frac=0.1).iterrows():  # Use 10% of edges
@@ -95,6 +112,12 @@ for car, path in uni_movements.items():
     list_of_paths.append([{"car":car+num_cars,"location":"uni","path":[{"lat":coord[0],"lon":coord[1]} for coord in path_coords]}])
     folium.PolyLine(path_coords, color=random.choice(colors), weight=2.5).add_to(city_map)
 
+for car,path in in_between_movements.items():
+    path_coords = [(node['y'], node['x']) for node in path]
+    print(path_coords)
+    # list_of_paths.append(path_coords)
+    list_of_paths.append([{"car":car+num_cars+uni_num_cars,"location":"in-between","path":[{"lat":coord[0],"lon":coord[1]} for coord in path_coords]}])
+    folium.PolyLine(path_coords, color=random.choice(colors), weight=2.5).add_to(city_map)
 
 import json 
 with open('path.json', 'w') as f:

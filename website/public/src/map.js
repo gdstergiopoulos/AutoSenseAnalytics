@@ -172,6 +172,7 @@ document.addEventListener("DOMContentLoaded", function() {
         })
       }
       else if (projectName=="Live Status"){
+        map.setZoom(12);
         fetch('http://localhost:5000/path')
         .then(response => response.json())
         .then(data => {
