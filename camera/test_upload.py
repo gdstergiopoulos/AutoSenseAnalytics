@@ -1,7 +1,7 @@
 import requests
 
 def upload_photo():
-    image_path='camera/output_with_metadata.jpg'
+    image_path='camera/image_20241216_161530.jpg'
     with open(image_path, 'rb') as photo:
         files = {'photo': photo}
         data = {
