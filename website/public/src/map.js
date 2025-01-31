@@ -189,7 +189,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 // Draw the path for the car
                 const carcolor=getRandomColor();
-                L.polyline(pathCoords, { color: carcolor }).addTo(map);
+                // L.polyline(pathCoords, { color: carcolor }).addTo(map); //uncomment this if we want to draw the path
 
                 // Create a marker for the car
                 const marker = L.circleMarker(pathCoords[0], {
