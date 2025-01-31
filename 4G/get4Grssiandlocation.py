@@ -38,10 +38,6 @@ def create_json(rssi, gps_info):
             "value": gps_info.get("date"),
             "type": "DateTime"
         },
-        "time_utc": {
-            "value": gps_info.get("time_utc"),
-            "type": "DateTime"
-        },
         "altitude": {
             "value": gps_info.get("altitude"),
             "type": "Number"
