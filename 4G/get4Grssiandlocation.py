@@ -1,10 +1,56 @@
 import serial
 import time
 import json
+import requests
+
 
 SERIAL_PORT = "/dev/ttyUSB2"  
 BAUD_RATE = 115200
 TIMEOUT = 1
+
+
+fiware_url = "http://150.140.186.118:1026/v2/entities"
+
+headers = {
+    "Content-Type": "application/json",
+    "Fiware-ServicePath": "/AutoSenseAnalytics"
+}
+
+
+def create_json(rssi, gps_info):
+    measurement = {
+        "rssi": {
+            "value": rssi,
+            "type": "Number"
+        },
+        "location": {
+            "value": {
+                "type": "Point",
+                "coordinates": [gps_info.get("latitude"), gps_info.get("longitude")]
+            },
+            "type": "geo:json"
+        },
+        "date": {
+            "value": gps_info.get("date"),
+            "type": "DateTime"
+        },
+        "time_utc": {
+            "value": gps_info.get("time_utc"),
+            "type": "DateTime"
+        },
+        "altitude": {
+            "value": gps_info.get("altitude"),
+            "type": "Number"
+        },
+        "speed": {
+            "value": gps_info.get("speed"),
+            "type": "Number"
+        }
+    }
+    return measurement
+
+
+
 
 
 
@@ -39,7 +85,6 @@ def get_gps_info(serial_conn):
     """
     AT+CGPSINFO.
     """
-    
 
     response = send_at_command(serial_conn, "AT+CGPSINFO", delay=2)
     try:
