@@ -172,44 +172,67 @@ document.addEventListener("DOMContentLoaded", function() {
         })
       }
       else if (projectName=="Live Status"){
-        fetch('http://localhost:5000/path/3')
+        fetch('http://localhost:5000/path')
         .then(response => response.json())
         .then(data => {
-          // Assuming the data structure matches the example you provided
-          const carPath = data[0].path;
+            // Extract paths from the JSON data
+            const paths = data.paths.flat(); // Flatten the array for easier iteration
 
-          // Extract coordinates
-          const pathCoords = carPath.map(coord => [coord.lat, coord.lon]);
+            // Store markers for each car
+            const markers = [];
 
-          // Draw the path on the map
-          const pathLine = L.polyline(pathCoords, { color: 'blue' }).addTo(map);
+            // Draw paths and create markers for each car
+            paths.forEach(carData => {
+                const carId=carData.car;
+                const carPath = carData.path;
+                const pathCoords = carPath.map(coord => [coord.lat, coord.lon]);
 
-          // Zoom the map to fit the path
-          map.fitBounds(pathLine.getBounds());
+                // Draw the path for the car
+                const carcolor=getRandomColor();
+                L.polyline(pathCoords, { color: carcolor }).addTo(map);
 
-          // Create a marker to simulate movement
-          const carMarker = L.circleMarker(pathCoords[0], {
-              radius: 8,
-              color: 'red',
-              fillColor: '#f03',
-              fillOpacity: 0.7
-          }).addTo(map);
+                // Create a marker for the car
+                const marker = L.circleMarker(pathCoords[0], {
+                    radius: 8,
+                    color: carcolor,
+                    fillColor: carcolor,
+                    fillOpacity: 0.7
+                }).addTo(map);
 
-          // Function to simulate movement along the path
-          let index = 0;
-          function moveCar() {
-              if (index < pathCoords.length) {
-                  carMarker.setLatLng(pathCoords[index]); // Update the marker position
-                  index++;
-              } else {
-                  index = 0; // Loop back to the start of the path
-              }
-          }
+                marker.bindPopup(`Car: ${carData.car}`).addEventListener(this.onclick, function() {
+                  marker.bindPopup("AutoSense").openPopup();});
+               
 
-          // Update the car position every 500ms
-          setInterval(moveCar, 2000);
-      })
-      .catch(error => console.error('Error fetching the JSON data:', error));
+                // Add the marker to the list of markers
+                markers.push({ marker, pathCoords, index: 0 });
+            });
+
+            // Function to move markers along their respective paths
+            function moveCars() {
+                markers.forEach(car => {
+                    if (car.index < car.pathCoords.length) {
+                        car.marker.setLatLng(car.pathCoords[car.index]); // Update marker position
+                        car.index++;
+                    } else {
+                        car.index = 0; // Loop back to the start of the path
+                    }
+                });
+            }
+
+            // Update car positions every 500ms
+            setInterval(moveCars, 2000);
+
+            // Helper function to get a random color
+            function getRandomColor() {
+                const letters = '0123456789ABCDEF';
+                let color = '#';
+                for (let i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+        })
+        .catch(error => console.error('Error fetching the JSON data:', error));
       }
     }
     catch(error){
