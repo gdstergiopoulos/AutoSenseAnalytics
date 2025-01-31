@@ -59,7 +59,15 @@ def post_to_fiware(measurement,fiware_url=fiware_url, headers=headers):
         print(f"Failed to post measurement: {err}")
     return 0
 
+def patch_measurement( measurement,fiware_url=fiware_url, headers=headers):
+    try:
+        response = requests.patch(fiware_url, headers=headers, json=measurement)
+        response.raise_for_status()
+        print("Measurement patched successfully.")
+    except requests.exceptions.HTTPError as err:
+        print(f"Failed to patch measurement: {err}")
 
+    return 0
 
 def send_at_command(serial_conn, command, delay=1):
     try:
@@ -204,8 +212,8 @@ def main():
                 measurement=create_json(rssi, gps_info)
                 print(measurement)
                 if measurement:
-                    post_to_fiware(measurement,fiware_url=fiware_url, headers=headers)    
-                
+                    # post_to_fiware(measurement,fiware_url=fiware_url, headers=headers)    
+                    patch_measurement(measurement,fiware_url+"/4G_Measurement/attrs", headers)
 
                 # save_to_json_file(data)
                 # print(f"Data saved: {data}")
