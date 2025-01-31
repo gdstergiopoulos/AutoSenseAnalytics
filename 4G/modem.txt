@@ -1,0 +1,43 @@
+sudo systemctl stop ModemManager
+
+ls /dev/cdc-wdm*
+> /dev/cdc-wdm0
+
+#check if modem is available
+sudo qmicli -d /dev/cdc-wdm0 --dms-get-model
+>SIMCOM_SIM7600G-H
+
+#check is SIM is detected and ready 
+sudo qmicli -d /dev/cdc-wdm0 --uim-get-card-status
+
+
+#enter PIN FOR SIM
+sudo qmicli -d /dev/cdc-wdm0 --uim-verify-pin=PIN1,"7508"
+
+#check registration to the network
+sudo qmicli -d /dev/cdc-wdm0 --nas-get-serving-system
+
+
+sudo qmicli -d /dev/cdc-wdm0 --nas-get-signal-strength
+
+
+
+
+
+
+
+#start the APN connection
+sudo qmicli -d /dev/cdc-wdm0 --wds-start-network="gint.b-online.gr" --client-no-release-cid
+
+sudo qmicli -d /dev/cdc-wdm0 --wds-get-current-settings
+
+
+#enable the interface 
+sudo ip link set wwan0 up
+
+
+#CONFIGURE THE INTERFACE 
+sudo ifconfig wwan0 10.171.58.183 netmask 255.255.255.240 up
+
+sudo ip route add default via 10.171.8.184 dev wwan0
+(the default gateway shown in settings)
