@@ -1,0 +1,20 @@
+from car import Car
+import requests
+
+# def init_cars(num_cars):
+#     cars = []
+#     for i in range(num_cars):
+#         cars.append(Car(i))
+#     return cars
+
+def main():
+
+    #maybe check how many paths (=>cars) are there
+
+    car0 = Car(0)
+  
+    for i in range(3):
+        data=car0.generate_data()
+    print(data)
+
+main()
