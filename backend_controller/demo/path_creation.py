@@ -3,6 +3,7 @@ import networkx as nx
 import folium
 import random
 from shapely.geometry import LineString, Point
+import time 
 
 # 1. Download the road network for a city
 city = "London, UK"
@@ -57,9 +58,27 @@ for _, row in edges.iterrows():
 
 # Add cars and their movements
 colors = ["red", "blue", "green", "orange", "purple", "black", "yellow", "brown", "pink", "cyan"]
+list_of_paths=[]
 for car, path in movements.items():
     path_coords = [(node['y'], node['x']) for node in path]
+    print(path_coords)
+    # list_of_paths.append(path_coords)
+    list_of_paths.append([{"car":car,"path":[{"lat":coord[0],"lon":coord[1]} for coord in path_coords]}])
     folium.PolyLine(path_coords, color=random.choice(colors), weight=2.5).add_to(city_map)
+
+import json 
+with open('path.json', 'w') as f:
+    json.dump({"paths": list_of_paths},f,indent=4)    
+
+# for carpath in list_of_paths:
+#     color=random.choice(colors)
+#     for coord in carpath:
+#         folium.Marker(location=[coord[0], coord[1]], icon=folium.Icon(color=color)).add_to(city_map)
+#         #add delay
+#         time.sleep(0.3)
+#         #remove marker
+
+
 
 # Save the map as HTML
 city_map.save("./car_simulation.html")
