@@ -87,3 +87,7 @@ nmcli connection up 4g-modem
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+#see which port is occupied by ModemManager
+sudo lsof /dev/ttyUSB*
