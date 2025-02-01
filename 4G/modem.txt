@@ -41,3 +41,32 @@ sudo ifconfig wwan0 10.171.58.183 netmask 255.255.255.240 up
 
 sudo ip route add default via 10.171.8.184 dev wwan0
 (the default gateway shown in settings)
+
+
+
+
+
+
+# Network Manager to manage the Modem 
+
+sudo systemctl restart ModemManager
+sudo systemctl restart NetworkManager
+nmcli device # and we need to see wwan0 
+
+nmcli device set wwan0 managed yes
+nmcli device  # we need to see our modem
+
+nmcli device connect cdc-wdm0
+nmcli device
+nmcli connection add type gsm ifname cdc-wdm0 con-name 4g-modem apn gint.b-online.gr
+nmcli connection show
+nmcli connection up 4g-modem
+nmcli device # NOW connected !!!
+
+
+
+#whenever we want to connect to 4g
+nmcli connection up 4g-modem
+
+#and when we want to turn off 
+nmcli connection down 4g-modem
