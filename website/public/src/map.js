@@ -172,55 +172,62 @@ document.addEventListener("DOMContentLoaded", function() {
         })
       }
       else if (projectName=="Live Status"){
-        map.setZoom(12);
-        let markers = {};
-        const carIds = [0,1, 2, 3, 4, 5, 6, 7];
-        const colors = ["red", "blue", "green", "yellow", "orange", "purple", "pink", "brown"];
-    
-        function updateMarker(carId, color) {
-            fetch(`/api/demo/measurements/car/${carId}`)
-                .then(response => response.json())
-                .then(data => {
-                    let lat = data.location.value.coordinates[1];
-                    let lon = data.location.value.coordinates[0];
-    
-                    if (markers[carId]) {
-                        markers[carId].setLatLng([lat, lon]);
-                    } else {
-                        markers[carId] = L.circleMarker([lat, lon], {
-                            color: color,
-                            radius: 8
-                        }).addTo(map);
-                    }
-    
-                    markers[carId].bindPopup(`
-                        <b>Car ID:</b> ${carId}<br>
-                        <b>Battery:</b> ${data.battery.value}%<br>
-                        <b>Camera:</b> <a href="${data.camera.value}" target="_blank">View Photo</a><br>
-                        <b>IMU Roughness:</b> ${data.imu_roughness.value}<br>
-                        <b>RSSI Cellular:</b> ${data.rssi_cellular.value}<br>
-                        <b>RSSI LoRa:</b> ${data.rssi_lora.value}<br>
-                        <b>RSSI WiFi:</b> ${data.rssi_wifi.value}<br>
-                        <b>Speed:</b> ${data.speed.value} km/h<br>
-                        <b>Timestamp:</b> ${new Date(data.timestamp.value).toLocaleString()}
-                    `);
-    
-                    markers[carId].on('click', function() {
-                        markers[carId].openPopup();
-                    });
-                })
-                .catch(error => console.error(`Error fetching data for car ${carId}:`, error));
-        }
-    
-        function updateAllMarkers() {
-            carIds.forEach((carId, index) => {
-                updateMarker(carId, colors[index]);
-            });
-        }
-    
-        updateAllMarkers(); // Initial fetch
-        setInterval(updateAllMarkers, 2000); // Refresh every 2 seconds
+    map.setZoom(12);
+    let markers = {};
+    const carIds = [0,1, 2, 3, 4, 5, 6, 7];
+    const colors = ["red", "blue", "green", "yellow", "orange", "purple", "pink", "black"];
+    const vehicletype= ["car","car","car","car","car","car","car","bus"];
+
+    function getCustomIcon(color,vehicletype) {
+        return L.ExtraMarkers.icon({
+          icon: `fa-${vehicletype}`,
+          markerColor: color,
+          shape: 'circle',
+          prefix: 'fa'
+        });
     }
+
+    function updateMarker(carId, color,vehicletype) {
+        fetch(`/api/demo/measurements/car/${carId}`)
+            .then(response => response.json())
+            .then(data => {
+                let lat = data.location.value.coordinates[1];
+                let lon = data.location.value.coordinates[0];
+
+                if (markers[carId]) {
+                    markers[carId].setLatLng([lat, lon]);
+                } else {
+                    markers[carId] = L.marker([lat, lon], { icon: getCustomIcon(color,vehicletype) }).addTo(map);
+                }
+
+                markers[carId].bindPopup(`
+                    <b>Car ID:</b> ${carId}<br>
+                    <b>Battery:</b> ${data.battery.value}%<br>
+                    <b>Camera:</b> <a href="${data.camera.value}" target="_blank">View Photo</a><br>
+                    <b>IMU Roughness:</b> ${data.imu_roughness.value}<br>
+                    <b>RSSI Cellular:</b> ${data.rssi_cellular.value}<br>
+                    <b>RSSI LoRa:</b> ${data.rssi_lora.value}<br>
+                    <b>RSSI WiFi:</b> ${data.rssi_wifi.value}<br>
+                    <b>Speed:</b> ${data.speed.value} km/h<br>
+                    <b>Timestamp:</b> ${new Date(data.timestamp.value).toLocaleString()}
+                `);
+
+                markers[carId].on('click', function() {
+                    markers[carId].openPopup();
+                });
+            })
+            .catch(error => console.error(`Error fetching data for car ${carId}:`, error));
+    }
+
+    function updateAllMarkers() {
+        carIds.forEach((carId, index) => {
+            updateMarker(carId, colors[index],vehicletype[index]);
+        });
+    }
+
+    updateAllMarkers(); // Initial fetch
+    setInterval(updateAllMarkers, 2000); // Refresh every 2 seconds
+}
     }
     catch(error){
       console.error('Error fetching data:', error);
