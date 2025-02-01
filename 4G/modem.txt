@@ -83,6 +83,7 @@ ip addr show wwan0
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 #whenever we want to connect to 4g
+sudo nmcli connection modify 4g-modem gsm.pin "7508"
 nmcli connection up 4g-modem
 
 
