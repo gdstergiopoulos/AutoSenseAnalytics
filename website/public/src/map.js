@@ -173,68 +173,54 @@ document.addEventListener("DOMContentLoaded", function() {
       }
       else if (projectName=="Live Status"){
         map.setZoom(12);
-        fetch('http://localhost:5000/path')
-        .then(response => response.json())
-        .then(data => {
-            // Extract paths from the JSON data
-            const paths = data.paths.flat(); // Flatten the array for easier iteration
-
-            // Store markers for each car
-            const markers = [];
-
-            // Draw paths and create markers for each car
-            paths.forEach(carData => {
-                const carId=carData.car;
-                const carPath = carData.path;
-                const pathCoords = carPath.map(coord => [coord.lat, coord.lon]);
-
-                // Draw the path for the car
-                const carcolor=getRandomColor();
-                // L.polyline(pathCoords, { color: carcolor }).addTo(map); //uncomment this if we want to draw the path
-
-                // Create a marker for the car
-                const marker = L.circleMarker(pathCoords[0], {
-                    radius: 8,
-                    color: carcolor,
-                    fillColor: carcolor,
-                    fillOpacity: 0.7
-                }).addTo(map);
-
-                marker.bindPopup(`Car: ${carData.car}`).addEventListener(this.onclick, function() {
-                  marker.bindPopup("AutoSense").openPopup();});
-               
-
-                // Add the marker to the list of markers
-                markers.push({ marker, pathCoords, index: 0 });
-            });
-
-            // Function to move markers along their respective paths
-            function moveCars() {
-                markers.forEach(car => {
-                    if (car.index < car.pathCoords.length) {
-                        car.marker.setLatLng(car.pathCoords[car.index]); // Update marker position
-                        car.index++;
+        let markers = {};
+        const carIds = [0,1, 2, 3, 4, 5, 6, 7];
+        const colors = ["red", "blue", "green", "yellow", "orange", "purple", "pink", "brown"];
+    
+        function updateMarker(carId, color) {
+            fetch(`/api/demo/measurements/car/${carId}`)
+                .then(response => response.json())
+                .then(data => {
+                    let lat = data.location.value.coordinates[1];
+                    let lon = data.location.value.coordinates[0];
+    
+                    if (markers[carId]) {
+                        markers[carId].setLatLng([lat, lon]);
                     } else {
-                        car.index = 0; // Loop back to the start of the path
+                        markers[carId] = L.circleMarker([lat, lon], {
+                            color: color,
+                            radius: 8
+                        }).addTo(map);
                     }
-                });
-            }
-
-            // Update car positions every 500ms
-            setInterval(moveCars, 2000);
-
-            // Helper function to get a random color
-            function getRandomColor() {
-                const letters = '0123456789ABCDEF';
-                let color = '#';
-                for (let i = 0; i < 6; i++) {
-                    color += letters[Math.floor(Math.random() * 16)];
-                }
-                return color;
-            }
-        })
-        .catch(error => console.error('Error fetching the JSON data:', error));
-      }
+    
+                    markers[carId].bindPopup(`
+                        <b>Car ID:</b> ${carId}<br>
+                        <b>Battery:</b> ${data.battery.value}%<br>
+                        <b>Camera:</b> <a href="${data.camera.value}" target="_blank">View Photo</a><br>
+                        <b>IMU Roughness:</b> ${data.imu_roughness.value}<br>
+                        <b>RSSI Cellular:</b> ${data.rssi_cellular.value}<br>
+                        <b>RSSI LoRa:</b> ${data.rssi_lora.value}<br>
+                        <b>RSSI WiFi:</b> ${data.rssi_wifi.value}<br>
+                        <b>Speed:</b> ${data.speed.value} km/h<br>
+                        <b>Timestamp:</b> ${new Date(data.timestamp.value).toLocaleString()}
+                    `);
+    
+                    markers[carId].on('click', function() {
+                        markers[carId].openPopup();
+                    });
+                })
+                .catch(error => console.error(`Error fetching data for car ${carId}:`, error));
+        }
+    
+        function updateAllMarkers() {
+            carIds.forEach((carId, index) => {
+                updateMarker(carId, colors[index]);
+            });
+        }
+    
+        updateAllMarkers(); // Initial fetch
+        setInterval(updateAllMarkers, 2000); // Refresh every 2 seconds
+    }
     }
     catch(error){
       console.error('Error fetching data:', error);
