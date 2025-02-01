@@ -1,5 +1,5 @@
     // Express.js
-import express from 'express'
+import express, { response } from 'express'
 // Handlebars (https://www.npmjs.com/package/express-handlebars)
 import { engine } from 'express-handlebars'
 import session from 'express-session';
@@ -447,6 +447,20 @@ router.route('/api/photos').get(async (req, res) => {
 router.route('/admin/live').get(async (req, res) => {
     res.render('live', {username: req.session.username, page:"live"});
 });
+
+router.route('/api/demo/measurements/car/:car_id').get(async (req, res) => {
+    try{
+        let measurements = await fetch('http://150.140.186.118:1026/v2/entities/car'+req.params.car_id+'/attrs')
+        .then(response => response.json())
+        .then(data => {
+            res.send(data);
+        });
+    }
+    catch(err){
+        res.send(err.message);
+    }
+}
+);
 
 router.use((req, res) => {
     res.render('catcherror');

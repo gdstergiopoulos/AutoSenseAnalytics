@@ -82,7 +82,7 @@ class Car:
     def get_random_pic(self):
         pics=requests.get('http://150.140.186.118:4943/api/photos').json()
         numofpics=len(pics)
-        photo_src="http://150.140.186.118:4943/photos/"+str(random.randint(1,numofpics))
+        photo_src="http://150.140.186.118:4943/photo/"+str(random.randint(1,numofpics))
         return photo_src
     
     def post_data(self):
