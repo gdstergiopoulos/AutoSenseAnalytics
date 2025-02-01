@@ -65,8 +65,25 @@ nmcli device # NOW connected !!!
 
 
 
-#whenever we want to connect to 4g
-nmcli connection up 4g-modem
+
 
 #and when we want to turn off 
 nmcli connection down 4g-modem
+
+
+# Check Modem Status Anytime
+nmcli device status
+
+#Check the IP address :
+nmcli device show cdc-wdm0 | grep IP4.ADDRESS
+ip addr show wwan0
+
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+#whenever we want to connect to 4g
+nmcli connection up 4g-modem
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
