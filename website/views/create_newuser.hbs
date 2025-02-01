@@ -1,6 +1,7 @@
 {{>navbar username=username}}
-<div id="createnewprojectform">
-    <h1>Create new user</h1>
+<h3 id="welcomecomp">Create new user</h3>
+<div id="projpath"><a  href="/mycompany">AutoSense<a href="/admin/assignproject">&gt;Manage<a href="/admin/createuser">&gt;Create User</a></a></a></div>
+<div style="margin-top:3%" id="createnewprojectform">
     <form action="/admin/createuser" method="POST">
         <label for="name">Username</label>
         <input type="text" id="name" name="username" class="form-control" required>

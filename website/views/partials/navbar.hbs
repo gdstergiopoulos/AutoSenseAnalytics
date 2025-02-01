@@ -9,17 +9,18 @@
                 <a class="nav-link" href="/mycompany" {{#if (eq page 'mycompany')}} style="color: #12ffd0" {{/if}}>Main</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/admin/assignproject" {{#if (eq page 'assignproject')}} style="color: #12ffd0" {{/if}}>Manage</a>
+                    <a class="nav-link" href="/admin/live" {{#if (eq page 'live')}} style="color: #12ffd0" {{/if}}>Live Status</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="/admin/assignproject" {{#if (eq page 'assignproject')}} style="color: #12ffd0" {{/if}}>Manage</a>
+                </li>
+                {{!-- <li class="nav-item">
                     <a class="nav-link" href="/admin/createproject" {{#if (eq page 'createproject')}} style="color: #12ffd0" {{/if}}>Create Project</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/admin/createuser" {{#if (eq page 'createuser')}} style="color: #12ffd0" {{/if}}>Create User</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/admin/live" {{#if (eq page 'live')}} style="color: #12ffd0" {{/if}}>Live Status</a>
-                </li>
+                </li> --}}
+                
             {{else}}
                 <li class="nav-item">
                     <a class="nav-link" href="/home" {{#if (eq page 'home')}} style="color: #12ffd0" {{/if}}>Home</a>

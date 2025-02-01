@@ -6,13 +6,18 @@
 {{/if}}
 {{#if projects}}
 <h2 id="welcomecomp">Welcome, {{username}}</h2>
-<div id="projpath" style="display: inline"><a href="/mycompany">AutoSense&gt;<a href="/mycompany">Projects</a></a></div>
+<div id="projpath" style="display: inline"><a href="/mycompany">AutoSense&gt;<a href="/mycompany">Main</a></a></div>
 <div id="projpage">
     <div id="projlist">
         <h3 hidden>Projects</h3>
         {{#each projects}}
             <a id="projbtn" class="btn btn-primary" href="/mycompany/project/{{this.id}}">{{this.projName}}</a>
         {{/each}}
+        <hr>
+        <div>
+            <a id="projbtn" class="btn btn-primary" href="/admin/live">Monitor Live Status</a>
+            <a id="projbtn" class="btn btn-primary" href="/admin/assignproject">Manage Projects & Users</a>
+        </div>
     </div>
     <img id="projimg" src="/media/network.png" alt="projects">
 </div>
