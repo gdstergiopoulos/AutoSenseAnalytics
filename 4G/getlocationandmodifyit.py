@@ -81,24 +81,20 @@ def get_gps_location(serial_port, baud_rate, timeout=1):
 
     try:
         with serial.Serial(serial_port, baud_rate, timeout=timeout) as ser:
-            ser.write(b"AT+CGPS=1\r")
-            time.sleep(2)
-            print("ok")
+            # ser.write(b"AT+CGPS=1\r")
+            # time.sleep(2)
                 
             ser.write(b"AT+CGPSINFO\r")
             time.sleep(2)
-            print("ok")
             
             response = ser.read(ser.in_waiting or 1000).decode()
            
-            try:
-                for line in response:
-                    if "+CGPSINFO:" in line:
-                        gps_data = line.split(":")[1].strip()
-                        formatted_data=parse_gps_info(gps_data)
-                        return formatted_data
-            except Exception as e:
-                print(f"Error parsing GPS data: {e}")
+
+            for line in response.split("\n"):
+                if "+CGPSINFO:" in line:
+                    gps_data = line.split(":")[1].strip()
+                    formatted_data=parse_gps_info(gps_data)
+            return formatted_data
     except Exception as e:
         print(f"Error opening serial port: {e}")
 
