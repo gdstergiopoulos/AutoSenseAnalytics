@@ -1,0 +1,72 @@
+<div id="map"></div>
+
+<script>
+        // Initialize Leaflet Map
+        var map = L.map('map').setView([38.2876, 21.7879], 13); // Centered on San Francisco
+
+        // Add OpenStreetMap Tile Layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // GET THE BOUNDS FROM THE PYTHON SCRIPT
+        let imageBounds = [[38.284498332777595, 21.7837], [38.2895,21.791402567522507]];
+        L.imageOverlay('/media/rssi_overlay_colored.png', imageBounds,{opacity:0.7 }).addTo(map);
+
+        //GET THE COLORBAR FROM THE PYTHON SCRIPT
+        // Add a custom colorbar (similar to Branca's functionality)
+    var legend = L.control({ position: "bottomright" });
+
+    legend.onAdd = function (map) {
+        var div = L.DomUtil.create("div", "legend");
+        div.innerHTML = `
+            <div class="legend-title">RSSI Signal Strength</div>
+            <div style="width: 200px; height: 15px; background: linear-gradient(to right, blue, white, red);"></div>
+            <div style="display: flex; justify-content: space-between;">
+                <span>-120 dBm</span>
+                <span>-73 dBm</span>
+                <span>0 dBm</span>
+            </div>
+        `;
+        return div;
+    };
+
+    legend.addTo(map);
+    
+    var layer1=L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 50,
+            id: 'mapbox/streets-v11',
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: 'pk.eyJ1IjoiZ2RzdGVyZ2lvcG91bG9zIiwiYSI6ImNsdW1wdWxhYzB4ZmkyaWxuaDFjZjhoYnUifQ.M331BKPLXLd5K1jl6nFHcQ'
+          }).addTo(map);
+        
+        var layer2 = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+          attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+          maxZoom: 50,
+          id: 'mapbox/dark-v11',
+          tileSize: 512,
+          zoomOffset: -1,
+          accessToken: 'pk.eyJ1IjoiZ2RzdGVyZ2lvcG91bG9zIiwiYSI6ImNsdW1wdWxhYzB4ZmkyaWxuaDFjZjhoYnUifQ.M331BKPLXLd5K1jl6nFHcQ'
+        }).addTo(map);
+            
+        
+          var layer3=L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 50,
+            id: 'mapbox/satellite-v9',
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: 'pk.eyJ1IjoiZ2RzdGVyZ2lvcG91bG9zIiwiYSI6ImNsdW1wdWxhYzB4ZmkyaWxuaDFjZjhoYnUifQ.M331BKPLXLd5K1jl6nFHcQ'
+          }).addTo(map); 
+
+        baseMap = {
+            "Mapbox Satellite": layer3,
+            "Mapbox Dark": layer2,
+            "Mapbox Streets": layer1,
+
+        };
+        L.control.layers(baseMap).addTo(map);
+
+</script>

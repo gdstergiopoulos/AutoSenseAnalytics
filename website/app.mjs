@@ -392,6 +392,18 @@ router.route('/test/leaflet/heatmap').get(async (req, res) => {
     }
 });
 
+//TODO remove this
+router.route('/test/heatmap').get(async (req, res) => {
+    try{
+        // let projectPoints = await model_influx.getMeasurementsLoRa();
+        res.render('heatmap2', {layout: 'heatmap_test'});
+    }
+    catch(err){
+        res.redirect('/mycompany', {error: err.message});
+    }
+}
+);
+
 router.route('/upload_photo').post(upload.single('photo'), async (req, res) => {
     const metadata = req.body;
     const photoFile = req.file;
