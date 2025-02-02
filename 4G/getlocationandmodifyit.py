@@ -1,7 +1,6 @@
 import serial
 import time
 import json
-import requests
 from datetime import datetime
 
 
@@ -11,7 +10,7 @@ BAUD_RATE = 115200
 TIMEOUT = 1
 
 
-def create_json(rssi, gps_info):
+def create_json(gps_info):
     measurement = {
         "location": {
             "value": {
@@ -37,37 +36,6 @@ def create_json(rssi, gps_info):
 
 
 
-def send_at_command(serial_conn, command, delay=1):
-    try:
-        serial_conn.write(f"{command}\r".encode())
-        time.sleep(delay)
-        response = serial_conn.read(serial_conn.in_waiting or 1000)
-        print(response) 
-        return [response.decode()]
-    except Exception as e:
-        print(f"Error sending command {command}: {e}")
-        return []
-
-
-
-def get_gps_info(serial_conn):
-    """
-    AT+CGPSINFO.
-    """
-
-    response = send_at_command(serial_conn, "AT+CGPSINFO", delay=2)
-    try:
-        for line in response:
-            if "+CGPSINFO:" in line:
-                gps_data = line.split(":")[1].strip()
-                # if gps_data == ",,,,,,,,": 
-                #     return "No GPS fix available"
-                return parse_gps_info(gps_data)
-    except Exception as e:
-        print(f"Error parsing GPS data: {e}")
-
-
-
 def convert_nmea_to_decimal(nmea_coord, direction):
     """ Convert NMEA format (DDMM.MMMM) to Decimal Degrees (DD.DDDDD) """
     if not nmea_coord or nmea_coord == "":
@@ -81,6 +49,7 @@ def convert_nmea_to_decimal(nmea_coord, direction):
         decimal_coord *= -1
 
     return round(decimal_coord, 6)  # Round to 6 decimal places
+
 
 def format_gps_datetime(date_str, time_str):
     """ Convert GPS date (DDMMYY) and time (HHMMSS) into ISO 8601 format """
@@ -141,34 +110,18 @@ def get_gps_location(serial_port, baud_rate, timeout=1):
     try:
         with serial.Serial(serial_port, baud_rate, timeout) as ser:
             ser.write(b"AT+CGPS=1\r")
-            time.sleep(1)
+            # time.sleep(1)
                 
             ser.write(b"AT+CGPSINFO\r")
-            time.sleep(2)
+            time.sleep(1)
             response = ser.read(ser.in_waiting or 1000).decode()
             try:
                 for line in response:
                     if "+CGPSINFO:" in line:
                         gps_data = line.split(":")[1].strip()
-                        return parse_gps_info(gps_data)
+                        formatted_data=parse_gps_info(gps_data)
+                        return create_json(formatted_data)
             except Exception as e:
                 print(f"Error parsing GPS data: {e}")
-
-                gps_info = get_gps_info(ser)
-                print(f"GPS Info: {gps_info}")
-                
-                measurement=create_json(rssi, gps_info)
-                print(measurement)
-                if measurement:
-                    # post_to_fiware(measurement,fiware_url=fiware_url, headers=headers)    
-                    patch_measurement(measurement,fiware_url+"/4G_Measurement/attrs", headers)
-
-                
-                time.sleep(5)
-
-            # send_at_command(ser, "AT+CGPS=0")
     except Exception as e:
         print(f"Error opening serial port: {e}")
-
-if __name__ == "__main__":
-    main()
