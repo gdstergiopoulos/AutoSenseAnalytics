@@ -110,7 +110,7 @@ def get_gps_location(serial_port, baud_rate, timeout=1):
     try:
         with serial.Serial(serial_port, baud_rate, timeout) as ser:
             ser.write(b"AT+CGPS=1\r")
-            # time.sleep(1)
+            time.sleep(1)
                 
             ser.write(b"AT+CGPSINFO\r")
             time.sleep(1)
