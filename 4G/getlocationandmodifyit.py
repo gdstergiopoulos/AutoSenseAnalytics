@@ -81,7 +81,7 @@ def get_gps_location(serial_port, baud_rate, timeout=1):
 
     try:
         with serial.Serial(serial_port, baud_rate, timeout=timeout) as ser:
-            ser.write(b"AT+CGPS=1\r".encode())
+            ser.write(b"AT+CGPS=1\r")
             time.sleep(2)
             print("ok")
                 
@@ -107,4 +107,5 @@ def get_gps_location(serial_port, baud_rate, timeout=1):
 serial_port = "/dev/ttyUSB2"
 baud_rate=115200
 
-get_gps_location(serial_port, baud_rate)
+
+print(get_gps_location(serial_port, baud_rate))
