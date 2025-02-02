@@ -5,7 +5,7 @@ from datetime import datetime
 
 
 
-SERIAL_PORT = "/dev/ttyUSB3"  
+SERIAL_PORT = "/dev/ttyUSB2"  
 BAUD_RATE = 115200
 TIMEOUT = 1
 
