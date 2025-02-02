@@ -1,6 +1,22 @@
 import serial
 import time
 
+
+def convert_nmea_to_decimal(nmea_coord, direction):
+    """ Convert NMEA format (DDMM.MMMM) to Decimal Degrees (DD.DDDDD) """
+    if not nmea_coord or nmea_coord == "":
+        return None  # Handle missing data
+
+    degrees = int(float(nmea_coord) / 100)  # Extract degrees
+    minutes = float(nmea_coord) % 100 / 60  # Convert minutes to decimal
+
+    decimal_coord = degrees + minutes
+    if direction in ["S", "W"]:  # South and West are negative
+        decimal_coord *= -1
+
+    return round(decimal_coord, 6)  # Round to 6 decimal places
+
+
 def get_gps_location(serial_port, baud_rate, timeout=1):
 
     try:
@@ -22,8 +38,8 @@ def get_gps_location(serial_port, baud_rate, timeout=1):
                 if len(fields) < 8:
                     return "Incomplete GPS data"
 
-                latitude = fields[0] + " " + fields[1]
-                longitude = fields[2] + " " + fields[3]
+                latitude = convert_nmea_to_decimal(fields[0], fields[1])
+                longitude = convert_nmea_to_decimal(fields[2], fields[3])
                 # date = fields[4]  # DDMMYYYY
                 # time_utc = fields[5]  # HHMMSS
                 # altitude = fields[6]
