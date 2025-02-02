@@ -5,37 +5,6 @@ from datetime import datetime
 
 
 
-SERIAL_PORT = "/dev/ttyUSB2"  
-BAUD_RATE = 115200
-TIMEOUT = 1
-
-
-def create_json(gps_info):
-    measurement = {
-        "location": {
-            "value": {
-                "type": "Point",
-                "coordinates": [gps_info.get("latitude"), gps_info.get("longitude")]
-            },
-            "type": "geo:json"
-        },
-        "date": {
-            "value": gps_info.get("date"),
-            "type": "DateTime"
-        },
-        "altitude": {
-            "value": gps_info.get("altitude"),
-            "type": "Number"
-        },
-        "speed": {
-            "value": gps_info.get("speed"),
-            "type": "Number"
-        }
-    }
-    return measurement
-
-
-
 def convert_nmea_to_decimal(nmea_coord, direction):
     """ Convert NMEA format (DDMM.MMMM) to Decimal Degrees (DD.DDDDD) """
     if not nmea_coord or nmea_coord == "":
@@ -106,27 +75,36 @@ def parse_gps_info(gps_data):
             "error": "Error parsing GPS data"
         }
 
+
+
 def get_gps_location(serial_port, baud_rate, timeout=1):
+
     try:
-        with serial.Serial(serial_port, baud_rate, timeout) as ser:
+        with serial.Serial(serial_port, baud_rate, timeout=timeout) as ser:
             ser.write(b"AT+CGPS=1\r".encode())
             time.sleep(2)
             print("ok")
                 
             ser.write(b"AT+CGPSINFO\r")
-            time.sleep(1)
+            time.sleep(2)
             print("ok")
+            
             response = ser.read(ser.in_waiting or 1000).decode()
+           
             try:
                 for line in response:
                     if "+CGPSINFO:" in line:
                         gps_data = line.split(":")[1].strip()
                         formatted_data=parse_gps_info(gps_data)
-                        return create_json(formatted_data)
+                        return formatted_data
             except Exception as e:
                 print(f"Error parsing GPS data: {e}")
     except Exception as e:
         print(f"Error opening serial port: {e}")
 
 
-get_gps_location(SERIAL_PORT, BAUD_RATE, TIMEOUT)
+
+serial_port = "/dev/ttyUSB2"
+baud_rate=115200
+
+get_gps_location(serial_port, baud_rate)
