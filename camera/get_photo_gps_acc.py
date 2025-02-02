@@ -4,6 +4,7 @@ from PIL import Image, ExifTags
 import serial
 import time
 from getlocationfrom4Ghat import *
+from get_acceleration import *
 import piexif
 
 def embed_gps_metadata(image_path, latitude, longitude):
@@ -50,15 +51,21 @@ def embed_gps_metadata(image_path, latitude, longitude):
 # Main script
 def main():
     while True:
-    # Step 1: Fetch GPS data
+        # Get location from 4g hAT and keep only the latitude and longitude
         print("Fetching GPS data...")
         latitude, longitude = get_gps_location()
         print(f"GPS Data: Latitude={latitude}, Longitude={longitude}")
 
-        # Step 2: Capture photo with libcamera-jpeg
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        #Get timestamp
+        timestamp = datetime.datetime.now().strftime("%Y:%m:%d %H:%M:%S")
+
+        #Get accelerometer data
+
+
+        #Capture photo with libcamera-jpeg
         filename = f"image_{timestamp}.jpg"
         print("Capturing image...")
+
         try:
             subprocess.run(["libcamera-jpeg", "-o", filename, "--width", "1920", "--height", "1080"], check=True)
             print(f"Image saved as {filename}")
@@ -71,4 +78,5 @@ def main():
 
 
 if __name__ == "__main__":
+
     main()
