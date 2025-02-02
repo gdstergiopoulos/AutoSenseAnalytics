@@ -23,6 +23,9 @@ headers = {
 
 def create_json(acc, gps_info):
     measurement = {
+        "id": "MPU_Measurement",
+        "type": "acc",
+
         "acceleration": {
             "value": acc,
             "type": "Number"
@@ -104,7 +107,8 @@ if __name__ == "__main__":
             except: 
                 measurement = None
             if measurement:
-                patch_measurement(measurement,fiware_url+"/MPU_Measurement/attrs", headers)
+                post_to_fiware(measurement,fiware_url, headers)
+                # patch_measurement(measurement,fiware_url+"/MPU_Measurement/attrs", headers)
                 average_queue.task_done()         # Mark the task as done
 
             else:
