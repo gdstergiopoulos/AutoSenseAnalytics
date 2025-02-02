@@ -104,15 +104,40 @@ document.addEventListener("DOMContentLoaded", function() {
             maxZoom: 17
             }).addTo(heatLayer);
 
-            markersLayer.addTo(map);
-            heatLayer.addTo(map);
+            // markersLayer.addTo(map);
+            // heatLayer.addTo(map);
 
-            var overlayMaps = {
+             // GET THE BOUNDS FROM THE PYTHON SCRIPT
+        let imageBounds = [[38.284498332777595, 21.7837], [38.2895,21.791402567522507]];
+        let imageOverlay=L.imageOverlay('/media/rssi_overlay_colored.png', imageBounds,{opacity:0.7 }).addTo(map);
+
+        //GET THE COLORBAR FROM THE PYTHON SCRIPT
+        // Add a custom colorbar (similar to Branca's functionality)
+        var legend = L.control({ position: "bottomright" });
+
+        legend.onAdd = function (map) {
+            var div = L.DomUtil.create("div", "legend");
+            div.innerHTML = `
+                <div class="legend-title" style="color:black">RSSI Signal Strength</div>
+                <div style="width: 200px; height: 15px; background: linear-gradient(to right, blue, white, red);"></div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="color:black">-120 dBm</span>
+                    <span style="color:black">-73 dBm</span>
+                    <span style="color:black">0 dBm</span>
+                </div>
+            `;
+            return div;
+        };
+
+        legend.addTo(map);
+
+        var overlayMaps = {
             "Markers": markersLayer,
-            "Heatmap": heatLayer
+            "Alt. Heatmap": heatLayer,
+            "Heatmap": imageOverlay
             };
 
-            L.control.layers(baseMap, overlayMaps).addTo(map);
+        L.control.layers(baseMap, overlayMaps).addTo(map);
             
         })
         .catch(error => console.error('Error fetching data:', error));
@@ -245,7 +270,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         var layer1=L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-            maxZoom: 16,
+            maxZoom: 50,
             id: 'mapbox/streets-v11',
             tileSize: 512,
             zoomOffset: -1,
