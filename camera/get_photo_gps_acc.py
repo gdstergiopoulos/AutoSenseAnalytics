@@ -6,6 +6,7 @@ import time
 from getlocationfrom4Ghat import *
 from get_acceleration import *
 import piexif
+import requests 
 
 
 serial_port = "/dev/ttyUSB2"  
@@ -53,6 +54,22 @@ def add_metadata(image_path, latitude, longitude, timestamp):
         print(f"Error adding metadata: {e}")
 
 
+def upload_photo(filename,accx,accy,accz):
+    image_path = f"camera/{filename}"
+    with open(image_path, 'rb') as photo:
+        files = {'photo': photo}
+        data = {
+            'accx': accx,
+            'accy': accy,
+            'accz': accz
+        }
+        response = requests.post('http://150.140.186.118:4943/upload', files=files, data=data)
+        if response.status_code == 200 or response.status_code == 201:
+            print("Upload successful:", response.json())
+        else:
+            print("Failed to upload:", response.status_code, response.text)
+
+
 def main():
     while True:
         print("Fetching GPS data...")
@@ -75,6 +92,7 @@ def main():
                     print(f"Image saved as {filename}")
 
                     add_metadata(filename, latitude, longitude, timestamp)
+                    upload_photo(filename, ax, ay, az)
                 except subprocess.CalledProcessError as e:
                     print(f"Error capturing image: {e}")
                     time.sleep(10)
