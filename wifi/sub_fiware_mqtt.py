@@ -5,7 +5,7 @@ url = "http://150.140.186.118:1026/v2/subscriptions"
 
 headers = CaseInsensitiveDict()
 headers["Content-Type"] = "application/json"
-headers["Fiware-ServicePath"] = "/AutoSenseAnalytics/Wifi"
+headers["Fiware-ServicePath"] = "/AutoSenseAnalytics/demo"
 
 data = """
 { 
@@ -13,24 +13,20 @@ data = """
   "subject": { 
     "entities": [ 
       { 
-        "id": "elenishome", 
-        "type": "rssi_bssid" 
+        "id": "car0", 
+        "type": "car_measurements" 
       } 
     ],
     "condition": {
       "attrs": [
-        "rssi"
+        "timestamp"
       ]
     }
   }, 
-  "notification": {  
-    "http": {
-      "url": "https://autosenseanalytics.azurewebsites.net/wakeup",
-      "method": "GET"
-    },
+  "notification": {
     "mqtt": {
       "url": "mqtt://150.140.186.118:1883",
-      "topic": "autosense/wifi"
+      "topic": "autosense/demo"
     }
   }
 }
