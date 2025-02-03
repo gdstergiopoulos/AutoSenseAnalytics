@@ -29,4 +29,4 @@ def get_acceleration():
 
     return ax, ay, az
 
-get_acceleration()
+# get_acceleration()

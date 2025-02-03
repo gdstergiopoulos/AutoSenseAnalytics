@@ -45,7 +45,8 @@ def get_gps_location(serial_port, baud_rate, timeout=1):
                 # altitude = fields[6]
                 # speed = fields[7]
 
-                return f"Latitude: {latitude}, Longitude: {longitude}"#, Date: {date}, Time: {time_utc} UTC, Altitude: {altitude}, Speed: {speed}"
+                return latitude, longitude 
+            
 
             return "No GPS data received"
     except Exception as e:
@@ -55,5 +56,5 @@ def get_gps_location(serial_port, baud_rate, timeout=1):
 serial_port = "/dev/ttyUSB2"  
 baud_rate = 115200
 
-gps_location = get_gps_location(serial_port, baud_rate)
-print(gps_location)
+# gps_location = get_gps_location(serial_port, baud_rate)
+# print(gps_location)
