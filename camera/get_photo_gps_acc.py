@@ -55,7 +55,7 @@ def add_metadata(image_path, latitude, longitude, timestamp):
 
 
 def upload_photo(filename,accx,accy,accz):
-    image_path = f"camera/{filename}"
+    image_path = f"/home/pi4/AutoSenseAnalytics/camera/{filename}"
     with open(image_path, 'rb') as photo:
         files = {'photo': photo}
         data = {
@@ -71,7 +71,7 @@ def upload_photo(filename,accx,accy,accz):
 
 
 def main():
-    while True:
+    # while True:
         print("Fetching GPS data...")
         data=get_gps_location(serial_port, baud_rate)
         print(data)
@@ -95,7 +95,6 @@ def main():
                     upload_photo(filename, ax, ay, az)
                 except subprocess.CalledProcessError as e:
                     print(f"Error capturing image: {e}")
-                    time.sleep(10)
 
 
 if __name__ == "__main__":
