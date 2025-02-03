@@ -57,6 +57,8 @@ def main():
     while True:
         # Get location from 4g hAT and keep only the latitude and longitude
         print("Fetching GPS data...")
+        data=get_gps_location(serial_port, baud_rate)
+        print(data)
         latitude, longitude = get_gps_location(serial_port, baud_rate)
         print(f"GPS Data: Latitude={latitude}, Longitude={longitude}")
         if latitude and longitude:
