@@ -71,7 +71,7 @@ def upload_photo(filename,accx,accy,accz):
 
 
 def main():
-    # while True:
+    while True:
         print("Fetching GPS data...")
         data=get_gps_location(serial_port, baud_rate)
         print(data)
