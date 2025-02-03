@@ -77,7 +77,7 @@ def send_at_command(serial_conn, command, delay=1):
         serial_conn.write(f"{command}\r".encode())
         time.sleep(delay)
         response = serial_conn.read(serial_conn.in_waiting or 1000)
-        print(response) 
+        # print(response) 
         return [response.decode()]
     except Exception as e:
         print(f"Error sending command {command}: {e}")
