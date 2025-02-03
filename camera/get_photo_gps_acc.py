@@ -48,28 +48,25 @@ def add_metadata(image_path, latitude, longitude, timestamp):
         # Insert the EXIF data into the image
         exif_bytes = piexif.dump(exif_dict)
         img.save(image_path, exif=exif_bytes)  # Overwrites the original file
-        print(f"Metadata added to {image_path}")
+        print(f"Metadata added to {image_path}\n\n")
     except Exception as e:
         print(f"Error adding metadata: {e}")
 
 
 def main():
     while True:
-        # Get location from 4g hAT and keep only the latitude and longitude
         print("Fetching GPS data...")
         data=get_gps_location(serial_port, baud_rate)
         print(data)
         latitude, longitude = get_gps_location(serial_port, baud_rate)
         print(f"GPS Data: Latitude={latitude}, Longitude={longitude}")
         if latitude and longitude:
-            #Get timestamp
-            timestamp = datetime.now().strftime("%Y:%m:%d %H:%M:%S")
+            
+            timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")  
 
-            #Get accelerometer data
             ax, ay, az = get_acceleration()
 
             if ax and ay and az:
-                #Capture photo with libcamera-jpeg
                 filename = f"image_{timestamp}.jpg"
                 print("Capturing image...")
 
@@ -77,7 +74,6 @@ def main():
                     subprocess.run(["libcamera-jpeg", "-o", filename, "--width", "1920", "--height", "1080"], check=True)
                     print(f"Image saved as {filename}")
 
-                    # Step 3: Embed GPS metadata into the photo
                     add_metadata(filename, latitude, longitude, timestamp)
                 except subprocess.CalledProcessError as e:
                     print(f"Error capturing image: {e}")
