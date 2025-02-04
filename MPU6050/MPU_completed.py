@@ -53,7 +53,19 @@ def create_json(acc, gps_info):
     return measurement
 
 
-# Post the measurement to FIWARE
+
+
+def save_to_json_file(data, filename="Nosignal_MPU_measurements.json"):
+
+    try:
+        with open(filename, "a") as file:  
+            file.write(json.dumps(data) + "\n")  
+    except Exception as e:
+        print(f"Error writing to file {filename}: {e}")
+
+
+
+
 def post_to_fiware(measurement,fiware_url=fiware_url, headers=headers):
     try:
         response = requests.post(fiware_url, headers=headers, json=measurement)
@@ -73,6 +85,7 @@ def patch_measurement( measurement,fiware_url=fiware_url, headers=headers):
         average_queue.task_done() 
     except requests.exceptions.HTTPError as err:
         print(f"Failed to patch measurement: {err}")
+        save_to_json_file(measurement)
 
     return 0
 
