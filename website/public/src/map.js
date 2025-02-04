@@ -156,6 +156,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .catch(error => console.error('Error fetching data:', error));
       }
       else if(projectName=="Signal Coverage - 4G"){
+        map.setView([38.246739, 21.73776]);
         fetch('/api/measurements/4G')
         .then(response => response.json())
         .then(data => {
