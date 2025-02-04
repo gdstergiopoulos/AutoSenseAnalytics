@@ -82,10 +82,11 @@ def patch_measurement( measurement,fiware_url=fiware_url, headers=headers):
         response = requests.patch(fiware_url, headers=headers, json=measurement)
         response.raise_for_status()
         print("Measurement patched successfully.")
-        average_queue.task_done() 
+        
     except requests.exceptions.HTTPError as err:
         print(f"Failed to patch measurement: {err}")
         save_to_json_file(measurement)
+        
 
     return 0
 
@@ -127,7 +128,7 @@ if __name__ == "__main__":
             if measurement:
                 # post_to_fiware(measurement,fiware_url, headers)
                 patch_measurement(measurement,fiware_url+"/MPU_Measurement/attrs", headers)
-                        # Mark the task as done
+                average_queue.task_done() 
 
             else:
                 time.sleep(0.1)  # Avoid busy waiting
