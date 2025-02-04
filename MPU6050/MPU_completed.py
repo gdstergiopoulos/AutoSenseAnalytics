@@ -80,17 +80,21 @@ def patch_measurement( measurement,fiware_url=fiware_url, headers=headers):
 # Thread 1: Continuously measure and calculate average acceleration
 def measure_average():
     while True:
-        avg_acceleration = get_acceleration(100,1)  # Calculate the average
-        print("This is after")
-        print(avg_acceleration)
-        if avg_acceleration:
-            gps_info=get_gps_location(serial_port, baud_rate)
+        try:
+            avg_acceleration = get_acceleration(100,1)  # Calculate the average
+            print("This is after")
+            print(avg_acceleration)
+            if avg_acceleration:
+                gps_info=get_gps_location(serial_port, baud_rate)
 
-        measurement = create_json(avg_acceleration,gps_info)
-        print(measurement)
+                measurement = create_json(avg_acceleration,gps_info)
+                print(measurement)
 
-        average_queue.put(measurement)
-        print(f"Average acceleration queued: {avg_acceleration:.2f} g")
+                average_queue.put(measurement)
+                print(f"Average acceleration queued: {avg_acceleration:.2f} g")
+        except KeyboardInterrupt:
+            print("Measurement stopped by user.")
+            break
 
 
 
