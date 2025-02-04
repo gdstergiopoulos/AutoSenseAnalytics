@@ -28,9 +28,9 @@ fiware_headers = {
 
 # InfluxDB connection details
 influxdb_url = "http://150.140.186.118:8086"
-bucket = "AutoSenseAnalytics4G"
+bucket = "AutoSenseAnalytics_4G"
 org = "students"
-token = "fRML93YyZozXXQI-torGL3PbHXSq04sAbweQTtb4ZKfWGushczd_jnjvxzhgNBHvBIUEQkmHQDicg4tjoTWDhg=="
+token = "FcqYDwZ0_KMXrbp8z-2KjcgNQKSUOX_W1hPEqdrxuQ-LwB2I_7Vnpn_AOahhY0BkoNhQBOmYYp3Y9bAxLyDl7A=="
 
 #mqtt connection details
 mqtt_host = '150.140.186.118'
@@ -101,8 +101,8 @@ def process_data(data):
         # print("pre - proc data",data)
         return {
             "rssi": float(data[3]),
-            "latitude": json.loads(data[5])['coordinates'][1],
-            "longitude": json.loads(data[5])['coordinates'][0],
+            "latitude": json.loads(data[5])['coordinates'][0],
+            "longitude": json.loads(data[5])['coordinates'][1],
             "speed": data[7],
             "altitude": data[11],
             "timestamp": data[9]

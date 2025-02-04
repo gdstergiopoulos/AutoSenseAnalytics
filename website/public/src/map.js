@@ -155,6 +155,22 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .catch(error => console.error('Error fetching data:', error));
       }
+      else if(projectName=="Signal Coverage - 4G"){
+        fetch('/api/measurements/4G')
+        .then(response => response.json())
+        .then(data => {
+          data.forEach(point => {
+            var marker = L.marker([point.latitude, point.longitude], {icon: custom}).addTo(map);
+            marker.bindPopup(`<b>RSSI</b>: ${point.rssi}<br>
+                              <b>Altitude</b>: ${point.altitude}<br>
+                              <b>Speed</b>: ${point.speed}<br>
+                              <b>Timestamp</b>: ${point._time}`).addEventListener('click', function() {
+              marker.openPopup();
+            });
+          });
+        })
+        .catch(error => console.error('Error fetching data:', error));
+      }
       else if(projectName=="3D Reconstruction"){
         // fetch('/api/photos')
         // .then(response => response.json())

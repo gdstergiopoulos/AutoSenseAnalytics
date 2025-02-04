@@ -182,9 +182,9 @@ export async function getMeasurementsLoRaproc() {
 export async function getMeasurements4G() {
     console.log("getMeasurements4G")
     const influxdb_url = "http://150.140.186.118:8086"
-    const bucket = "AutoSenseAnalytics4G"
+    const bucket = "AutoSenseAnalytics_4G"
     const org = "students"
-    const token = "fRML93YyZozXXQI-torGL3PbHXSq04sAbweQTtb4ZKfWGushczd_jnjvxzhgNBHvBIUEQkmHQDicg4tjoTWDhg=="
+    const token = "FcqYDwZ0_KMXrbp8z-2KjcgNQKSUOX_W1hPEqdrxuQ-LwB2I_7Vnpn_AOahhY0BkoNhQBOmYYp3Y9bAxLyDl7A=="
 
     const client = new InfluxDB({ url: influxdb_url, token });
 
@@ -219,6 +219,7 @@ export async function getMeasurements4G() {
             queryApi.queryRows(query, {
             next: (row, tableMeta) => {
                 const record = tableMeta.toObject(row);
+                console.log(record)
                 const {table, _value,result, ...cleanRecord}=record;
                 if (cleanRecord.latitude !== 0.0 && cleanRecord.longitude !== 0.0) {
                 localwithGps.push(cleanRecord);
