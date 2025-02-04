@@ -291,6 +291,10 @@ router.route('/api/measurements/:project/').get(async (req, res) => {
             let measurements = await model_influx.getMeasurementsLoRaproc();
             res.send(measurements);
         }
+        else if(nocase=="4g"){
+            let measurements = await model_influx.getMeasurements4G();
+            res.send(measurements);
+        }
     }
     catch(err){
         res.send(err.message);
