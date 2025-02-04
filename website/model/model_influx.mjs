@@ -208,8 +208,8 @@ export async function getMeasurements4G() {
                 |> filter(fn: (r) => r._measurement == "4G_rssi")
                 |> filter(fn: (r) => r._field == "rssi" or r._field == "latitude" or r._field == "longitude" or r._field == "speed" or r._field == "altitude")
                 |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
-                |> keep(columns: ["rssi", "latitude", "longitude","speed","altitude"])
-                |> group(columns: ["rssi", "latitude", "longitude","speed","altitude"])
+                |> keep(columns: ["rssi", "latitude", "longitude","speed","altitude","_time"])
+                |> group(columns: ["rssi", "latitude", "longitude","speed","altitude","_time"])
                 |> distinct()
         `;
         let localwithGps = [];
@@ -219,10 +219,11 @@ export async function getMeasurements4G() {
             queryApi.queryRows(query, {
             next: (row, tableMeta) => {
                 const record = tableMeta.toObject(row);
-                if (record.latitude !== 0.0 && record.longitude !== 0.0) {
-                localwithGps.push(record);
+                const {table, _value,result, ...cleanRecord}=record;
+                if (cleanRecord.latitude !== 0.0 && cleanRecord.longitude !== 0.0) {
+                localwithGps.push(cleanRecord);
                 }
-                all.push(record);
+                all.push(cleanRecord);
             },
             error: (error) => {
                 console.error('Error querying data:', error);
