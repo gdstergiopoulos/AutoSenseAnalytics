@@ -2,7 +2,7 @@ import serial
 import time
 import json
 import requests
-from datetime import datetime
+from datetime import datetime,timezone
 
 
 
@@ -180,7 +180,7 @@ def parse_gps_info(gps_data):
          return {
             "latitude": 9999,
             "longitude": 9999,
-            "date": "1970-01-01T00:00:00Z",
+            "date": datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"),
             "altitude": 0,
             "speed": 0,
             "error": "Error parsing GPS data"
