@@ -149,6 +149,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
           let imageBounds = [[38.24049463154385, 21.7265], [38.2566,21.762712070690228]];
         let imageOverlay=L.imageOverlay('/media/4g_rssi_overlay_colored.png', imageBounds,{opacity:0.7 }).addTo(map);
+
+        let imageUniBounds = [[38.27969503167722, 21.7782], [38.2946,21.7945054351450488]];
+        let imageUniOverlay=L.imageOverlay('/media/4g_uni_rssi_overlay_colored.png', imageUniBounds,{opacity:0.7 }).addTo(map);
+
         //GET THE COLORBAR FROM THE PYTHON SCRIPT
         // Add a custom colorbar (similar to Branca's functionality)
         var legend = L.control({ position: "bottomright" });
@@ -158,9 +162,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 <div class="legend-title" style="color:black">RSSI Signal Strength</div>
                 <div style="width: 200px; height: 15px; background: linear-gradient(to right, blue, white, red);"></div>
                 <div style="display: flex; justify-content: space-between;">
-                    <span style="color:black">-120 dBm</span>
-                    <span style="color:black">-73 dBm</span>
-                    <span style="color:black">0 dBm</span>
+                    <span style="color:black">-77 dBm</span>
+                    <span style="color:black">-51 dBm</span>
                 </div>
             `;
             return div;
@@ -168,7 +171,8 @@ document.addEventListener("DOMContentLoaded", function() {
         legend.addTo(map);
         var overlayMaps = {
             "Markers": markersLayer,
-            "Heatmap": imageOverlay
+            "Heatmap Center": imageOverlay,
+            "Heatmap Uni": imageUniOverlay
             };
         L.control.layers(baseMap, overlayMaps).addTo(map);
         })

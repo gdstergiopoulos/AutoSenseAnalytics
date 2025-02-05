@@ -179,7 +179,7 @@ export async function getMeasurementsLoRaproc() {
     }
 }
 
-export async function getMeasurements4G() {
+export async function getMeasurements4G(location) {
     console.log("getMeasurements4G")
     const influxdb_url = "http://150.140.186.118:8086"
     const bucket = "AutoSenseAnalytics_4G"
@@ -196,10 +196,21 @@ export async function getMeasurements4G() {
         // Time range in UTC
         // const start = '2024-12-10T10:50:33Z';
         // const stop = '2024-12-10T11:09:16Z';
-
-        const start = '2025-02-04T10:36:22.000Z';
-        // const stop = '2025-02-04T12:24:34.000Z';
-        const stop = '2025-02-05T11:56:42.000Z'
+        let start = '2025-02-04T10:36:22.000Z';
+        let stop = '2025-02-04T12:24:34.000Z';
+        if (location==="Center") {
+            start = '2025-02-04T10:36:22.000Z';
+            stop = '2025-02-04T12:24:34.000Z';
+        }
+        else if(location==="Uni"){
+            start = '2025-02-05T10:50:00.000Z'; 
+            stop=   '2025-02-05T11:56:42.000Z';
+        }
+        else if(location==="All"){
+            start = '2025-02-04T10:36:22.000Z';
+            stop = '2025-02-05T11:56:42.000Z';
+        }
+            
 
         // Flux query
        
@@ -211,6 +222,7 @@ export async function getMeasurements4G() {
                 |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
                 |> keep(columns: ["rssi", "latitude", "longitude","speed","altitude","_time"])
                 |> group(columns: ["rssi", "latitude", "longitude","speed","altitude","_time"])
+                |> filter(fn: (r) => r.longitude != 0.35)
                 |> distinct()
         `;
         let localwithGps = [];

@@ -276,7 +276,7 @@ router.route('/api/project/:id/users').get(async (req, res) => {
     }
 });
 
-router.route('/api/measurements/:project/').get(async (req, res) => {
+router.route('/api/measurements/:project/:location?').get(async (req, res) => {
     try{
         let nocase = req.params.project.toLowerCase();
         if(nocase=="lora"){
@@ -292,8 +292,24 @@ router.route('/api/measurements/:project/').get(async (req, res) => {
             res.send(measurements);
         }
         else if(nocase=="4g"){
-            let measurements = await model_influx.getMeasurements4G();
-            res.send(measurements);
+            let measurements = await model_influx.getMeasurements4G('All');
+            if(req.params.location){
+                if(req.params.location=="all"){
+                    res.send(measurements);
+                }
+                else if(req.params.location=="center"){
+                    let center = await model_influx.getMeasurements4G('Center');
+                    res.send(center);
+                }
+                else if(req.params.location=="uni"){
+                    let uni = await model_influx.getMeasurements4G('Uni');
+                    res.send(uni);
+                }
+            }
+            else{
+                res.send(measurements);
+            }
+            // res.send(measurements);
         }
     }
     catch(err){
