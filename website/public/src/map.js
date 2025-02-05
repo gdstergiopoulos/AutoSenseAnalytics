@@ -68,7 +68,10 @@ document.addEventListener("DOMContentLoaded", function() {
             
             validPoints.forEach(point => {
             var marker = L.marker([point.latitude, point.longitude], {icon: custom}).addTo(markersLayer);
-            marker.bindPopup(`RSSI: ${point.rssi}, Lat: ${point.latitude}, Lon: ${point.longitude},norm: ${-(point.rssi+120)/(-63)}`).addEventListener('click', function() {
+            marker.bindPopup(`<b>RSSI:</b> ${point.rssi}<br>
+                               <b>Lat:</b> ${point.latitude}<br>
+                               <b>Lon:</b> ${point.longitude}<br>
+                              <b> norm:</b> ${-(point.rssi+120)/(-63)}`).addEventListener('click', function() {
               marker.openPopup();
             });
             });
@@ -210,6 +213,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     <b>Acc X:</b> ${entry.accx}<br>
                     <b>Acc Y:</b> ${entry.accy}<br>
                     <b>Acc Z:</b> ${entry.accz}<br>
+                    <b>ID:</b> ${entry.id}<br>
                     <img src="http://150.140.186.118:4943/photo/${entry.id}" class="popup-img" alt="Photo">
                 `);
             });
