@@ -198,7 +198,8 @@ export async function getMeasurements4G() {
         // const stop = '2024-12-10T11:09:16Z';
 
         const start = '2025-02-04T10:36:22.000Z';
-        const stop = '2025-02-04T12:24:34.000Z';
+        // const stop = '2025-02-04T12:24:34.000Z';
+        const stop = '2025-02-05T11:56:42.000Z'
 
         // Flux query
        
