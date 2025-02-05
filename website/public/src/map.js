@@ -269,13 +269,18 @@ document.addEventListener("DOMContentLoaded", function() {
     updateAllMarkers(); // Initial fetch
     setInterval(updateAllMarkers, 2000); // Refresh every 2 seconds
 }
+  else if(projectName=="Contact Us"){
+    var marker = L.marker([38.28864841960415, 21.788658751750393],{icon:custom}).addTo(map);
+    marker.bindPopup("AutoSense").addEventListener(this.onclick, function() {
+        marker.bindPopup("AutoSense").openPopup();});
+  }
     }
     catch(error){
       console.error('Error fetching data:', error);
       
-      var marker = L.marker([38.28864841960415, 21.788658751750393],{icon:custom}).addTo(map);
-      marker.bindPopup("AutoSense").addEventListener(this.onclick, function() {
-          marker.bindPopup("AutoSense").openPopup();});
+      // var marker = L.marker([38.28864841960415, 21.788658751750393],{icon:custom}).addTo(map);
+      // marker.bindPopup("AutoSense").addEventListener(this.onclick, function() {
+      //     marker.bindPopup("AutoSense").openPopup();});
     }
     
     
