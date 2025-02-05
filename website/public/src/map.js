@@ -147,7 +147,7 @@ document.addEventListener("DOMContentLoaded", function() {
             });
           });
 
-          let imageBounds = [[38.284498332777595, 21.7837], [38.2895,21.791402567522507]];
+          let imageBounds = [[38.24049463154385, 21.7265], [38.2566,21.762712070690228]];
         let imageOverlay=L.imageOverlay('/media/4g_rssi_overlay_colored.png', imageBounds,{opacity:0.7 }).addTo(map);
         //GET THE COLORBAR FROM THE PYTHON SCRIPT
         // Add a custom colorbar (similar to Branca's functionality)
