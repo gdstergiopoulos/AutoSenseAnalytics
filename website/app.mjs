@@ -311,6 +311,16 @@ router.route('/api/measurements/:project/:location?').get(async (req, res) => {
             }
             // res.send(measurements);
         }
+        else if(nocase=="3dreconstruction"){
+            let photos = await fetch('http://150.140.186.118:4943/api/photos').then(response => response.json()).then(data => {
+                res.send(data);
+            });
+        }
+        else if(nocase="imu"){
+            // let imu = await model_influx.getMeasurementsIMU();
+            // res.send(imu);
+            res.send("IMU data not available");
+        }
     }
     catch(err){
         res.send(err.message);
