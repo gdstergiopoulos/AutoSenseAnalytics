@@ -180,7 +180,7 @@ export async function getMeasurementsLoRaproc() {
 }
 
 export async function getMeasurements4G(location) {
-    console.log("getMeasurements4G")
+    console.log("getMeasurements4G", location)
     const influxdb_url = "http://150.140.186.118:8086"
     const bucket = "AutoSenseAnalytics_4G"
     const org = "students"
@@ -232,7 +232,7 @@ export async function getMeasurements4G(location) {
             queryApi.queryRows(query, {
             next: (row, tableMeta) => {
                 const record = tableMeta.toObject(row);
-                console.log(record)
+                // console.log(record)
                 const {table, _value,result, ...cleanRecord}=record;
                 if (cleanRecord.latitude !== 0.0 && cleanRecord.longitude !== 0.0) {
                 localwithGps.push(cleanRecord);

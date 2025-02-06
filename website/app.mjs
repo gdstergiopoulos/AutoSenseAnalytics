@@ -276,10 +276,16 @@ router.route('/api/project/:id/users').get(async (req, res) => {
     }
 });
 
-router.route('/api/measurements/:project/:location?').get(async (req, res) => {
+router.route('/api/measurements/:project/:location?/:photoId?').get(async (req, res) => {
     try{
         let nocase = req.params.project.toLowerCase();
         if(nocase=="lora"){
+            if(req.params.location){
+                if(req.params.location.toLowerCase()!="uni" && req.params.location.toLowerCase()!="all"){
+                    res.send("Unfortunately, there are only LoRa RSSI measurements for the University Campus. <br> Find them here: <a href='/api/measurements/lora/uni'>/api/measurements/lora/uni</a>");
+                    return;
+                }
+            }
             let measurements = await model_influx.getMeasurementsLoRa();
             res.send(measurements);
         }
@@ -294,14 +300,14 @@ router.route('/api/measurements/:project/:location?').get(async (req, res) => {
         else if(nocase=="4g"){
             let measurements = await model_influx.getMeasurements4G('All');
             if(req.params.location){
-                if(req.params.location=="all"){
+                if(req.params.location.toLowerCase()=="all"){
                     res.send(measurements);
                 }
-                else if(req.params.location=="center"){
+                else if(req.params.location.toLowerCase()=="center"){
                     let center = await model_influx.getMeasurements4G('Center');
                     res.send(center);
                 }
-                else if(req.params.location=="uni"){
+                else if(req.params.location.toLowerCase()=="uni"){
                     let uni = await model_influx.getMeasurements4G('Uni');
                     res.send(uni);
                 }
@@ -311,15 +317,90 @@ router.route('/api/measurements/:project/:location?').get(async (req, res) => {
             }
             // res.send(measurements);
         }
-        else if(nocase=="3dreconstruction"){
-            let photos = await fetch('http://150.140.186.118:4943/api/photos').then(response => response.json()).then(data => {
-                res.send(data);
-            });
-        }
-        else if(nocase="imu"){
-            // let imu = await model_influx.getMeasurementsIMU();
-            // res.send(imu);
-            res.send("IMU data not available");
+        else if (nocase === "3dreconstruction") {
+            try {
+                // Handle photoId parameter
+                if (req.params.photoId) {
+                    console.log(req.params.photoId);
+                    const response = await fetch(`http://150.140.186.118:4943/photo/${req.params.photoId}`);
+                    if (!response.ok) {
+                        return res
+                            .status(404)
+                            .send("Photo not found, try <a href='/api/measurements/3dreconstruction'>/api/measurements/3dreconstruction</a> to see all the photo IDs.");
+                    }
+                       // Get the image buffer and content type
+                       const contentType = response.headers.get('content-type'); // Get the content type from the response
+                       const arrayBuffer = await response.arrayBuffer();
+                       const imageBuffer = Buffer.from(arrayBuffer); // Convert ArrayBuffer to Buffer
+               
+                       // Set the headers for the response
+                       res.set('Content-Type', contentType); // Set the Content-Type header
+                       res.set('Content-Length', imageBuffer.length); // Set the Content-Length header
+               
+                       // Send the image data
+                       return res.send(imageBuffer);
+                }
+        
+                // Handle location parameter
+                if(req.params.location){
+                    if (req.params.location.toLowerCase() === "uni") {
+                        const response = await fetch("http://150.140.186.118:4943/api/photos");
+                        if (!response.ok) return res.status(500).send("Failed to fetch photos.");
+            
+                        const data = await response.json();
+                        const transformedData = data.map((photo) => ({
+                            ...photo,
+                            timestamp: photo.timestamp
+                                .replace('_', 'T')
+                                .replace(/T(\d{2})-(\d{2})-(\d{2})/, 'T$1:$2:$3') + 'Z',
+                        }));
+                        const filteredData = transformedData.filter(
+                            (photo) => new Date(photo.timestamp) >= new Date('2025-02-05T14:49:06Z')
+                        );
+                        return res.send(filteredData); // Send response and exit
+                    } else if (req.params.location.toLowerCase() === "center") {
+                        const response = await fetch("http://150.140.186.118:4943/api/photos");
+                        if (!response.ok) return res.status(500).send("Failed to fetch photos.");
+            
+                        const data = await response.json();
+                        const transformedData = data.map((photo) => ({
+                            ...photo,
+                            timestamp: photo.timestamp
+                                .replace('_', 'T')
+                                .replace(/T(\d{2})-(\d{2})-(\d{2})/, 'T$1:$2:$3') + 'Z',
+                        }));
+                        const filteredData = transformedData.filter(
+                            (photo) => new Date(photo.timestamp) < new Date('2025-02-05T14:49:06Z')
+                        );
+                        return res.send(filteredData); // Send response and exit
+                    } else if (req.params.location.toLowerCase() === "all") {
+                        const response = await fetch("http://150.140.186.118:4943/api/photos");
+                        if (!response.ok) return res.status(500).send("Failed to fetch photos.");
+            
+                        const data = await response.json();
+                        return res.send(data); // Send response and exit
+                    }
+                }
+                else{
+                    // If no specific location is provided
+                    const response = await fetch("http://150.140.186.118:4943/api/photos");
+                    if (!response.ok) return res.status(500).send("Failed to fetch photos.");
+            
+                    const data = await response.json();
+                    return res.send(data); // Send response and exit
+                }
+            } catch (err) {
+                console.error("Error in 3dreconstruction handler:", err);
+                return res.status(500).send(err.message); // Send error response
+            }
+        } else if (nocase === "imu") {
+            try {
+                // Placeholder for IMU data handling
+                return res.send("IMU data not available.");
+            } catch (err) {
+                console.error("Error in IMU handler:", err);
+                return res.status(500).send(err.message); // Send error response
+            }
         }
     }
     catch(err){

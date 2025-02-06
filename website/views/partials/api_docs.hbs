@@ -1,0 +1,15 @@
+ <div class="api-docs">
+        <h3 class="api-title">API Documentation</h3>
+        <p><span class="label">Base URL:</span> <code>http://localhost:3000/api/</code></p>
+        <p><span class="endpoint">GET /measurements/:project/:location?</span></p>
+        <p class="description">Fetch measurement data for a specific project and location</p>
+        <p class="parameters-title">Parameters:</p>
+        <ul class="parameters-list">
+            <li><code>'project'</code>: (string) The project name. Options: <code>'4g'</code>, <code>'lora'</code>, <code>'imu'</code>, <code>3Dreconstruction</code></li>
+            <li><code>'location'</code>: (string) The location name. Options: <code>'center'</code>, <code>'uni'</code>, <code>'all'</code> (default)</li>
+        </ul>
+        <div class="optional-info">
+            <p><span class="label">Note:</span> If <code>'project'</code> is set to <code>'3Dreconstruction'</code>, you can add <code>/:photoId</code> to the endpoint to retrieve a specific photo.</p>
+            <p><span class="example">Example:</span> <code>GET /measurements/3dreconstruction/all/123</code></p>
+        </div>
+    </div>
