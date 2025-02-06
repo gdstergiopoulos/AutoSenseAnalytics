@@ -887,3 +887,66 @@ footer .social-icons a:hover {
         margin-bottom: 5%;
     }
 }
+
+.api-docs {
+    max-width: 800px;
+    margin: auto;
+    background: #1e1e1e; /* Slightly lighter background for contrast */
+    padding: 20px;
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-bottom: 4%; /* Subtle shadow */
+}
+
+.api-title {
+    color: #39d353; /* Highlighted green color */
+    font-size: 2rem;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.label {
+    font-weight: bold;
+    color: #61dafb; /* Light blue for emphasis */
+}
+
+.endpoint {
+    color: #f78c6c; /* Orange for endpoints */
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.description {
+    font-style: italic;
+    margin: 10px 0;
+    color: #c5c5c5;
+}
+
+.parameters-title {
+    font-weight: bold;
+    margin-top: 20px;
+    color: #61dafb; /* Consistent with labels */
+}
+
+.parameters-list {
+    list-style: none;
+    padding: 0;
+}
+
+.parameters-list li {
+    background: #292929; /* Subtle contrast background for list items */
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    font-size: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+code {
+    font-family: 'Courier New', Courier, monospace;
+    background: #2e2e2e; /* Code block background */
+    color: #e0e0e0; /* Light text for code */
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}

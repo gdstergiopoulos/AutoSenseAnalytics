@@ -15,6 +15,34 @@ document.addEventListener("DOMContentLoaded", function() {
         shape: 'circle',
         prefix: 'fa'
       });
+
+    //icon: `<div style="font-size:12px; font-weight:bold;">${rssi}</div>` //how to put number on marker
+    function getIconByRSSI(rssi) {
+            if(rssi>=-81 && rssi<=-71){
+              return L.ExtraMarkers.icon({
+                icon: 'fa-number',
+                markerColor: 'blue',
+                shape: 'circle',
+                prefix: 'fa'
+              });
+            }
+            else if(rssi>=-70 && rssi<=-61){
+              return L.ExtraMarkers.icon({
+                icon: 'fa-number',
+                markerColor: 'orange',
+                shape: 'circle',
+                prefix: 'fa'
+            });
+          }
+          else if(rssi>=-60 && rssi<=-51){
+            return L.ExtraMarkers.icon({
+              icon: 'fa-number',
+              markerColor: 'red',
+              shape: 'circle',
+              prefix: 'fa'
+          });
+          } 
+        }
     try{
       let projectName = document.getElementById("welcomecomp").innerText;
       if(projectName=="Signal Coverage - LoRA"){
@@ -141,7 +169,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(response => response.json())
         .then(data => {
           data.forEach(point => {
-            var marker = L.marker([point.latitude, point.longitude], {icon: custom}).addTo(markersLayer);
+            var marker = L.marker([point.latitude, point.longitude], {icon: getIconByRSSI(point.rssi)}).addTo(markersLayer);
             marker.bindPopup(`<b>RSSI</b>: ${point.rssi}<br>
                               <b>Altitude</b>: ${point.altitude}<br>
                               <b>Speed</b>: ${point.speed}<br>
@@ -165,7 +193,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 <div class="legend-title" style="color:black">RSSI Signal Strength</div>
                 <div style="width: 200px; height: 15px; background: linear-gradient(to right, blue, white, red);"></div>
                 <div style="display: flex; justify-content: space-between;">
-                    <span style="color:black">-77 dBm</span>
+                    <span style="color:black">-81 dBm</span>
                     <span style="color:black">-51 dBm</span>
                 </div>
             `;

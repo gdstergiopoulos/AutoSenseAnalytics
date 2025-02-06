@@ -32,6 +32,17 @@
     <div id="dashboardcont">
         <div id="dashboard"><iframe src="https://labserver.sense-campus.gr:8087/d/cec2mcjy1v7cwa/measurements-4g-rssi?folderUid=bebo48v54rsaof&from=2025-02-04T10:37:04.982Z&to=2025-02-04T12:23:13.439Z&timezone=browser" width="1100" height="500" frameborder="0"></iframe></div>
     </div>
+    <div class="api-docs">
+        <h3 class="api-title">API Documentation</h3>
+        <p><span class="label">Base URL:</span> <code>http://localhost:3000/api/</code></p>
+        <p><span class="endpoint">GET /measurements/:project/:location?</span></p>
+        <p class="description">Fetch measurement data for a specific project and location</p>
+        <p class="parameters-title">Parameters:</p>
+        <ul class="parameters-list">
+            <li><code>'project'</code>: (string) The project name. Options: <code>'4g'</code>, <code>'lora'</code>, <code>'imu'</code></li>
+            <li><code>'location'</code>: (string) The location name. Options: <code>'center'</code>, <code>'uni'</code>, <code>'all'</code> (default)</li>
+        </ul>
+    </div>
     {{!-- {{>WiFi_map project=project projectPoints=projectPoints}} --}}
     
 {{/if}}
