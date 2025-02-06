@@ -970,6 +970,25 @@ code {
     color: #39d353; /* Green to indicate example */
 }
 
+#toggle-docs{
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    background: linear-gradient(45deg, #39d353, #28a745);
+    color: #121212; /* Dark text to contrast the green background */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
+    transition: transform 0.2s, box-shadow 0.2s; /* Smooth interaction */
+}
+
+#toggle-docs:hover {
+    transform: scale(1.05); /* Slightly larger on hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4); /* Increased shadow on hover */
+    background: linear-gradient(45deg, #28a745, #39d353); /* Reverse gradient */
+}
+
 /* .api-docs {
     max-width: 800px;
     margin: auto;

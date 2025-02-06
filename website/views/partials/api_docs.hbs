@@ -1,3 +1,4 @@
+ 
  <div class="api-docs">
         <h3 class="api-title">API Documentation</h3>
         <p><span class="label">Base URL:</span> <code>http://localhost:3000/api/</code></p>
@@ -12,4 +13,20 @@
             <p><span class="label">Note:</span> If <code>'project'</code> is set to <code>'3Dreconstruction'</code>, you can add <code>/:photoId</code> to the endpoint to retrieve a specific photo.</p>
             <p><span class="example">Example:</span> <code>GET /measurements/3dreconstruction/all/123</code></p>
         </div>
+        <button id="toggle-docs">Try our API URL Generator</button>
+        <div id="api-docs-content" style="display: none;">
+            {{!-- Try our API URL Generator --}}
+            {{>api_url_generator}}
+        </div>
+
+        <script>
+            document.getElementById('toggle-docs').addEventListener('click', function() {
+                var docsContent = document.getElementById('api-docs-content');
+                if (docsContent.style.display === 'none') {
+                    docsContent.style.display = 'block';
+                } else {
+                    docsContent.style.display = 'none';
+                }
+            });
+        </script>
     </div>
