@@ -164,12 +164,15 @@ document.addEventListener("DOMContentLoaded", function() {
       }
       else if(projectName=="Signal Coverage - 4G"){
         let markersLayer=L.layerGroup();
+        let pathLayer=L.layerGroup();
+        let markerCoords=[];
         map.setView([38.246739, 21.73776]);
         fetch('/api/measurements/4G')
         .then(response => response.json())
         .then(data => {
           data.forEach(point => {
             var marker = L.marker([point.latitude, point.longitude], {icon: getIconByRSSI(point.rssi)}).addTo(markersLayer);
+            markerCoords.push([point.latitude, point.longitude]);
             marker.bindPopup(`<b>RSSI</b>: ${point.rssi}<br>
                               <b>Altitude</b>: ${point.altitude}<br>
                               <b>Speed</b>: ${point.speed}<br>
@@ -178,6 +181,7 @@ document.addEventListener("DOMContentLoaded", function() {
             });
           });
 
+          let polyline=L.polyline(markerCoords,{color:'blue'}).addTo(pathLayer);
           let imageBounds = [[38.24049463154385, 21.7265], [38.2566,21.762712070690228]];
         let imageOverlay=L.imageOverlay('/media/4g_rssi_overlay_colored.png', imageBounds,{opacity:0.7 }).addTo(map);
 
@@ -202,6 +206,7 @@ document.addEventListener("DOMContentLoaded", function() {
         legend.addTo(map);
         var overlayMaps = {
             "Markers": markersLayer,
+            "Path": pathLayer,
             "Heatmap Center": imageOverlay,
             "Heatmap Uni": imageUniOverlay
             };
@@ -342,7 +347,15 @@ document.addEventListener("DOMContentLoaded", function() {
             zoomOffset: -1,
             accessToken: 'pk.eyJ1IjoiZ2RzdGVyZ2lvcG91bG9zIiwiYSI6ImNsdW1wdWxhYzB4ZmkyaWxuaDFjZjhoYnUifQ.M331BKPLXLd5K1jl6nFHcQ'
           }).addTo(map); 
+
+          var layer4=L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+            maxZoom: 17,
+            attribution: 'Map data: © OpenStreetMap contributors, SRTM'
+        }).addTo(map);
+
+
         baseMap = {
+            "Elevation Map": layer4,
             "Mapbox Satellite": layer3,
             "Mapbox Dark": layer2,
             "Mapbox Streets": layer1,
