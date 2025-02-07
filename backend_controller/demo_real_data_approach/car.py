@@ -2,6 +2,7 @@ import random
 from datetime import datetime
 import requests
 from entity_init import create_entity
+import math 
 
 class Car:
     def __init__(self, car_id,location="center"):
@@ -78,7 +79,7 @@ class Car:
             },
             "camera": {
                 "type": "URL",
-                "value": self.get_random_pic()
+                "value": self.get_closest_photo(self.data[self.current_index]['latitude'], self.data[self.current_index]['longitude'])
             }
         }
 
@@ -87,6 +88,34 @@ class Car:
         numofpics = len(pics)
         photo_src = f"http://150.140.186.118:4943/photo/{random.randint(1, numofpics)}"
         return photo_src
+    
+    
+
+    def get_closest_photo(self,lat, lon):
+        def haversine(lat1, lon1, lat2, lon2):
+            R = 6371  # Radius of the Earth in km
+            
+            lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
+            dlat = lat2 - lat1
+            dlon = lon2 - lon1
+            
+            a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2)**2
+            c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+            
+            return R * c  # Distance in km
+        
+        try:
+            photos = requests.get('http://150.140.186.118:4943/api/photos').json()
+            
+            if not photos:
+                return None  # No photos available
+            
+            closest_photo = min(photos, key=lambda photo: haversine(lat, lon, photo['latitude'], photo['longitude']))
+            
+            return f"http://150.140.186.118:4943/photo/{closest_photo['id']}"
+        except Exception as e:
+            print(f"Error fetching closest photo: {e}")
+            return None
 
     def post_data(self):
         headers = {
