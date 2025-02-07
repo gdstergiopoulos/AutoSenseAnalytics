@@ -24,6 +24,7 @@ def main():
         for car in cars:
             car.post_data()
             sync_indluxdb(car.car_id)
+            time.sleep(0.1)
         time.sleep(2)
     
 
