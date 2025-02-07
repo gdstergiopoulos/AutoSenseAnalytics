@@ -165,14 +165,55 @@ document.addEventListener("DOMContentLoaded", function() {
       else if(projectName=="Signal Coverage - 4G"){
         let markersLayer=L.layerGroup();
         let pathLayer=L.layerGroup();
+        let pathUniLayer=L.layerGroup();
         let markerCoords=[];
+        let markerCoordsUni=[];
+        let lastpoint;
+        let distance;
+        function getDistance(coord1, coord2) {
+          var R = 6371e3; // Earth radius in meters
+          var lat1 = (coord1[0] * Math.PI) / 180;
+          var lat2 = (coord2[0] * Math.PI) / 180;
+          var deltaLat = lat2 - lat1;
+          var deltaLng = ((coord2[1] - coord1[1]) * Math.PI) / 180;
+          var a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+                  Math.cos(lat1) * Math.cos(lat2) *
+                  Math.sin(deltaLng / 2) * Math.sin(deltaLng / 2);
+          var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+          return R * c; // Distance in meters
+      }
+
         map.setView([38.246739, 21.73776]);
         fetch('/api/measurements/4G')
         .then(response => response.json())
         .then(data => {
           data.forEach(point => {
             var marker = L.marker([point.latitude, point.longitude], {icon: getIconByRSSI(point.rssi)}).addTo(markersLayer);
-            markerCoords.push([point.latitude, point.longitude]);
+            if(point._time>="2025-02-05T10:51:20Z")
+            {
+              markerCoordsUni.push([point.latitude, point.longitude]);
+            }
+            else{
+
+              //THE CODE TO FILTER JUMPS STARTS HERE
+
+              // if(markerCoords.length!=0){
+              //   lastpoint=markerCoords[markerCoords.length-1];
+              //   console.log(lastpoint);
+              //   distance = getDistance(lastpoint, [point.latitude, point.longitude]);
+              //   if (distance < 1830) {
+              //     markerCoords.push([point.latitude, point.longitude]);
+              //       }
+              //     }
+              // else{
+              //   markerCoords.push([point.latitude, point.longitude]);
+              // }
+              // }
+
+              //THE CODE TO FILTER JUMPS ENDS HERE
+              markerCoords.push([point.latitude, point.longitude]);
+            }
+            
             marker.bindPopup(`<b>RSSI</b>: ${point.rssi}<br>
                               <b>Altitude</b>: ${point.altitude}<br>
                               <b>Speed</b>: ${point.speed}<br>
@@ -182,6 +223,8 @@ document.addEventListener("DOMContentLoaded", function() {
           });
 
           let polyline=L.polyline(markerCoords,{color:'blue'}).addTo(pathLayer);
+          let unipolyline=L.polyline(markerCoordsUni,{color:'red'}).addTo(pathUniLayer);
+
           let imageBounds = [[38.24049463154385, 21.7265], [38.2566,21.762712070690228]];
         let imageOverlay=L.imageOverlay('/media/4g_rssi_overlay_colored.png', imageBounds,{opacity:0.7 }).addTo(map);
 
@@ -207,6 +250,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var overlayMaps = {
             "Markers": markersLayer,
             "Path": pathLayer,
+            "Uni Path": pathUniLayer,
             "Heatmap Center": imageOverlay,
             "Heatmap Uni": imageUniOverlay
             };
