@@ -25,20 +25,19 @@ accum_queue = Queue()
 
 def create_json(accx, accy, accz, gps_info):
     measurement = {
-         "id": "IMU_Measurement",
-         "type": "raw",
-
+         #"id": "IMU_Measurement",
+         #"type": "raw",
         "accx": {
             "value": accx,
-            "type": "Number"
+            "type": "Text"
         },
         "accy": {
             "value": accy,
-            "type": "Number"
+            "type": "Text"
         },
         "accz": {
             "value": accz,
-            "type": "Number"
+            "type": "Text"
         },
          "location": {
             "value": {
@@ -163,8 +162,8 @@ if __name__ == "__main__":
             except: 
                 measurement = None
             if measurement:
-                post_to_fiware(measurement,fiware_url, headers)
-                # patch_measurement(measurement,"http://150.140.186.118:1026/v2/entities/IMU_Measurement", headers)
+                #post_to_fiware(measurement,fiware_url, headers)
+                patch_measurement(measurement,"http://150.140.186.118:1026/v2/entities/IMU_Measurement", headers)
                 
                 
                 accum_queue.task_done()         # Mark the task as done
