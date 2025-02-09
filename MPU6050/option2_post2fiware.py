@@ -5,8 +5,15 @@ from take_measurements import measure_average_acceleration
 import threading 
 from queue import Queue
 import smbus
+from getlocationandmodifyit import*
 
 fiware_url = "http://150.140.186.118:1026/v2/entities"
+
+
+serial_port = "/dev/ttyUSB2"
+baud_rate=115200
+
+
 
 # Headers for the request
 headers = {
@@ -16,32 +23,42 @@ headers = {
 
 accum_queue = Queue()
 
-def create_json(lat_list,lon_list,acc1,acc2,acc3, timestamp):
+def create_json(accx, accy, accz, gps_info):
     measurement = {
-        "latitude": {
-            "value": lat_list,
-            "type": "Text"
+         "id": "IMU_Measurement",
+         "type": "raw",
+
+        "accx": {
+            "value": accx,
+            "type": "Number"
         },
-        "longitude": {
-            "value": lon_list,
-            "type": "Text"
+        "accy": {
+            "value": accy,
+            "type": "Number"
         },
-        "acc_x": {
-            "value": acc1,
-            "type": "Text"
+        "accz": {
+            "value": accz,
+            "type": "Number"
         },
-        "acc_y": {
-            "value": acc2,
-            "type": "Text"
+         "location": {
+            "value": {
+                "type": "Point",
+                "coordinates": [gps_info.get("latitude"), gps_info.get("longitude")]
+            },
+            "type": "geo:json"
         },
-        "acc_z": {
-            "value": acc3,
-            "type": "Text"
-        },
-        "timestamp": {
-            "value": timestamp,
+        "date": {
+            "value": gps_info.get("date"),
             "type": "DateTime"
-    }
+        },
+        "altitude": {
+            "value": gps_info.get("altitude"),
+            "type": "Number"
+        },
+        "speed": {
+            "value": gps_info.get("speed"),
+            "type": "Number"
+        }
     }
     return measurement
 
@@ -65,7 +82,7 @@ def patch_measurement( measurement,fiware_url=fiware_url, headers=headers):
         print(f"Failed to patch measurement: {err}")
     return 0
 
-def accum_measurements(duration=2, sample_interval=0.2):
+def accum_measurements(duration=2, sample_interval=0.05):
     MPU6050_ADDR = 0x68
     PWR_MGMT_1 = 0x6B
     ACCEL_XOUT_H = 0x3B
@@ -125,9 +142,8 @@ def accum_measurements(duration=2, sample_interval=0.2):
 def take_measurements():
     while True:
         accx, accy, accz = accum_measurements()
-        timestamp = datetime.now().isoformat()
-        location=[21.753150, 38.230462]
-        measurement = create_json(location[0], location[1], accx, accy, accz, timestamp)
+        gps_data=get_gps_location(serial_port, baud_rate)
+        measurement = create_json(accx, accy, accz,gps_data)
         print(measurement)
 
         # Add the measurement to the queue
@@ -147,7 +163,10 @@ if __name__ == "__main__":
             except: 
                 measurement = None
             if measurement:
-                post_to_fiware(measurement,"http://150.140.186.118:1026/v2/entities/imu/attrs", headers)
+                post_to_fiware(measurement,fiware_url, headers)
+                # patch_measurement(measurement,"http://150.140.186.118:1026/v2/entities/IMU_Measurement", headers)
+                
+                
                 accum_queue.task_done()         # Mark the task as done
 
             else:
