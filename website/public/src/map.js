@@ -379,11 +379,13 @@ document.addEventListener("DOMContentLoaded", function() {
         marker.bindPopup("AutoSense").openPopup();});
       }
       else if(projectName=="Road Roughness"){
+            map.setView([38.269933, 21.742374], 13);
+            let markersLayer=L.layerGroup();
             fetch('/api/measurements/imu')
             .then(response => response.json())
             .then(data => {
                 data.forEach(point => {
-                    var marker = L.marker([point.latitude, point.longitude], {icon: getIconByRoughness(point.roughness)}).addTo(map);
+                    var marker = L.marker([point.latitude, point.longitude], {icon: getIconByRoughness(point.roughness)}).addTo(markersLayer);
                     marker.bindPopup(`Roughness: ${point.roughness}`).addEventListener('click', function() {
                         marker.openPopup();
                     });
@@ -394,6 +396,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 var maxRoughness = Math.max(...roughnessValues);
                 console.log("Min Roughness:", minRoughness);
                 console.log("Max Roughness:", maxRoughness);
+
+                var overlayMaps = {
+                  "Markers": markersLayer,
+                  };
+              L.control.layers(baseMap, overlayMaps).addTo(map);
             })
             .catch(error => console.error('Error fetching data:', error));
       }
@@ -451,7 +458,7 @@ document.addEventListener("DOMContentLoaded", function() {
             "Mapbox Streets": layer1,
         };
         let projectName = document.getElementById("welcomecomp").innerText;
-        if(projectName!="Signal Coverage - LoRA" && projectName!="Signal Coverage - 4G"){
+        if(projectName!="Signal Coverage - LoRA" && projectName!="Signal Coverage - 4G" && projectName!="Road Roughness"){
             L.control.layers(baseMap).addTo(map);
         }
         // L.control.layers(baseMap).addTo(map);
