@@ -256,3 +256,61 @@ export async function getMeasurements4G(location) {
         console.error(`Error retrieving data: ${error.message}`);
     }
 }
+
+export async function getMeasurementsIMU() {
+    const influxdb_url = "http://150.140.186.118:8086"
+    const bucket = "AutoSenseAnalytics_imu_avg"
+    const org = "students"
+    const token = "290p7cJGdKC25ZQoF2VKcL7ghuAJtX4xz50elO3B-38DBO9KxqVrI3fJQKfk9hjBU-MBKC5OMgC8hgYR4akWzw=="
+
+    const client = new InfluxDB({ url: influxdb_url, token });
+
+    let withGps = [];
+    let allMeasurements = [];
+    const queryApi = client.getQueryApi(org);
+    
+    try {
+        
+        const start = '2025-02-09T15:55:22.000Z';
+        const stop = '2025-02-09T16:31:02.000Z';
+
+        // Flux query
+        const query = `
+            from(bucket: "${bucket}")
+                |> range(start: ${start}, stop: ${stop})
+                |> filter(fn: (r) => r._measurement == "imu_avg")
+                |> filter(fn: (r) => r._field == "acc_x_avg" or r._field == "acc_y_avg" or r._field == "acc_z_avg" or r._field=="altitude" or r._field=="speed" or r._field=="latitude" or r._field=="longitude")
+                |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+                |> keep(columns: ["_time", "acc_x_avg", "acc_y_avg", "acc_z_avg", "altitude", "speed", "latitude", "longitude"])
+        `;
+        let localwithGps = [];
+        let all=[];
+        // Execute query and process results
+        await new Promise((resolve, reject) => {
+            queryApi.queryRows(query, {
+            next: (row, tableMeta) => {
+                const record = tableMeta.toObject(row);
+                // console.log(record)
+                const {table, _value,result, ...cleanRecord}=record;
+                if (cleanRecord.latitude !== 0.0 && cleanRecord.longitude !== 0.0) {
+                localwithGps.push(cleanRecord);
+                }
+                all.push(cleanRecord);
+            },
+            error: (error) => {
+                console.error('Error querying data:', error);
+                reject(error);
+            },
+            complete: () => {
+                withGps = localwithGps;
+                allMeasurements = all;
+                resolve();
+            },
+            });
+        });
+        // client.close();
+        return withGps;
+    } catch (error) {
+        console.error(`Error retrieving data: ${error.message}`);
+    }
+}

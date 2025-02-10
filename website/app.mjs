@@ -395,8 +395,8 @@ router.route('/api/measurements/:project/:location?/:photoId?').get(async (req, 
             }
         } else if (nocase === "imu") {
             try {
-                // Placeholder for IMU data handling
-                return res.send("IMU data not available.");
+                let measurements=await model_influx.getMeasurementsIMU();
+                res.send(measurements);
             } catch (err) {
                 console.error("Error in IMU handler:", err);
                 return res.status(500).send(err.message); // Send error response
