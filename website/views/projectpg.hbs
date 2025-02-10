@@ -9,8 +9,11 @@
     <h3 id="projpageLabels">Heatmap</h3>
     {{>LoRa_leaflet project=project projectPoints=projectPoints}}
     <h3 id="projpageLabels">Dashboard</h3>
+    <div id="theme-toggle">
+        <button id="toggle-button" onclick="toggleTheme()">☀️ Switch to Light Mode</button>
+    </div>
     <div id="dashboardcont">
-        <div id="dashboard"><iframe src="https://labserver.sense-campus.gr:8087/d/ae73dhsqu28zkd/autosenseanalyticslora?from=1733827833828&to=1733828948981&timezone=browser&orgId=2" width="1100" height="500" frameborder="0"></iframe></div>
+        <div id="dashboard"><iframe src="https://labserver.sense-campus.gr:8087/d/ae73dhsqu28zkd/autosenseanalyticslora?from=1733827833828&to=1733828948981&timezone=browser&orgId=2&theme=dark" width="1100" height="500" frameborder="0"></iframe></div>
     </div>
     {{!-- {{>LoRa_map project=project projectPoints=projectPoints}}    --}}
     {{>api_docs}}
@@ -19,8 +22,11 @@
     <h3 id="projpageLabels">Heatmap</h3>
     {{>LoRa_leaflet project=project}}
     <h3 id="projpageLabels">Dashboard</h3>
+    <div id="theme-toggle">
+        <button id="toggle-button" onclick="toggleTheme()">☀️ Switch to Light Mode</button>
+    </div>
     <div id="dashboardcont">
-        <div id="dashboard"><iframe src="https://labserver.sense-campus.gr:8087/d/ee5awawrs54w0b/autosenseanalytics-wifi?from=now-5m&to=now&timezone=browser&refresh=5s" width="1100" height="500" frameborder="0"></iframe></div>
+        <div id="dashboard"><iframe src="https://labserver.sense-campus.gr:8087/d/ee5awawrs54w0b/autosenseanalytics-wifi?from=now-5m&to=now&timezone=browser&refresh=5s&theme=dark" width="1100" height="500" frameborder="0"></iframe></div>
     </div>
     {{!-- {{>WiFi_map project=project projectPoints=projectPoints}} --}}
     
@@ -29,8 +35,11 @@
     <h3 id="projpageLabels">Heatmap</h3>
     {{>LoRa_leaflet project=project projectPoints=projectPoints}}
     <h3 id="projpageLabels">Dashboard</h3>
+    <div id="theme-toggle">
+        <button id="toggle-button" onclick="toggleTheme()">☀️ Switch to Light Mode</button>
+    </div>
     <div id="dashboardcont">
-        <div id="dashboard"><iframe src="https://labserver.sense-campus.gr:8087/d/cec2mcjy1v7cwa/measurements-4g-rssi?folderUid=bebo48v54rsaof&from=2025-02-04T10:37:04.982Z&to=2025-02-04T12:23:13.439Z&timezone=browser" width="1100" height="500" frameborder="0"></iframe></div>
+        <div id="dashboard"><iframe src="https://labserver.sense-campus.gr:8087/d/cec2mcjy1v7cwa/measurements-4g-rssi?folderUid=bebo48v54rsaof&from=2025-02-04T10:37:04.982Z&to=2025-02-04T12:23:13.439Z&timezone=browser&theme=dark" width="1100" height="500" frameborder="0"></iframe></div>
     </div>
     {{!-- <div class="api-docs">
         <h3 class="api-title">API Documentation</h3>
@@ -60,6 +69,62 @@
 {{#if (eq project.projName 'Road Roughness')}}
     <h3 id="projpageLabels">Heatmap</h3>
     {{>LoRa_leaflet project=project projectPoints=projectPoints}}
+    <div id="theme-toggle">
+        <button id="toggle-button" onclick="toggleTheme()">☀️ Switch to Light Mode</button>
+    </div>
+    <div id="dashboardcont">
+        <div id="dashboard"><iframe src="https://labserver.sense-campus.gr:8087/d/aecnvd14xgxs0c/road-roughness?from=2025-02-09T15:44:26.011Z&to=2025-02-09T16:33:33.179Z&timezone=browser&theme=dark" width="1100" height="500" frameborder="0"></iframe></div>
+    </div>
     {{>api_docs}}
 {{/if}}
+<script>
+        function toggleTheme() {
+            const button = document.getElementById('toggle-button');
+            const iframe = document.querySelector('#dashboard iframe');
+            if (button.textContent.includes('Light')) {
+                button.textContent = '🌙 Switch to Dark Mode';
+                iframe.src = iframe.src.replace('dark', 'light');
+            } else {
+                button.textContent = '☀️ Switch to Light Mode';
+                iframe.src = iframe.src.replace('light', 'dark');
+            }
+        }
+    </script>
+    <style>
+    #theme-toggle {
+        text-align: right;
+        margin-bottom: 10px;
+        padding-right: 20px;
+    }
+
+    #toggle-button {
+        background-color: #333;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        font-size: 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    #toggle-button:hover {
+        background-color: #555;
+    }
+
+    /* Light Mode Styles */
+    body.light-mode {
+        background-color: #f5f5f5;
+        color: black;
+    }
+
+    #toggle-button.light-mode {
+        background-color: #ddd;
+        color: black;
+    }
+
+    #toggle-button.light-mode:hover {
+        background-color: #ccc;
+    }
+</style>
 {{!-- {{>footer}} --}}
