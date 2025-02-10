@@ -381,6 +381,7 @@ document.addEventListener("DOMContentLoaded", function() {
       else if(projectName=="Road Roughness"){
             map.setView([38.269933, 21.742374], 13);
             let markersLayer=L.layerGroup();
+            let markerCluster=L.markerClusterGroup({maxClusterRadius:40, disableClusteringAtZoom: 15});
             fetch('/api/measurements/imu')
             .then(response => response.json())
             .then(data => {
@@ -389,6 +390,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     marker.bindPopup(`Roughness: ${point.roughness}`).addEventListener('click', function() {
                         marker.openPopup();
                     });
+                    markerCluster.addLayer(marker);
                 });
 
                 var roughnessValues = data.map(point => point.roughness);
@@ -396,9 +398,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 var maxRoughness = Math.max(...roughnessValues);
                 console.log("Min Roughness:", minRoughness);
                 console.log("Max Roughness:", maxRoughness);
-
+                markersLayer.addTo(map);
                 var overlayMaps = {
                   "Markers": markersLayer,
+                  "Cluster": markerCluster
                   };
               L.control.layers(baseMap, overlayMaps).addTo(map);
             })
