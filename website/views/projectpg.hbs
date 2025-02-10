@@ -57,4 +57,9 @@
     {{>api_docs}}
     {{!-- {{>api_url_generator}} --}}
 {{/if}}
+{{#if (eq project.projName 'Road Roughness')}}
+    <h3 id="projpageLabels">Heatmap</h3>
+    {{>LoRa_leaflet project=project projectPoints=projectPoints}}
+    {{>api_docs}}
+{{/if}}
 {{!-- {{>footer}} --}}

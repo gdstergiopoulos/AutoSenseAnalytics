@@ -43,6 +43,33 @@ document.addEventListener("DOMContentLoaded", function() {
           });
           } 
         }
+
+    function getIconByRoughness(roughness) {
+          if(roughness<=7.5){
+            return L.ExtraMarkers.icon({
+              icon: 'fa-number',
+              markerColor: 'green',
+              shape: 'circle',
+              prefix: 'fa'
+            });
+          }
+          else if(roughness>7.5 && roughness<=14.5){
+            return L.ExtraMarkers.icon({
+              icon: 'fa-number',
+              markerColor: 'orange',
+              shape: 'circle',
+              prefix: 'fa'
+          });
+        }
+        else if(roughness>=14.5){
+          return L.ExtraMarkers.icon({
+            icon: 'fa-number',
+            markerColor: 'red',
+            shape: 'circle',
+            prefix: 'fa'
+        });
+        } 
+      }
     try{
       let projectName = document.getElementById("welcomecomp").innerText;
       if(projectName=="Signal Coverage - LoRA"){
@@ -345,12 +372,31 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     updateAllMarkers(); // Initial fetch
     setInterval(updateAllMarkers, 2000); // Refresh every 2 seconds
-}
-  else if(projectName=="Contact Us"){
+      }
+      else if(projectName=="Contact Us"){
     var marker = L.marker([38.28864841960415, 21.788658751750393],{icon:custom}).addTo(map);
     marker.bindPopup("AutoSense").addEventListener(this.onclick, function() {
         marker.bindPopup("AutoSense").openPopup();});
-  }
+      }
+      else if(projectName=="Road Roughness"){
+            fetch('/api/measurements/imu')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(point => {
+                    var marker = L.marker([point.latitude, point.longitude], {icon: getIconByRoughness(point.roughness)}).addTo(map);
+                    marker.bindPopup(`Roughness: ${point.roughness}`).addEventListener('click', function() {
+                        marker.openPopup();
+                    });
+                });
+
+                var roughnessValues = data.map(point => point.roughness);
+                var minRoughness = Math.min(...roughnessValues);
+                var maxRoughness = Math.max(...roughnessValues);
+                console.log("Min Roughness:", minRoughness);
+                console.log("Max Roughness:", maxRoughness);
+            })
+            .catch(error => console.error('Error fetching data:', error));
+      }
     }
     catch(error){
       console.error('Error fetching data:', error);

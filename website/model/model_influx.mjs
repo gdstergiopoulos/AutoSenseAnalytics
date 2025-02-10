@@ -259,9 +259,12 @@ export async function getMeasurements4G(location) {
 
 export async function getMeasurementsIMU() {
     const influxdb_url = "http://150.140.186.118:8086"
-    const bucket = "AutoSenseAnalytics_imu_avg"
+    // const bucket = "AutoSenseAnalytics_imu_avg"
+    // const bucket = "AutoSenseAnalytics_imu_std"
+    // const bucket = "AutoSenseAnalytics_imu_max"
+    const bucket = "AutoSenseAnalytics_imu_fft_score"
     const org = "students"
-    const token = "290p7cJGdKC25ZQoF2VKcL7ghuAJtX4xz50elO3B-38DBO9KxqVrI3fJQKfk9hjBU-MBKC5OMgC8hgYR4akWzw=="
+    const token = "kmVB5CFkQCqOSHpLPYc8N0C46IG_mAu9LnT1LdKGYC8k6_DlpUPAs31n9fP4sJaXjLJkyZ_Y9bvceMy5B3wobQ=="
 
     const client = new InfluxDB({ url: influxdb_url, token });
 
@@ -275,14 +278,25 @@ export async function getMeasurementsIMU() {
         const stop = '2025-02-09T16:31:02.000Z';
 
         // Flux query
+        // const query = `
+        //     from(bucket: "${bucket}")
+        //         |> range(start: ${start}, stop: ${stop})
+        //         |> filter(fn: (r) => r._measurement == "imu_avg")
+        //         |> filter(fn: (r) => r._field == "acc_x_max" or r._field == "acc_y_max" or r._field == "acc_z_max" or r._field=="altitude" or r._field=="speed" or r._field=="latitude" or r._field=="longitude")
+        //         |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+        //         |> keep(columns: ["_time", "acc_x_max", "acc_y_max", "acc_z_max", "altitude", "speed", "latitude", "longitude"])
+        // `;
+
+        // Flux query
         const query = `
             from(bucket: "${bucket}")
                 |> range(start: ${start}, stop: ${stop})
-                |> filter(fn: (r) => r._measurement == "imu_avg")
-                |> filter(fn: (r) => r._field == "acc_x_avg" or r._field == "acc_y_avg" or r._field == "acc_z_avg" or r._field=="altitude" or r._field=="speed" or r._field=="latitude" or r._field=="longitude")
+                |> filter(fn: (r) => r._measurement == "imu_fft_score")
+                |> filter(fn: (r) => r._field == "roughness" or r._field=="altitude" or r._field=="speed" or r._field=="latitude" or r._field=="longitude")
                 |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
-                |> keep(columns: ["_time", "acc_x_avg", "acc_y_avg", "acc_z_avg", "altitude", "speed", "latitude", "longitude"])
+                |> keep(columns: ["_time","roughness", "altitude", "speed", "latitude", "longitude"])
         `;
+
         let localwithGps = [];
         let all=[];
         // Execute query and process results
