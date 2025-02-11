@@ -9,7 +9,7 @@ def init_cars(num_cars):
         cars.append(Car(i))
         print(f"Car {i} created")
     
-    for i in range(int(num_cars/2)+1,num_cars):
+    for i in range(int(num_cars/2)+1,num_cars+1):
         cars.append(Car(i,location="uni"))
         print(f"Car {i} created in location Uni")
 
