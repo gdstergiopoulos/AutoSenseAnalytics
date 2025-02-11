@@ -12,10 +12,63 @@
 {{!-- <div id="dashboardcont">
     <div id="dashboard"><iframe src="https://labserver.sense-campus.gr:8087/d/aebo4rq663fnkb/live-status?from=now-5m&to=now&timezone=browser&var-car_id=1"></iframe></div>
 </div> --}}
-
+<div id="theme-toggle">
+        <button id="toggle-button" onclick="toggleTheme()">☀️ Switch to Light Mode</button>
+    </div>
 <div id="dashboardcont">
-    <div id="dashboard"><iframe src="https://labserver.sense-campus.gr:8087/d/debr5w7b2j8jkd/live-status-parametric?from=now-5m&to=now&timezone=browser&var-car_id=0&var-car_id=1&var-car_id=2&var-car_id=3&var-car_id=4&var-car_id=5&var-car_id=6&var-car_id=7&refresh=5s"></iframe></div>
+    <div id="dashboard"><iframe src="https://labserver.sense-campus.gr:8087/d/debr5w7b2j8jkd/live-status-parametric?from=now-5m&to=now&timezone=browser&var-car_id=0&var-car_id=1&var-car_id=2&var-car_id=3&var-car_id=4&var-car_id=5&var-car_id=6&var-car_id=7&refresh=5s&theme=dark"></iframe></div>
 </div>
+
+<script>
+        function toggleTheme() {
+            const button = document.getElementById('toggle-button');
+            const iframe = document.querySelector('#dashboard iframe');
+            if (button.textContent.includes('Light')) {
+                button.textContent = '🌙 Switch to Dark Mode';
+                iframe.src = iframe.src.replace('dark', 'light');
+            } else {
+                button.textContent = '☀️ Switch to Light Mode';
+                iframe.src = iframe.src.replace('light', 'dark');
+            }
+        }
+    </script>
+    <style>
+    #theme-toggle {
+        text-align: right;
+        margin-bottom: 10px;
+        padding-right: 20px;
+    }
+
+    #toggle-button {
+        background-color: #333;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        font-size: 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    #toggle-button:hover {
+        background-color: #555;
+    }
+
+    /* Light Mode Styles */
+    body.light-mode {
+        background-color: #f5f5f5;
+        color: black;
+    }
+
+    #toggle-button.light-mode {
+        background-color: #ddd;
+        color: black;
+    }
+
+    #toggle-button.light-mode:hover {
+        background-color: #ccc;
+    }
+</style>
 
 
 

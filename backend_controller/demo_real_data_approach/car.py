@@ -33,7 +33,9 @@ class Car:
     def generate_data(self):
         # Update battery level
         self.battery = max(0, self.battery - 0.1)
-        
+        if (self.battery==0):
+            self.battery = random.uniform(70, 100)
+
         # Iterate to the next data point
         self.current_index = (self.current_index + 1) % self.path_len  # Move to the next position in a circular manner
         
