@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: ./website 
+      dockerfile: Dockerfile.website
+    container_name: autosense-website
+    ports:
+      - "7101:3000"
+    # volumes:
+    #   - .:/app
+    #   - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: ["node", "app.mjs"]
+    restart: unless-stopped
+
+
+  demo:
+    build:
+      context: ./demo_real_data_approach
+      dockerfile: Dockerfile.demoreal
+    container_name: live-demo
+    command: ["python", "dev.py"]
+    restart: unless-stopped
+
+
+
