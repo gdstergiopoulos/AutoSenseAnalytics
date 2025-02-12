@@ -13,11 +13,13 @@
         {{#each projects}}
             <a id="projbtn" class="btn btn-primary" href="/mycompany/project/{{this.id}}">{{this.projName}}</a>
         {{/each}}
+        {{#if (eq username 'AutoSense')}}
         <hr>
         <div>
             <a id="projbtn" class="btn btn-primary" href="/admin/live">Monitor Live Status</a>
             <a id="projbtn" class="btn btn-primary" href="/admin/assignproject">Manage Projects & Users</a>
         </div>
+        {{/if}}
     </div>
     <img id="projimg" src="/media/network.png" alt="projects">
 </div>
