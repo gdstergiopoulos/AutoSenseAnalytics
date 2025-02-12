@@ -1,4 +1,4 @@
+Στο Current Directory : 
+
 docker-compose up --build 
 
-
-!!! Docker files must be inside context directory !!! 

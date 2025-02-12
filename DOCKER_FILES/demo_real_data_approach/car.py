@@ -11,7 +11,7 @@ class Car:
         self.counter = 0
         
         # Fetch path data
-        self.data = requests.get('http://localhost:3000/api/measurements/4g/'+str(location)).json()
+        self.data = requests.get('http://150.140.186.118:7101/api/measurements/4g/'+str(location)).json()
         self.path_len = len(self.data)
         
         # Initialize a random starting position
