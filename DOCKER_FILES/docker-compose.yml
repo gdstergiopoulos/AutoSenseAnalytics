@@ -34,5 +34,13 @@ services:
     command: ["python", "sync_mqtt_triggered_and_periodicly.py"]
     restart: unless-stopped
 
+  sync_4g:
+    build:
+      context: ./sync_4g
+      dockerfile: Dockerfile.4gsync
+    container_name: sync-4g
+    command: ["python", "sync_mqtt_triggered_and_periodicly.py"]
+    restart: unless-stopped
+
 
 
