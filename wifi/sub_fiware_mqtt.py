@@ -37,9 +37,12 @@ def subscribe_entity_to_mqtt(fiware_service_path, entity_id,entity_type,update_a
     
 #demo entity 
 #DO THIS FOR EVERY CAR (ONLY car0 exists)
-subscribe_entity_to_mqtt("/AutoSenseAnalytics/demo","car0","car_measurements","timestamp","demo")
+# subscribe_entity_to_mqtt("/AutoSenseAnalytics/demo","car0","car_measurements","timestamp","demo")
 #4g entity
-subscribe_entity_to_mqtt("/AutoSenseAnalytics","4G_Measurement","4G","rssi","4g_rssi")
+# subscribe_entity_to_mqtt("/AutoSenseAnalytics","4G_Measurement","4G","rssi","4g_rssi")
+
+subscribe_entity_to_mqtt("/AutoSenseAnalytics","IMU_avg","Demo","accx","imuavg")
+
 
 # data = """
 # { 
