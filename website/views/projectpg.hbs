@@ -77,6 +77,16 @@
     </div>
     {{>api_docs}}
 {{/if}}
+{{#if (eq project.projName 'IMU Live Demo')}}
+    <h3 id="projpageLabels">Dashboard</h3>
+    <div id="theme-toggle">
+        <button id="toggle-button" onclick="toggleTheme()">☀️ Switch to Light Mode</button>
+    </div>
+    <div id="dashboardcont">
+        <div id="dashboard"><iframe src="https://labserver.sense-campus.gr:8087/d/cecu6i52dg1dsa/autosenseanalytics-live-imu-demo?from=now-6h&to=now&timezone=browser&theme=dark" width="1100" height="500" frameborder="0"></iframe></div>
+    </div>
+    {{>api_docs}}
+{{/if}}
 <script>
         function toggleTheme() {
             const button = document.getElementById('toggle-button');
