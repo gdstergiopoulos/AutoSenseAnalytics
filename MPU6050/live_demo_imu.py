@@ -2,6 +2,7 @@ import time
 import smbus
 import math
 from datetime import datetime
+import requests
 
 
 fiware_url = "http://150.140.186.118:1026/v2/entities"
@@ -23,7 +24,7 @@ def post_to_fiware(measurement,fiware_url=fiware_url, headers=headers):
     return 0
 
 
-# Patch the measurement to FIWARE
+
 def patch_measurement( measurement,fiware_url=fiware_url, headers=headers):
     try:
         response = requests.patch(fiware_url, headers=headers, json=measurement)
@@ -32,7 +33,6 @@ def patch_measurement( measurement,fiware_url=fiware_url, headers=headers):
         
     except requests.exceptions.HTTPError as err:
         print(f"Failed to patch measurement: {err}")
-        save_to_json_file(measurement)
         
 
     return 0
@@ -61,7 +61,7 @@ def create_json(accx, accy ,accz, accavg):
             "value": accavg,
             "type": "Number"
         },
-        "date": {
+        "timestamp": {
             "value": datetime.now().isoformat(),
             "type": "DateTime"
     }}
@@ -71,10 +71,7 @@ def create_json(accx, accy ,accz, accavg):
 
 
 
-
-
-
-def measure_average_acceleration(duration=2, sample_interval=0.2):
+def measure_average_acceleration(duration=1, sample_interval=0.2):
     MPU6050_ADDR = 0x68
     PWR_MGMT_1 = 0x6B
     ACCEL_XOUT_H = 0x3B
@@ -115,11 +112,29 @@ def measure_average_acceleration(duration=2, sample_interval=0.2):
 
             time.sleep(sample_interval)
 
-        avg_ax = sum(accel_x_values) / len(accel_x_values)
-        avg_ay = sum(accel_y_values) / len(accel_y_values)
-        avg_az = sum(accel_z_values) / len(accel_z_values)
-        avg_acceleration = math.sqrt(avg_ax**2 + avg_ay**2 + avg_az**2)
-        print(f"Average acceleration: {avg_acceleration:.2f} g")
+        avg_x = sum(accel_x_values) / len(accel_x_values)
+        avg_y = sum(accel_y_values) / len(accel_y_values)
+        avg_z = sum(accel_z_values) / len(accel_z_values)
+        avg_acceleration = math.sqrt(avg_x**2 + avg_y**2 + avg_z**2)
+        # print(f"Average acceleration: {avg_acceleration:.2f} g")
 
     
-        return avg_acceleration
+        return avg_x, avg_y, avg_z, avg_acceleration
+    
+
+
+
+
+if __name__ == "__main__":
+        try:
+            while True:
+
+                avg_x, avg_y, avg_z, avg_acceleration = measure_average_acceleration(1, 0.1)
+                # print(avg_x, avg_y, avg_z, avg_acceleration)
+                measurement = create_json(avg_x, avg_y, avg_z, avg_acceleration)
+                # print(measurement)
+                post_to_fiware(measurement,fiware_url, headers)
+                patch_measurement(measurement,fiware_url+"/IMU_avg/attrs", headers)
+
+        except KeyboardInterrupt:
+            print("Measurement Error.")   
