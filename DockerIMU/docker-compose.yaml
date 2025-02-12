@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  imu_sensor:
+    build:
+      context: .  
+      dockerfile: Dockerfile.imu
+    container_name: imu_sensor
+    restart: always 
+    privileged: true  
+    network_mode: "host"  # Allows the script to use the host's network
