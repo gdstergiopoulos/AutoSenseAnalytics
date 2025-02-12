@@ -1,0 +1,9 @@
+FROM python:3.11-slim-bullseye
+
+WORKDIR /app
+
+COPY . /app
+RUN pip install requests smbus
+
+# Run the script when the container starts
+CMD ["python", "/app/live_demo_imu.py"]
