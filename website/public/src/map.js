@@ -317,7 +317,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     <b>Acc Y:</b> ${entry.accy}<br>
                     <b>Acc Z:</b> ${entry.accz}<br>
                     <b>ID:</b> ${entry.id}<br>
-                    <img src="http://150.140.186.118:4943/photo/${entry.id}" class="popup-img" alt="Photo">
+                    <a href="http://150.140.186.118:4943/photo/${entry.id}"><img src="http://150.140.186.118:4943/photo/${entry.id}" class="popup-img" alt="Photo"></a>
                 `);
             });
         })
