@@ -7,3 +7,4 @@ hardware/SX126X_LoRa_HAT_Code/.lgd-nfy0
 hardware/SX126X_LoRa_HAT_Code/raspberrypi/python/.lgd-nfy0s
 settings.json
 cache
+DOCKER_FILES/website

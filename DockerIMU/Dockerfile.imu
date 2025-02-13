@@ -1,9 +1,35 @@
+# FROM python:3.11-slim-bullseye
+
+# WORKDIR /app
+
+# COPY . /app
+# RUN pip install requests smbus
+
+# # Run the script when the container starts
+# CMD ["python", "/app/live_demo_imu.py"]
+
+
+
 FROM python:3.11-slim-bullseye
 
 WORKDIR /app
 
 COPY . /app
-RUN pip install requests smbus
 
-# Run the script when the container starts
+# Install system dependencies for smbus and build tools
+RUN apt update && apt install -y \
+    python3-smbus \
+    i2c-tools \
+    build-essential \
+    libffi-dev \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+
+ENV TZ=Europe/Athens
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+# Upgrade pip and install Python packages
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
+    # pip install --no-cache-dir requests smbus
+
 CMD ["python", "/app/live_demo_imu.py"]
