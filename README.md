@@ -1,14 +1,13 @@
-<h1>AutoSense Analytics</h1>
-An IoT project made by: Eleni Sakellariou-Matsi and Georgios Stergiopoulos
+<h1><img style="width:5%; height:5%" src="/media/logo_mini_green.png">AutoSense Analytics</h1>
+<em>A data collection company, utilizing Vehicle Mounted Sensors</em><br><br>
+Project developed by: Eleni Sakellariou-Matsi and Georgios Stergiopoulos for the "Internet of Things" course of the University of Patras.
 <h2><a href="https://www.youtube.com/watch?v=UyGT7zMF970&feature=youtu.be">Demo Video</a></h2>
+<h2><a href="/presentations/final/AutoSense_Analytics_Final.pdf">Final Presentation</a></h2>
 
-Designed and developed a fully working architecture of an IoT system.<br>
+Designed and developed a fully IoT system. The end-to-end architecture is displayed bellow: <br><br>
 <img style="width: 70%; height:70%;" src="media/5.png">
 
 <h4><b>H/W and Sensors:</b></h4>
-<img style="width: 20%; height:20%;" src="media/IMG_1719.png">
-<img style="width: 20%; height:20%;" src="media/IMG_1721.png">
-<img style="width: 70%; height:70%;" src="media/IMG_1707.png">
 <ul>
 <li>RaspberryPi: 4B 8GB RAM</li>
 <li>RPi 4G HAT: SIM7600X</li>
@@ -16,6 +15,11 @@ Designed and developed a fully working architecture of an IoT system.<br>
 <li>RPi HAT</li>
 <li>Adruino with Dragino LoRa</li>
 </ul>
+<p align="start" >
+<img style="width: 10%; height:10%;" src="media/IMG_1719.jpg">
+<img style="width: 10%; height:10%;" src="media/IMG_1721.jpg">
+<img style="width: 10%; height:10%;" src="media/IMG_1707.jpg">
+</p>
 
 <h4><b>S/W and Tools:</b></h4>
 <ul>
@@ -43,7 +47,7 @@ Designed and developed a fully working architecture of an IoT system.<br>
   <li>Now you can visit the website and watch the Live Demo at <a href="http://localhost:3000/admin/live">"http://localhost:3000/admin/live"</a></li>
 </ol>
 
-<h4><b>Instructions (Docker must be setup on your machine): </b></h4>
+<h4><b>Instructions (Docker must be setup on your machine): <img style="width: 5%; height:5%;" src="/media/docker.png"></b></h4>
 <ol>
   <li>Download the <code>DOCKER_FILES</code> folder</li>
   <li>Download and add the <code>website</code> folder inside the <code>DOCKER_FILES</code></li>
