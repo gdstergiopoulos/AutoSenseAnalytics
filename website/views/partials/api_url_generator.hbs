@@ -159,14 +159,14 @@ function generateApiUrl() {
     let apiUrl;
     if (project === "3dreconstruction" && sensorType) {
         if(!location){
-            apiUrl = `http://labserver.sense-campus.gr:7101/api/measurements/${project}/all/${sensorType}`;
+            apiUrl = `http://localhost:3000/api/measurements/${project}/all/${sensorType}`;
         }
         else{
-            apiUrl = `http://labserver.sense-campus.gr:7101/api/measurements/${project}/${location}/${sensorType}`;
+            apiUrl = `http://localhost:3000/api/measurements/${project}/${location}/${sensorType}`;
         }
     }
     else{
-        apiUrl = `http://labserver.sense-campus.gr:7101/api/measurements/${project}/${location}`;
+        apiUrl = `http://localhost:3000/api/measurements/${project}/${location}`;
     }
 
     document.getElementById("apiUrl").innerHTML = `Generated API URL: <a style="color: #16e4bc" href="${apiUrl}" target="_blank">${apiUrl}</a>`;
