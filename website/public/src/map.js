@@ -377,80 +377,94 @@ document.addEventListener("DOMContentLoaded", function() {
     marker.bindPopup("AutoSense").addEventListener(this.onclick, function() {
         marker.bindPopup("AutoSense").openPopup();});
       }
-      else if(projectName=="Road Roughness"){
-            map.setView([38.259933, 21.742374], 13);
-            let markersLayer=L.layerGroup();
-            let markerCluster=L.markerClusterGroup({maxClusterRadius:40, disableClusteringAtZoom: 15});
-            fetch('/api/measurements/imu')
+      else if (projectName == "Road Roughness") {
+        map.setView([38.259933, 21.742374], 13);
+        let markersLayer = L.layerGroup();
+        let markerCluster = L.markerClusterGroup({ maxClusterRadius: 40, disableClusteringAtZoom: 15 });
+        let heatLayer = L.layerGroup();
+        let photoLayer = L.layerGroup();
+    
+        // Fetch IMU measurements
+        fetch('/api/measurements/imu')
             .then(response => response.json())
             .then(data => {
-                data.forEach(point => {
-                    var marker = L.marker([point.latitude, point.longitude], {icon: getIconByRoughness(point.roughness)}).addTo(markersLayer);
-                    marker.bindPopup(`Roughness: ${point.roughness}`).addEventListener('click', function() {
-                        marker.openPopup();
-                    });
-                    markerCluster.addLayer(marker);
-                });
-
-                
-
-
+                let roughnessScores = data.map(point => point.roughness);
+                let minRoughness = Math.min(...roughnessScores);
+                let maxRoughness = Math.max(...roughnessScores);
+                let minDistanceThreshold = 0.0001;
+    
                 function filterClosePoints(points, minDistance) {
-                  let filteredPoints = [];
-                  
-                  points.forEach(point => {
-                      let isFarEnough = filteredPoints.every(filteredPoint => {
-                          let dLat = point.latitude - filteredPoint.latitude;
-                          let dLng = point.longitude - filteredPoint.longitude;
-                          let distance = Math.sqrt(dLat * dLat + dLng * dLng); // Approximate distance check
-              
-                          return distance > minDistance;
-                      });
-              
-                      if (isFarEnough) {
-                          filteredPoints.push(point);
-                      }
-                  });
-              
-                  return filteredPoints;
-              }
-              
-              let roughnessScores = data.map(point => point.roughness);
-              let minRoughness = Math.min(...roughnessScores);
-              let maxRoughness = Math.max(...roughnessScores);
-              
-              // Set a minimum distance threshold (adjust based on zoom level)
-              let minDistanceThreshold = 0.0001; // This should be adjusted based on map zoom level
-              
-              let filteredData = filterClosePoints(data, minDistanceThreshold);
-              
-              let heatLayer = L.layerGroup();
-              let heatData = filteredData.map(point => {
-                  let normalizedRoughness = (point.roughness - minRoughness) / (maxRoughness - minRoughness);
-                  return [point.latitude, point.longitude, normalizedRoughness];
-              });
-              
-              // Adjust heatmap settings for better visualization
-              let heat = L.heatLayer(heatData, {
-                  radius: 30,  // Increased for better heat distribution
-                  blur: 20,    // Smoothed out blending
-                  maxZoom: 17
-              }).addTo(heatLayer);
-
-
-                console.log("Min Roughness:", minRoughness);
-                console.log("Max Roughness:", maxRoughness);
-                // markersLayer.addTo(map);
+                    let filteredPoints = [];
+                    points.forEach(point => {
+                        let isFarEnough = filteredPoints.every(filteredPoint => {
+                            let dLat = point.latitude - filteredPoint.latitude;
+                            let dLng = point.longitude - filteredPoint.longitude;
+                            let distance = Math.sqrt(dLat * dLat + dLng * dLng);
+                            return distance > minDistance;
+                        });
+                        if (isFarEnough) {
+                            filteredPoints.push(point);
+                        }
+                    });
+                    return filteredPoints;
+                }
+    
+                let filteredData = filterClosePoints(data, minDistanceThreshold);
+    
+                let heatData = filteredData.map(point => {
+                    let normalizedRoughness = (point.roughness - minRoughness) / (maxRoughness - minRoughness);
+                    return [point.latitude, point.longitude, normalizedRoughness];
+                });
+    
+                let heat = L.heatLayer(heatData, {
+                    radius: 30,
+                    blur: 20,
+                    maxZoom: 17
+                }).addTo(heatLayer);
+    
+                data.forEach(point => {
+                    let marker = L.marker([point.latitude, point.longitude], { icon: getIconByRoughness(point.roughness) });
+                    marker.bindPopup(`Roughness: ${point.roughness}`);
+                    markerCluster.addLayer(marker);
+                    markersLayer.addLayer(marker);
+                });
+    
                 heatLayer.addTo(map);
-                var overlayMaps = {
-                  "Markers": markersLayer,
-                  "Cluster": markerCluster,
-                  "Heatmap": heatLayer
-                  };
-              L.control.layers(baseMap, overlayMaps).addTo(map);
             })
-            .catch(error => console.error('Error fetching data:', error));
-      }
+            .catch(error => console.error('Error fetching IMU data:', error));
+    
+        // Fetch Photo Data
+        fetch('http://150.140.186.118:4943/api/photos')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(entry => {
+                    let marker = L.marker([entry.latitude, entry.longitude]);
+                    marker.bindPopup(`
+                        <b>Timestamp:</b> ${entry.timestamp}<br>
+                        <b>Acc X:</b> ${entry.accx}<br>
+                        <b>Acc Y:</b> ${entry.accy}<br>
+                        <b>Acc Z:</b> ${entry.accz}<br>
+                        <b>ID:</b> ${entry.id}<br>
+                        <a href="http://150.140.186.118:4943/photo/${entry.id}" target="_blank">
+                            <img src="http://150.140.186.118:4943/photo/${entry.id}" class="popup-img" style="width:100px;height:auto;" alt="Photo">
+                        </a>
+                    `);
+                    photoLayer.addLayer(marker);
+                });
+                // Add overlay layers control
+                  var overlayMaps = {
+                    "Markers": markersLayer,
+                    "Cluster": markerCluster,
+                    "Heatmap": heatLayer,
+                    "Photos": photoLayer
+                };
+            
+                L.control.layers(baseMap, overlayMaps).addTo(map);
+            })
+            .catch(error => console.error('Error fetching photo data:', error));
+    
+        
+    }
     }
     catch(error){
       console.error('Error fetching data:', error);
@@ -498,7 +512,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }).addTo(map);
 
 
-        baseMap = {
+        let baseMap = {
             "Elevation Map": layer4,
             "Mapbox Satellite": layer3,
             "Mapbox Dark": layer2,
