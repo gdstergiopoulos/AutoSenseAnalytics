@@ -159,8 +159,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 <div style="width: 200px; height: 15px; background: linear-gradient(to right, blue, white, red);"></div>
                 <div style="display: flex; justify-content: space-between;">
                     <span style="color:black">-120 dBm</span>
-                    <span style="color:black">-73 dBm</span>
-                    <span style="color:black">0 dBm</span>
+                    <span style="color:black">-58 dBm</span>
                 </div>
             `;
             return div;
@@ -379,7 +378,7 @@ document.addEventListener("DOMContentLoaded", function() {
         marker.bindPopup("AutoSense").openPopup();});
       }
       else if(projectName=="Road Roughness"){
-            map.setView([38.269933, 21.742374], 13);
+            map.setView([38.259933, 21.742374], 13);
             let markersLayer=L.layerGroup();
             let markerCluster=L.markerClusterGroup({maxClusterRadius:40, disableClusteringAtZoom: 15});
             fetch('/api/measurements/imu')
@@ -393,15 +392,60 @@ document.addEventListener("DOMContentLoaded", function() {
                     markerCluster.addLayer(marker);
                 });
 
-                var roughnessValues = data.map(point => point.roughness);
-                var minRoughness = Math.min(...roughnessValues);
-                var maxRoughness = Math.max(...roughnessValues);
+                
+
+
+                function filterClosePoints(points, minDistance) {
+                  let filteredPoints = [];
+                  
+                  points.forEach(point => {
+                      let isFarEnough = filteredPoints.every(filteredPoint => {
+                          let dLat = point.latitude - filteredPoint.latitude;
+                          let dLng = point.longitude - filteredPoint.longitude;
+                          let distance = Math.sqrt(dLat * dLat + dLng * dLng); // Approximate distance check
+              
+                          return distance > minDistance;
+                      });
+              
+                      if (isFarEnough) {
+                          filteredPoints.push(point);
+                      }
+                  });
+              
+                  return filteredPoints;
+              }
+              
+              let roughnessScores = data.map(point => point.roughness);
+              let minRoughness = Math.min(...roughnessScores);
+              let maxRoughness = Math.max(...roughnessScores);
+              
+              // Set a minimum distance threshold (adjust based on zoom level)
+              let minDistanceThreshold = 0.0001; // This should be adjusted based on map zoom level
+              
+              let filteredData = filterClosePoints(data, minDistanceThreshold);
+              
+              let heatLayer = L.layerGroup();
+              let heatData = filteredData.map(point => {
+                  let normalizedRoughness = (point.roughness - minRoughness) / (maxRoughness - minRoughness);
+                  return [point.latitude, point.longitude, normalizedRoughness];
+              });
+              
+              // Adjust heatmap settings for better visualization
+              let heat = L.heatLayer(heatData, {
+                  radius: 30,  // Increased for better heat distribution
+                  blur: 20,    // Smoothed out blending
+                  maxZoom: 17
+              }).addTo(heatLayer);
+
+
                 console.log("Min Roughness:", minRoughness);
                 console.log("Max Roughness:", maxRoughness);
-                markersLayer.addTo(map);
+                // markersLayer.addTo(map);
+                heatLayer.addTo(map);
                 var overlayMaps = {
                   "Markers": markersLayer,
-                  "Cluster": markerCluster
+                  "Cluster": markerCluster,
+                  "Heatmap": heatLayer
                   };
               L.control.layers(baseMap, overlayMaps).addTo(map);
             })
