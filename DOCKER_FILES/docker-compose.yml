@@ -21,7 +21,7 @@ services:
     build:
       context: ./demo_real_data_approach
       dockerfile: Dockerfile.demoreal
-    container_name: live-demo
+    container_name: autosense_live-demo
     command: ["python", "dev.py"]
     restart: unless-stopped
 
@@ -30,7 +30,7 @@ services:
     build:
       context: ./sync_imu
       dockerfile: Dockerfile.imusync
-    container_name: sync-imu
+    container_name: autosense_sync-imu
     command: ["python", "sync_mqtt_triggered_and_periodicly.py"]
     restart: unless-stopped
 
@@ -38,7 +38,7 @@ services:
     build:
       context: ./sync_4g
       dockerfile: Dockerfile.4gsync
-    container_name: sync-4g
+    container_name: autosense_sync-4g
     command: ["python", "sync_mqtt_triggered_and_periodicly.py"]
     restart: unless-stopped
 
