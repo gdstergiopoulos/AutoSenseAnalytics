@@ -54,7 +54,7 @@ Designed and developed a fully IoT system. The end-to-end architecture is displa
   <li>Navigate to the folder and execute command <code>docker-compose up --build</code></li>
 </ol>
 
-<h4>Photos from measuremnt procedure:</h4>
+<h4>Photos from measurement procedure:</h4>
 <p align="start" >
 <img style="width: 20%; height:20%;" src="media/DASYLIO.jpg">
 <img style="width: 20%; height:20%;" src="media/PLAZ.jpg">
