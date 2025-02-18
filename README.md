@@ -2,7 +2,9 @@
 <em>A data collection company, utilizing Vehicle Mounted Sensors</em><br><br>
 Project developed by: Eleni Sakellariou-Matsi and Georgios Stergiopoulos for the "Internet of Things" course of the University of Patras.
 <h2><a href="https://www.youtube.com/watch?v=UyGT7zMF970&feature=youtu.be">Demo Video</a></h2>
+<h2><a href="https://autosenseanalytics.azurewebsites.net/">Public Website</a></h2>
 <h2><a href="/presentations/final/AutoSense_Analytics_Final.pdf">Final Presentation</a></h2>
+
 
 Designed and developed a fully IoT system. The end-to-end architecture is displayed bellow: <br><br>
 <img style="width: 70%; height:70%;" src="media/5.png">
